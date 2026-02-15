@@ -1,0 +1,17 @@
+[workspace]
+members = [
+    "crates/app",
+    "crates/logic",
+]
+resolver = "2"
+
+[profile.dev]
+opt-level = 3
+debug = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

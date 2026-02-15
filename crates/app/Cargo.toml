@@ -1,0 +1,23 @@
+[package]
+name = "construct"
+version = "0.1.0"
+edition = "2021"
+
+[package.metadata.android]
+package = "com.antigravity.construct"
+label = "Construct"
+build_targets = ["aarch64-linux-android"]
+apk_name = "Construct"
+
+[dependencies]
+slint = { version = "1.15.1", features = ["renderer-femtovg", "backend-android-activity-06"] }
+logic = { path = "../logic" }
+tokio = { version = "1", features = ["full"] }
+
+[lib]
+name = "construct"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+slint-build = "1.15.1"
