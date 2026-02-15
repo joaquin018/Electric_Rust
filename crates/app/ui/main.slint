@@ -126,8 +126,10 @@ export component AppWindow inherits Window {
     VerticalLayout {
         TopBar { }
 
-        ScrollView {
-            VerticalBox {
+        // Custom mobile-style scrolling area without visible scrollbar
+        Flickable {
+            viewport-height: content.preferred-height;
+            content := VerticalBox {
                 padding-left: 16px;
                 padding-right: 16px;
                 padding-bottom: 30px;
