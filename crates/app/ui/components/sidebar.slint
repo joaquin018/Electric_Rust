@@ -26,13 +26,17 @@ export component SideBar inherits Rectangle {
         width: 280px;
         height: 100%;
         background: #1E1E1E;
-        // Shadow for drawer
-        drop-shadow-blur: 20px;
+        
+        // Performance Optimization: Cache rendering for smooth sliding
+        cache-rendering-hint: true;
+
+        // Shadow for drawer (Reduced blur for performance)
+        drop-shadow-blur: 10px;
         drop-shadow-color: #00000088;
         drop-shadow-offset-x: 5px;
         animate x {
             duration: 300ms;
-            easing: cubic-bezier(0.2, 0.0, 0, 1.0);
+            easing: cubic-bezier(0.33, 1, 0.68, 1);
         }
         VerticalLayout {
             padding: 24px;
