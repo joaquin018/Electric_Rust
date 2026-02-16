@@ -1,6 +1,8 @@
 export component InventoryItem inherits Rectangle {
     in property <string> label;
-    in-out property <string> value;
+    in property <string> value;
+    in property <bool> has-focus: false;
+    callback request-focus();
     height: 85px;
     background: #1e1e1e;
     border-radius: 18px;
@@ -21,35 +23,37 @@ export component InventoryItem inherits Rectangle {
             height: 45px;
             background: #121212;
             border-radius: 12px;
-            y: (85px - 45px) / 2;
-            border-width: input.has-focus ? 1.5px : 0px;
+            y: (parent.height - self.height) / 2;
+            border-width: has-focus ? 1.5px : 0px;
             border-color: #ff9d00;
-            // Placeholder "0" logic
-            if (value == "" && !input.has-focus): Text {
-                width: parent.width - 15px;
-                text: "0";
-                color: #3b3b3b;
-                font-size: 20px;
-                font-weight: 800;
-                vertical-alignment: center;
-                horizontal-alignment: right;
-            }
-            input := TextInput {
-                width: parent.width - 15px;
-                height: 100%;
-                text <=> value;
-                font-size: 20px;
-                color: #ff9d00;
-                selection-background-color: #ff9d0033;
-                vertical-alignment: center;
-                horizontal-alignment: right;
-                single-line: true;
-                input-type: number;
-            }
-
             TouchArea {
                 clicked => {
-                    input.focus();
+                    root.request-focus();
+                }
+            }
+
+            // Wrapper for alignment
+            HorizontalLayout {
+                padding-right: 10px;
+                alignment: end;
+                spacing: 2px;
+                
+                // Value text
+                Text {
+                    text: value == "" ? "0" : value;
+                    color: value == "" ? #3b3b3b : #ff9d00;
+                    font-size: 20px;
+                    font-weight: 800;
+                    vertical-alignment: center;
+                    horizontal-alignment: right;
+                }
+                
+                // Fake cursor (solid for now to avoid animation issues)
+                if (has-focus): Rectangle {
+                    width: 2px;
+                    height: 24px;
+                    background: #ff9d00;
+                    y: (parent.height - self.height) / 2;
                 }
             }
         }

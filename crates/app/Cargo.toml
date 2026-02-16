@@ -1,6 +1,6 @@
 [package]
 name = "construct"
-version = "1.2.1"
+version = "1.3.0"
 edition = "2021"
 
 [package.metadata.android]
@@ -8,11 +8,21 @@ package = "com.antigravity.construct"
 label = "Construct"
 build_targets = ["aarch64-linux-android"]
 apk_name = "Construct"
+res = "res"
+theme = "@style/ConstructTheme"
+
+[package.metadata.android.signing.release]
+path = "C:\\Users\\Joaquin\\.android\\debug.keystore"
+keystore_password = "android"
+key_alias = "androiddebugkey"
+key_password = "android"
 
 [dependencies]
-slint = { version = "1.15.1", features = ["renderer-femtovg", "backend-android-activity-06"] }
+slint = { version = "1.15.1", features = ["renderer-skia-opengl", "backend-android-activity-06"] }
 logic = { path = "../logic" }
 tokio = { version = "1", features = ["full"] }
+jni = "0.21.1"
+ndk-context = "0.1.1"
 
 [lib]
 name = "construct"

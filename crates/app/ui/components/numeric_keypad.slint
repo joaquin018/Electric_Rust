@@ -1,0 +1,200 @@
+import { Button, VerticalBox } from "std-widgets.slint";
+
+component KeyButton inherits Rectangle {
+    in property <string> text;
+    in property <bool> special: false;
+    callback clicked;
+    background: touch.pressed ? #333333 : (special ? #2a2a2a : #252525);
+    border-radius: 8px;
+    height: 50px;
+    Text {
+        text: root.text;
+        color: special ? #ff9d00 : white;
+        font-size: 24px;
+        font-weight: 500;
+        vertical-alignment: center;
+        horizontal-alignment: center;
+    }
+
+    touch := TouchArea {
+        clicked => {
+            root.clicked();
+        }
+    }
+}
+
+export component NumericKeypad inherits Rectangle {
+    in property <bool> open: false;
+    callback custom-key-pressed(string);
+    callback backspace-pressed();
+    callback close-pressed();
+
+    // Cover the whole screen area (assuming placed in a full-size container)
+    width: 100%;
+    height: 100%;
+    
+    // Allow clicking through if closed? 
+    // If open is false, we want to not block clicks.
+    // We can move the whole component out of the way or set visible.
+    // But we want to animate the panel out.
+    // We'll trust the parent to handle z-ordering or input transparent?
+    // Actually, if we set y to transparent, touch might still block.
+    // Let's use 'visible' for the root, but delayed? No.
+    
+    // Simple solution: When closed, the panel is off-screen.
+    // The area above the panel should be transparent TO TOUCH.
+    // Slint TouchArea blocks if it's there. 
+    // We'll add a TouchArea only for the "backdrop" when open to close it?
+    
+    // Backdrop to close
+    if (root.open): TouchArea {
+        width: 100%;
+        height: 100%;
+        clicked => {
+            root.close-pressed();
+        }
+    }
+
+    // The Sliding Panel
+    Rectangle {
+        background: #1e1e1e;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        height: 350px; // Slightly taller
+        width: 100%;
+        
+        // Position relative to the root container (screen)
+        // When open: align to bottom (parent.height - self.height)
+        // When closed: just below bottom (parent.height)
+        y: root.open ? parent.height - self.height : parent.height;
+        animate y {
+            duration: 220ms;
+            easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+        }
+        VerticalLayout {
+            padding: 10px;
+            spacing: 10px;
+
+            // Header with Done button
+            HorizontalLayout {
+                alignment: end;
+                height: 40px;
+                Rectangle {
+                    width: 80px;
+                    height: 36px;
+                    background: #ff9d00;
+                    border-radius: 8px;
+                    TouchArea {
+                        clicked => {
+                            root.close-pressed();
+                        }
+                    }
+
+                    Text {
+                        text: "Done";
+                        color: black;
+                        font-weight: 700;
+                        vertical-alignment: center;
+                        horizontal-alignment: center;
+                    }
+                }
+            }
+
+            GridLayout {
+                spacing: 8px;
+                Row {
+                    KeyButton {
+                        text: "1";
+                        clicked => {
+                            root.custom-key-pressed("1");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "2";
+                        clicked => {
+                            root.custom-key-pressed("2");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "3";
+                        clicked => {
+                            root.custom-key-pressed("3");
+                        }
+                    }
+                }
+
+                Row {
+                    KeyButton {
+                        text: "4";
+                        clicked => {
+                            root.custom-key-pressed("4");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "5";
+                        clicked => {
+                            root.custom-key-pressed("5");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "6";
+                        clicked => {
+                            root.custom-key-pressed("6");
+                        }
+                    }
+                }
+
+                Row {
+                    KeyButton {
+                        text: "7";
+                        clicked => {
+                            root.custom-key-pressed("7");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "8";
+                        clicked => {
+                            root.custom-key-pressed("8");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "9";
+                        clicked => {
+                            root.custom-key-pressed("9");
+                        }
+                    }
+                }
+
+                Row {
+                    KeyButton {
+                        text: ".";
+                        clicked => {
+                            root.custom-key-pressed(".");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "0";
+                        clicked => {
+                            root.custom-key-pressed("0");
+                        }
+                    }
+
+                    KeyButton {
+                        text: "⌫"; // Backspace symbol
+                        special: true;
+                        clicked => {
+                            root.backspace-pressed();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

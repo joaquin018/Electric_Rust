@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ConstructTheme" parent="@android:style/Theme.Material.NoActionBar">
+        <!-- Ocultar TODOS los handles de selección nativos -->
+        <item name="android:textSelectHandle">@drawable/transparent_cursor</item>
+        <item name="android:textSelectHandleLeft">@drawable/transparent_cursor</item>
+        <item name="android:textSelectHandleRight">@drawable/transparent_cursor</item>
+        <item name="android:textSelectHandleWindowStyle">@android:style/Widget.TextView.TextSelectHandle</item>
+        
+        <!-- Opcional: Hacer transparente el color de selección si también molesta -->
+        <!-- <item name="android:textColorHighlight">#00000000</item> -->
+        
+        <!-- Importante: Asegurar que el cursor también sea controlable si es necesario -->
+        <!-- <item name="android:textCursorDrawable">@null</item> -->
+    </style>
+</resources>
