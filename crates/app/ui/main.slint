@@ -25,6 +25,7 @@ export component AppWindow inherits Window {
     
     // State for Toast Notification
     in-out property <bool> show_copy_toast: false;
+    in-out property <int> toast_request_id: 0;
     callback request-copy();
     callback request-share();
     Rectangle {

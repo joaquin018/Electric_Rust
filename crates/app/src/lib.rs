@@ -30,16 +30,23 @@ fn main() -> Result<(), slint::PlatformError> {
             #[cfg(not(target_os = "android"))]
             println!("COPY: {}", data);
             
+            // Increment Toast Request ID to debounce previous timers
+            let next_id = ui.get_toast_request_id() + 1;
+            ui.set_toast_request_id(next_id);
+            
             // Show toast
             ui.set_show_copy_toast(true);
             
-            // Auto-hide after 2.5s using thread (simpler than keeping Timer alive)
+            // Auto-hide after 2.5s using thread (with debounce check)
             let ui_weak_thread = ui_weak_copy.clone();
             std::thread::spawn(move || {
                 std::thread::sleep(Duration::from_millis(2500));
                 slint::invoke_from_event_loop(move || {
                     if let Some(ui) = ui_weak_thread.upgrade() {
-                        ui.set_show_copy_toast(false);
+                        // Only hide if the request ID hasn't changed (i.e., no newer toasts)
+                        if ui.get_toast_request_id() == next_id {
+                            ui.set_show_copy_toast(false);
+                        }
                     }
                 }).unwrap();
             });
