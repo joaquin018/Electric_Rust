@@ -44,17 +44,20 @@ export component AppWindow inherits Window {
             }
         }
 
-        // Sidebar Navigation Drawer (Z-Index implicit by order, above BaseScreen)
+        // Sidebar Navigation Drawer
         SideBar {
             open: root.show_sidebar;
             close-requested => {
                 root.show_sidebar = false;
             }
+            // NEW: Handle swipe trigger
+            open-requested => {
+                root.show_sidebar = true;
+            }
             navigate-to(idx) => {
-                // Handle navigation (Currently only 0=Base supported)
+                // Navigate logic
                 if (idx == 0) {
                     root.show_sidebar = false;
-                    // Already on Base, just close
                 }
             }
         }
@@ -66,7 +69,7 @@ export component AppWindow inherits Window {
                 duration: 250ms;
                 easing: ease-out;
             }
-            z: 200; // Explicitly above Sidebar
+            z: 200;
             message: "Copiado al portapapeles";
         }
     }

@@ -1,9 +1,24 @@
 import { Button, VerticalBox } from "std-widgets.slint";
 
 export component SideBar inherits Rectangle {
-    in property <bool> open: false;
+    in-out property <bool> open: false;
     callback close-requested();
+    callback open-requested(); // NEW
     callback navigate-to(int); // 0: Base
+
+    // Edge Swipe Detector (Trigger)
+    TouchArea {
+        width: 20px;
+        height: 100%;
+        x: 0;
+        visible: !root.open; // Active only when closed
+        moved => {
+            // If dragged more than 50px to the right
+            if (self.pressed && self.mouse-x > 50px) {
+                root.open-requested();
+            }
+        }
+    }
 
     // Overlay (dim background)
     Rectangle {
