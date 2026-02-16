@@ -15,17 +15,26 @@ export component AppWindow inherits Window {
     // 7-12: Vigas
     // 13-15: Clavos
     // 16: Cemento
-    property <[string]> inv_vals: ["", "", "", "", "", "", "", // 7 items
+    in-out property <[string]> inv_vals: ["", "", "", "", "", "", "", // 7 items
         "", "", "", "", "", "",     // 6 items
         "", "", "",                 // 3 items
         ""                          // 1 item
     ];
     property <int> active_idx: -1;
+    callback request-copy();
+    callback request-share();
     Rectangle {
         width: 100%;
         height: 100%;
         VerticalLayout {
-            TopBar { }
+            TopBar {
+                copy-pressed => {
+                    root.request-copy();
+                }
+                share-pressed => {
+                    root.request-share();
+                }
+            }
 
             Flickable {
                 viewport-height: content.preferred-height;
