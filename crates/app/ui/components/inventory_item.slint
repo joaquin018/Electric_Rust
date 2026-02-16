@@ -3,57 +3,77 @@ export component InventoryItem inherits Rectangle {
     in property <string> value;
     in property <bool> has-focus: false;
     callback request-focus();
-    height: 85px;
-    background: #1e1e1e;
-    border-radius: 18px;
+
+    // MaterialCard styling (Flutter replica)
+    height: 80px;
+    background: #1E1E1E;
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.05);
+    
+    // Shadow
+    drop-shadow-color: rgba(0, 0, 0, 0.2);
+    drop-shadow-blur: 10px;
+    drop-shadow-offset-y: 4px;
     HorizontalLayout {
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 16px;
+        padding-right: 16px;
         alignment: space-between;
+        
+        // Material Label
         Text {
             text: label;
             color: #ffffff;
-            vertical-alignment: center;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 500;
+            vertical-alignment: center;
         }
 
+        // Input Field Container
         Rectangle {
-            width: 100px;
-            height: 45px;
-            background: #121212;
-            border-radius: 12px;
-            y: (parent.height - self.height) / 2;
-            border-width: has-focus ? 1.5px : 0px;
-            border-color: #ff9d00;
+            width: 100px; // Fixed width matching Flutter's 100
+            // Height somewhat flexible, but let's use standard input height
+            height: 44px; // Approximately
+            
+            // Flutter input styling
+            background: rgba(0, 0, 0, 0.3); // black.withOpacity(0.3)
+            border-radius: 10px;
+            
+            // Border logic: Active orange vs Inactive subtle white
+            border-width: 1px;
+            border-color: has-focus ? #FFAB40 : rgba(255, 255, 255, 0.05);
             TouchArea {
                 clicked => {
                     root.request-focus();
                 }
             }
 
-            // Wrapper for alignment
+            // Content alignment
             HorizontalLayout {
-                padding-right: 10px;
+                padding-right: 12px; // contentPadding horizontal: 12
                 alignment: end;
                 spacing: 2px;
                 
-                // Value text
+                // Value / Hint Text
                 Text {
                     text: value == "" ? "0" : value;
-                    color: value == "" ? #3b3b3b : #ff9d00;
-                    font-size: 20px;
-                    font-weight: 800;
+                    // Hint color: white.withOpacity(0.1) vs Value: orangeAccent
+                    color: value == "" ? rgba(255, 255, 255, 0.1) : #FFAB40;
+                    // Hint size: 14 vs Value: implicitly bigger/bold
+                    font-size: value == "" ? 14px : 18px;
+                    font-weight: value == "" ? 400 : 700;
                     vertical-alignment: center;
                     horizontal-alignment: right;
                 }
                 
-                // Fake cursor (solid for now to avoid animation issues)
+                // Cursor (Blinking)
                 if (has-focus): Rectangle {
                     width: 2px;
-                    height: 24px;
-                    background: #ff9d00;
+                    height: 20px;
+                    background: #FFAB40;
+                    border-radius: 1px;
                     y: (parent.height - self.height) / 2;
+                    opacity: Math.sin(animation-tick() / 500ms * 360deg) > 0 ? 1 : 0;
                 }
             }
         }
