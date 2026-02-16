@@ -1,0 +1,48 @@
+export component TopBar inherits Rectangle {
+    height: 90px;
+    background: #000000;
+    VerticalLayout {
+        padding-top: 30px;
+        HorizontalLayout {
+            padding-left: 15px;
+            padding-right: 15px;
+            alignment: space-between;
+            Text {
+                text: "←";
+                font-size: 24px;
+                color: #ffffff;
+                vertical-alignment: center;
+                width: 40px;
+            }
+
+            Text {
+                text: "CONSTRUCT";
+                font-size: 22px;
+                font-weight: 900;
+                color: #ffffff;
+                vertical-alignment: center;
+                horizontal-alignment: center;
+                letter-spacing: 2px;
+            }
+
+            HorizontalLayout {
+                spacing: 20px;
+                width: 80px;
+                alignment: end;
+                Text {
+                    text: "⛶";
+                    font-size: 22px;
+                    color: #ffffff;
+                    vertical-alignment: center;
+                }
+
+                Text {
+                    text: "≺";
+                    font-size: 22px;
+                    color: #ffffff;
+                    vertical-alignment: center;
+                }
+            }
+        }
+    }
+}

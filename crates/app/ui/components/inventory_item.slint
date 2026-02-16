@@ -1,0 +1,55 @@
+export component InventoryItem inherits Rectangle {
+    in property <string> label;
+    in-out property <string> value;
+    height: 85px;
+    background: #1e1e1e;
+    border-radius: 18px;
+    HorizontalLayout {
+        padding-left: 20px;
+        padding-right: 20px;
+        alignment: space-between;
+        Text {
+            text: label;
+            color: #ffffff;
+            vertical-alignment: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        Rectangle {
+            width: 100px;
+            height: 45px;
+            background: #121212;
+            border-radius: 12px;
+            y: (85px - 45px) / 2;
+            border-width: input.has-focus ? 1.5px : 0px;
+            border-color: #ff9d00;
+            if (value == "" && !input.has-focus): Text {
+                text: "0";
+                color: #3b3b3b;
+                font-size: 20px;
+                font-weight: 800;
+                vertical-alignment: center;
+                horizontal-alignment: center;
+            }
+            input := TextInput {
+                width: 100%;
+                height: 100%;
+                text <=> value;
+                font-size: 20px;
+                color: #ff9d00;
+                selection-background-color: #ff9d0033;
+                vertical-alignment: center;
+                horizontal-alignment: center;
+                single-line: true;
+                input-type: number;
+            }
+
+            TouchArea {
+                clicked => {
+                    input.focus();
+                }
+            }
+        }
+    }
+}

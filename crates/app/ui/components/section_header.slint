@@ -1,0 +1,21 @@
+export component SectionHeader inherits HorizontalLayout {
+    in property <string> title;
+    spacing: 12px;
+    padding-top: 25px;
+    padding-bottom: 15px;
+    Rectangle {
+        width: 4px;
+        height: 24px;
+        background: #ff9d00;
+        border-radius: 2px;
+    }
+
+    Text {
+        text: title;
+        font-size: 20px;
+        font-weight: 800;
+        color: #ff9d00;
+        vertical-alignment: center;
+        letter-spacing: 1px;
+    }
+}

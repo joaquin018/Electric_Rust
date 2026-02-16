@@ -1,3 +1,8 @@
+pub mod inventory;
+
+pub use inventory::Inventory;
+pub use inventory::Material;
+
 pub fn get_greeting() -> String {
-    "Hello World from Logic!".to_string()
+    "Construct Logic Ready".to_string()
 }
