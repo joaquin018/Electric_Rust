@@ -63,56 +63,54 @@ export component SectionHeader inherits HorizontalLayout {
 }
 
 export component TopBar inherits Rectangle {
-    height: 60px;
+    height: 90px; // Aumentado para incluir safe area
     background: #000000;
-    HorizontalLayout {
-        padding-left: 15px;
-        padding-right: 15px;
-        spacing: 10px;
+    VerticalLayout {
+        padding-top: 30px; // Simulación de Safe Area (Status Bar)
         
-        // Left Icon (Back)
-        Text {
-            text: "←";
-            font-size: 24px;
-            color: #ffffff;
-            vertical-alignment: center;
-            width: 40px;
-        }
-        
-        // Spacer to push title to center
-        Rectangle { }
-
-        // Center Title
-        Text {
-            text: "CONSTRUCT";
-            font-size: 22px;
-            font-weight: 900;
-            color: #ffffff;
-            vertical-alignment: center;
-            horizontal-alignment: center;
-            letter-spacing: 2px;
-        }
-
-        // Spacer
-        Rectangle { }
-
-        // Right Icons
         HorizontalLayout {
-            spacing: 20px;
-            width: 80px;
-            alignment: end;
+            padding-left: 15px;
+            padding-right: 15px;
+            alignment: space-between;
+            
+            // Left Icon (Back)
             Text {
-                text: "⛶";
-                font-size: 22px;
+                text: "←";
+                font-size: 24px;
                 color: #ffffff;
                 vertical-alignment: center;
+                width: 40px;
+            }
+            
+            // Center Title
+            Text {
+                text: "CONSTRUCT";
+                font-size: 22px;
+                font-weight: 900;
+                color: #ffffff;
+                vertical-alignment: center;
+                horizontal-alignment: center;
+                letter-spacing: 2px;
             }
 
-            Text {
-                text: "≺";
-                font-size: 22px;
-                color: #ffffff;
-                vertical-alignment: center;
+            // Right Icons
+            HorizontalLayout {
+                spacing: 20px;
+                width: 80px;
+                alignment: end;
+                Text {
+                    text: "⛶";
+                    font-size: 22px;
+                    color: #ffffff;
+                    vertical-alignment: center;
+                }
+
+                Text {
+                    text: "≺";
+                    font-size: 22px;
+                    color: #ffffff;
+                    vertical-alignment: center;
+                }
             }
         }
     }
@@ -126,13 +124,12 @@ export component AppWindow inherits Window {
     VerticalLayout {
         TopBar { }
 
-        // Custom mobile-style scrolling area without visible scrollbar
         Flickable {
             viewport-height: content.preferred-height;
             content := VerticalBox {
                 padding-left: 16px;
                 padding-right: 16px;
-                padding-bottom: 30px;
+                padding-bottom: 40px;
                 spacing: 12px;
                 alignment: start;
                 SectionHeader {
