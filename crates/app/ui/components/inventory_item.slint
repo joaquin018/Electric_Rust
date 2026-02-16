@@ -69,14 +69,15 @@ export component InventoryItem inherits Rectangle {
                         horizontal-alignment: right;
                     }
                     
-                    // Cursor (Blinking)
-                    if (has-focus): Rectangle {
+                    // Cursor (Always reserve space to prevent layout shift)
+                    Rectangle {
                         width: 2px;
                         height: 20px;
                         background: #FFAB40;
                         border-radius: 1px;
                         y: (parent.height - self.height) / 2;
-                        opacity: Math.sin(animation-tick() / 1s * 360deg) > 0 ? 1 : 0;
+                        // Only visible when focused and blinking
+                        opacity: !root.has-focus ? 0 : (Math.sin(animation-tick() / 1s * 360deg) > 0 ? 1 : 0);
                     }
                 }
             }
