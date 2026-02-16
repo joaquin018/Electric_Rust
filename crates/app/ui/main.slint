@@ -2,7 +2,6 @@ import { Button, VerticalBox, ScrollView, LineEdit } from "std-widgets.slint";
 
 export component InventoryItem inherits Rectangle {
     in property <string> label;
-    in property <string> placeholder;
     in-out property <string> value;
     height: 85px;
     background: #1e1e1e;
@@ -25,12 +24,22 @@ export component InventoryItem inherits Rectangle {
             background: #121212;
             border-radius: 12px;
             y: (85px - 45px) / 2;
+            
+            // Placeholder "0" logic
+            if (value == ""): Text {
+                text: "0";
+                color: #3b3b3b; // Robado de la imagen (gris oscuro sutil)
+                font-size: 20px;
+                font-weight: 800;
+                vertical-alignment: center;
+                horizontal-alignment: center;
+            }
             TextInput {
                 width: 100%;
                 height: 100%;
                 text <=> value;
                 font-size: 20px;
-                color: #ff9d00;
+                color: #ff9d00; // Naranja vibrante para el texto ingresado
                 vertical-alignment: center;
                 horizontal-alignment: center;
                 single-line: true;
@@ -63,17 +72,14 @@ export component SectionHeader inherits HorizontalLayout {
 }
 
 export component TopBar inherits Rectangle {
-    height: 90px; // Aumentado para incluir safe area
+    height: 90px;
     background: #000000;
     VerticalLayout {
-        padding-top: 30px; // Simulación de Safe Area (Status Bar)
-        
+        padding-top: 30px;
         HorizontalLayout {
             padding-left: 15px;
             padding-right: 15px;
             alignment: space-between;
-            
-            // Left Icon (Back)
             Text {
                 text: "←";
                 font-size: 24px;
@@ -81,8 +87,7 @@ export component TopBar inherits Rectangle {
                 vertical-alignment: center;
                 width: 40px;
             }
-            
-            // Center Title
+
             Text {
                 text: "CONSTRUCT";
                 font-size: 22px;
@@ -93,7 +98,6 @@ export component TopBar inherits Rectangle {
                 letter-spacing: 2px;
             }
 
-            // Right Icons
             HorizontalLayout {
                 spacing: 20px;
                 width: 80px;
@@ -138,37 +142,37 @@ export component AppWindow inherits Window {
 
                 InventoryItem {
                     label: "30 cm";
-                    value: "1";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "40 cm";
-                    value: "1";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "50 cm";
-                    value: "1";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "60 cm";
-                    value: "1";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "70 cm";
-                    value: "1";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "80 cm";
-                    value: "1";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "90 cm";
-                    value: "1";
+                    value: "";
                 }
 
                 SectionHeader {
@@ -177,32 +181,32 @@ export component AppWindow inherits Window {
 
                 InventoryItem {
                     label: "2x3\"";
-                    value: "0";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "2x4\"";
-                    value: "0";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "2x5\"";
-                    value: "0";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "2x6\"";
-                    value: "0";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "2x8\"";
-                    value: "0";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "2x10\"";
-                    value: "0";
+                    value: "";
                 }
 
                 SectionHeader {
@@ -211,17 +215,17 @@ export component AppWindow inherits Window {
 
                 InventoryItem {
                     label: "3\"";
-                    value: "0";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "3 1/2\"";
-                    value: "0";
+                    value: "";
                 }
 
                 InventoryItem {
                     label: "4\"";
-                    value: "0";
+                    value: "";
                 }
 
                 SectionHeader {
@@ -230,7 +234,7 @@ export component AppWindow inherits Window {
 
                 InventoryItem {
                     label: "Bolsas";
-                    value: "0";
+                    value: "";
                 }
             }
         }
