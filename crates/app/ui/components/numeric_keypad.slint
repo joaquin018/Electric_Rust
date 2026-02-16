@@ -46,15 +46,6 @@ export component NumericKeypad inherits Rectangle {
     // Slint TouchArea blocks if it's there. 
     // We'll add a TouchArea only for the "backdrop" when open to close it?
     
-    // Backdrop to close
-    if (root.open): TouchArea {
-        width: 100%;
-        height: 100%;
-        clicked => {
-            root.close-pressed();
-        }
-    }
-
     // The Sliding Panel
     Rectangle {
         background: #1e1e1e;
