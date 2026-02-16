@@ -9,7 +9,8 @@ export component BaseScreen inherits Rectangle {
     in-out property <int> active_idx;
     callback request-copy();
     callback request-share();
-    callback menu-pressed(); // NEW: Trigger Sidebar
+    callback menu-pressed();
+    callback request-activate-item(int); // NEW: Delegate input activation to Rust
 
     VerticalLayout {
         TopBar {
@@ -41,7 +42,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[0];
                     has-focus: root.active_idx == 0;
                     request-focus => {
-                        root.active_idx = 0;
+                        root.request-activate-item(0);
                     }
                 }
 
@@ -50,7 +51,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[1];
                     has-focus: root.active_idx == 1;
                     request-focus => {
-                        root.active_idx = 1;
+                        root.request-activate-item(1);
                     }
                 }
 
@@ -59,7 +60,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[2];
                     has-focus: root.active_idx == 2;
                     request-focus => {
-                        root.active_idx = 2;
+                        root.request-activate-item(2);
                     }
                 }
 
@@ -68,7 +69,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[3];
                     has-focus: root.active_idx == 3;
                     request-focus => {
-                        root.active_idx = 3;
+                        root.request-activate-item(3);
                     }
                 }
 
@@ -77,7 +78,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[4];
                     has-focus: root.active_idx == 4;
                     request-focus => {
-                        root.active_idx = 4;
+                        root.request-activate-item(4);
                     }
                 }
 
@@ -86,7 +87,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[5];
                     has-focus: root.active_idx == 5;
                     request-focus => {
-                        root.active_idx = 5;
+                        root.request-activate-item(5);
                     }
                 }
 
@@ -95,13 +96,14 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[6];
                     has-focus: root.active_idx == 6;
                     request-focus => {
-                        root.active_idx = 6;
+                        root.request-activate-item(6);
                     }
                 }
-                // Placeholder for 1mt hidden item logic if needed
-                 InventoryItem {
+                
+                // Placeholder
+                InventoryItem {
                     label: "1 mt";
-                    value: root.inv_vals[16];
+                    value: root.inv_vals[16]; // reusing last index just for placeholder logic
                     has-focus: false;
                     width: 0px;
                     height: 0px;
@@ -117,7 +119,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[7];
                     has-focus: root.active_idx == 7;
                     request-focus => {
-                        root.active_idx = 7;
+                        root.request-activate-item(7);
                     }
                 }
 
@@ -126,7 +128,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[8];
                     has-focus: root.active_idx == 8;
                     request-focus => {
-                        root.active_idx = 8;
+                        root.request-activate-item(8);
                     }
                 }
 
@@ -135,7 +137,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[9];
                     has-focus: root.active_idx == 9;
                     request-focus => {
-                        root.active_idx = 9;
+                        root.request-activate-item(9);
                     }
                 }
 
@@ -144,7 +146,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[10];
                     has-focus: root.active_idx == 10;
                     request-focus => {
-                        root.active_idx = 10;
+                        root.request-activate-item(10);
                     }
                 }
 
@@ -153,7 +155,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[11];
                     has-focus: root.active_idx == 11;
                     request-focus => {
-                        root.active_idx = 11;
+                        root.request-activate-item(11);
                     }
                 }
 
@@ -162,7 +164,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[12];
                     has-focus: root.active_idx == 12;
                     request-focus => {
-                        root.active_idx = 12;
+                        root.request-activate-item(12);
                     }
                 }
 
@@ -175,7 +177,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[13];
                     has-focus: root.active_idx == 13;
                     request-focus => {
-                        root.active_idx = 13;
+                        root.request-activate-item(13);
                     }
                 }
 
@@ -184,7 +186,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[14];
                     has-focus: root.active_idx == 14;
                     request-focus => {
-                        root.active_idx = 14;
+                        root.request-activate-item(14);
                     }
                 }
 
@@ -193,7 +195,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[15];
                     has-focus: root.active_idx == 15;
                     request-focus => {
-                        root.active_idx = 15;
+                        root.request-activate-item(15);
                     }
                 }
 
@@ -206,7 +208,7 @@ export component BaseScreen inherits Rectangle {
                     value: root.inv_vals[16];
                     has-focus: root.active_idx == 16;
                     request-focus => {
-                        root.active_idx = 16;
+                        root.request-activate-item(16);
                     }
                 }
             }
@@ -225,7 +227,7 @@ export component BaseScreen inherits Rectangle {
         }
         backspace-pressed() => {
             if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
-                root.inv_vals[root.active_idx] = "";
+                root.inv_vals[root.active_idx] = ""; // Simplified backspace logic for now
             }
         }
         close-pressed() => {

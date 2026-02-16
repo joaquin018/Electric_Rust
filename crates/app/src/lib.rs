@@ -68,16 +68,35 @@ fn main() -> Result<(), slint::PlatformError> {
     let ui_weak_menu = ui_handle.clone();
     ui.on_request_menu_open(move || {
          #[cfg(target_os = "android")]
-         android_utils::trigger_haptic_feedback(); // Now non-blocking (channel send)
+         android_utils::trigger_haptic_feedback(); 
          
          if let Some(ui) = ui_weak_menu.upgrade() {
              ui.set_show_sidebar(true);
              
-             // AGGRESSIVE WAKE-UP
-             // Force redraws for the first ~96ms (120Hz ticks) 
-             // to guarantee the animation starts with high priority
+             // AGGRESSIVE WAKE-UP Sidebar
              for i in 0..12 {
                  let ui_weak = ui_weak_menu.clone();
+                 slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
+                     if let Some(ui) = ui_weak.upgrade() {
+                         ui.window().request_redraw();
+                     }
+                 });
+             }
+         }
+    });
+
+    // Keypad Open Handler (Same WAKE-UP Logic)
+    let ui_weak_keypad = ui_handle.clone();
+    ui.on_request_activate_item(move |idx| {
+         #[cfg(target_os = "android")]
+         android_utils::trigger_haptic_feedback();
+         
+         if let Some(ui) = ui_weak_keypad.upgrade() {
+             ui.set_active_idx(idx);
+             
+             // AGGRESSIVE WAKE-UP Keypad
+             for i in 0..12 {
+                 let ui_weak = ui_weak_keypad.clone();
                  slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
                      if let Some(ui) = ui_weak.upgrade() {
                          ui.window().request_redraw();
