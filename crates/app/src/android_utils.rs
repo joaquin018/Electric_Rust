@@ -118,6 +118,63 @@ pub fn share_text(text: &str) {
 }
 
 // Dummy implementations for non-Android targets to avoid compile errors
+#[cfg(target_os = "android")]
+pub fn trigger_haptic_feedback() {
+    let ctx = ndk_context::android_context();
+    unsafe {
+        let vm = jni::JavaVM::from_raw(ctx.vm().cast()).unwrap();
+        let mut env = match vm.attach_current_thread() {
+            Ok(env) => env,
+            Err(_) => return,
+        };
+        let context = JObject::from_raw(ctx.context().cast());
+
+        let service_name = match env.new_string("vibrator") {
+            Ok(s) => s,
+            Err(_) => return,
+        };
+        
+        let vibrator = match env.call_method(
+            &context,
+            "getSystemService",
+            "(Ljava/lang/String;)Ljava/lang/Object;",
+            &[JValue::Object(&service_name)],
+        ) {
+            Ok(v) => match v.l() {
+                Ok(obj) => obj,
+                Err(_) => return,
+            },
+            Err(_) => return,
+        };
+
+        if let Ok(has_vibrator_val) = env.call_method(&vibrator, "hasVibrator", "()Z", &[]) {
+            if has_vibrator_val.z().unwrap_or(false) {
+                 if let Ok(effect_class) = env.find_class("android/os/VibrationEffect") {
+                     if let Ok(effect) = env.call_static_method(
+                         effect_class,
+                         "createOneShot",
+                         "(JI)Landroid/os/VibrationEffect;",
+                         &[JValue::Long(5), JValue::Int(-1)] // Reduced to 5ms for crisper feel
+                     ) {
+                         if let Ok(effect_obj) = effect.l() {
+                             let _ = env.call_method(
+                                 &vibrator,
+                                 "vibrate",
+                                 "(Landroid/os/VibrationEffect;)V",
+                                 &[JValue::Object(&effect_obj)]
+                             );
+                         }
+                     }
+                 } else {
+                    // Fallback
+                    let _ = env.call_method(&vibrator, "vibrate", "(J)V", &[JValue::Long(5)]);
+                 }
+            }
+        }
+    }
+}
+
+// Dummy implementations for non-Android targets to avoid compile errors
 #[cfg(not(target_os = "android"))]
 pub fn copy_to_clipboard(_text: &str) {
     println!("Mock Copy: {}", _text);
@@ -126,4 +183,9 @@ pub fn copy_to_clipboard(_text: &str) {
 #[cfg(not(target_os = "android"))]
 pub fn share_text(_text: &str) {
     println!("Mock Share: {}", _text);
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn trigger_haptic_feedback() {
+    println!("Mock Vibrate");
 }

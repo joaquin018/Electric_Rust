@@ -13,7 +13,7 @@ fn android_main(app: slint::android::AndroidApp) {
 }
 
 fn main() -> Result<(), slint::PlatformError> {
-    // Initialize Tokio runtime for async tasks if needed (though UI runs on main thread)
+    // Initialize Tokio runtime for async tasks if needed
     let rt = tokio::runtime::Runtime::new().unwrap();
     let _guard = rt.enter();
 
@@ -30,20 +30,19 @@ fn main() -> Result<(), slint::PlatformError> {
             #[cfg(not(target_os = "android"))]
             println!("COPY: {}", data);
             
-            // Increment Toast Request ID to debounce previous timers
+            // Increment Toast Request ID
             let next_id = ui.get_toast_request_id() + 1;
             ui.set_toast_request_id(next_id);
             
             // Show toast
             ui.set_show_copy_toast(true);
             
-            // Auto-hide after 2.5s using thread (with debounce check)
+            // Auto-hide toast
             let ui_weak_thread = ui_weak_copy.clone();
             std::thread::spawn(move || {
                 std::thread::sleep(Duration::from_millis(2500));
                 slint::invoke_from_event_loop(move || {
                     if let Some(ui) = ui_weak_thread.upgrade() {
-                        // Only hide if the request ID hasn't changed (i.e., no newer toasts)
                         if ui.get_toast_request_id() == next_id {
                             ui.set_show_copy_toast(false);
                         }
@@ -63,6 +62,27 @@ fn main() -> Result<(), slint::PlatformError> {
             #[cfg(not(target_os = "android"))]
             println!("SHARE: {}", data);
         }
+    });
+
+    // Menu Open Handler (Haptic Wake-Up Hack)
+    let ui_weak_menu = ui_handle.clone();
+    ui.on_request_menu_open(move || {
+         #[cfg(target_os = "android")]
+         android_utils::trigger_haptic_feedback();
+         
+         if let Some(ui) = ui_weak_menu.upgrade() {
+             ui.set_show_sidebar(true);
+             
+             // Stabilized: 4 aggressive frames are enough to kickstart the compositor
+             for i in 0..4 { // 4 frames cover ~32ms of critical start-up
+                 let ui_weak = ui_weak_menu.clone();
+                 slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
+                     if let Some(ui) = ui_weak.upgrade() {
+                         ui.window().request_redraw();
+                     }
+                 });
+             }
+         }
     });
 
     ui.run()
@@ -112,14 +132,10 @@ fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
     for section in sections.iter() {
         let mut section_lines = Vec::new();
 
-        // Collect valid items in this section
         for (i, label) in section.range.clone().zip(section.labels.iter()) {
             if let Some(val) = model.row_data(i) {
                 let val_str = val.as_str();
-                // Check if value is numeric and > 0
-                // We treat anything not empty and not "0" as valid.
                 if !val_str.is_empty() && val_str != "0" {
-                    // Special formatting for Cemento
                     if section.header == "Cemento" {
                          section_lines.push(format!("- {} bolsas", val_str));
                     } else {
@@ -129,7 +145,6 @@ fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
             }
         }
 
-        // If we found items, append header and lines
         if !section_lines.is_empty() {
             if !is_first_section {
                 result.push_str("\n");

@@ -54,6 +54,9 @@ export component NumericKeypad inherits Rectangle {
         height: 350px; // Slightly taller
         width: 100%;
         
+        // Performance Optimization
+        cache-rendering-hint: true;
+        
         // Position relative to the root container (screen)
         // When open: align to bottom (parent.height - self.height)
         // When closed: just below bottom (parent.height)
