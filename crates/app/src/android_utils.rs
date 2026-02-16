@@ -1,6 +1,6 @@
-use std::sync::{mpsc, RwLock};
+#[cfg(target_os = "android")]
 use std::thread;
-
+#[cfg(target_os = "android")]
 static HAPTIC_SENDER: RwLock<Option<mpsc::Sender<()>>> = RwLock::new(None);
 
 #[cfg(target_os = "android")]
@@ -136,12 +136,19 @@ pub fn share_text(text: &str) {
     }
 }
 
-// Dummies for non-Android targets
+// Fallbacks for non-Android targets
 #[cfg(not(target_os = "android"))]
 pub fn init_haptics() {}
+
 #[cfg(not(target_os = "android"))]
 pub fn trigger_haptic_feedback() {}
+
 #[cfg(not(target_os = "android"))]
-pub fn copy_to_clipboard(_: &str) {}
+pub fn copy_to_clipboard(data: &str) {
+    println!("COPY: {}", data);
+}
+
 #[cfg(not(target_os = "android"))]
-pub fn share_text(_: &str) {}
+pub fn share_text(data: &str) {
+    println!("SHARE: {}", data);
+}

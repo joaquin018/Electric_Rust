@@ -9,16 +9,15 @@ use std::time::Duration;
 #[no_mangle]
 fn android_main(app: slint::android::AndroidApp) {
     slint::android::init(app).unwrap();
-    main().unwrap();
+    run().unwrap();
 }
 
-fn main() -> Result<(), slint::PlatformError> {
+pub fn run() -> Result<(), slint::PlatformError> {
     // Initialize Tokio runtime for async tasks if needed
     let rt = tokio::runtime::Runtime::new().unwrap();
     let _guard = rt.enter();
 
-    // Init Haptics Persistent Thread (Android)
-    #[cfg(target_os = "android")]
+    // Init Haptics (Platform Agnostic)
     android_utils::init_haptics();
 
     let ui = AppWindow::new()?;
@@ -29,10 +28,7 @@ fn main() -> Result<(), slint::PlatformError> {
     ui.on_request_copy(move || {
         if let Some(ui) = ui_weak_copy.upgrade() {
             let data = format_inventory(ui.get_inv_vals());
-            #[cfg(target_os = "android")]
             android_utils::copy_to_clipboard(&data);
-            #[cfg(not(target_os = "android"))]
-            println!("COPY: {}", data);
             
             let next_id = ui.get_toast_request_id() + 1;
             ui.set_toast_request_id(next_id);
@@ -57,17 +53,13 @@ fn main() -> Result<(), slint::PlatformError> {
     ui.on_request_share(move || {
         if let Some(ui) = ui_weak_share.upgrade() {
             let data = format_inventory(ui.get_inv_vals());
-            #[cfg(target_os = "android")]
             android_utils::share_text(&data);
-            #[cfg(not(target_os = "android"))]
-            println!("SHARE: {}", data);
         }
     });
 
     // Menu Open Handler (Non-Blocking Haptic + Aggressive Redraw)
     let ui_weak_menu = ui_handle.clone();
     ui.on_request_menu_open(move || {
-         #[cfg(target_os = "android")]
          android_utils::trigger_haptic_feedback(); 
          
          if let Some(ui) = ui_weak_menu.upgrade() {
@@ -88,7 +80,6 @@ fn main() -> Result<(), slint::PlatformError> {
     // Keypad Open Handler (Same WAKE-UP Logic)
     let ui_weak_keypad = ui_handle.clone();
     ui.on_request_activate_item(move |idx| {
-         #[cfg(target_os = "android")]
          android_utils::trigger_haptic_feedback();
          
          if let Some(ui) = ui_weak_keypad.upgrade() {

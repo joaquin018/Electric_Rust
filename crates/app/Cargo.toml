@@ -1,6 +1,6 @@
 [package]
 name = "construct"
-version = "1.8.7"
+version = "1.8.9"
 edition = "2021"
 
 [package.metadata.android]
@@ -10,7 +10,6 @@ build_targets = ["aarch64-linux-android"]
 apk_name = "Construct"
 res = "res"
 theme = "@style/ConstructTheme"
-uses_permissions = ["android.permission.VIBRATE"]
 
 [package.metadata.android.signing.release]
 path = "C:\\Users\\Joaquin\\.android\\debug.keystore"
@@ -20,7 +19,7 @@ key_password = "android"
 
 [dependencies]
 slint = { version = "1.15.1", features = ["renderer-skia-opengl", "backend-android-activity-06"] }
-logic = { path = "../logic" }
+
 tokio = { version = "1", features = ["full"] }
 jni = "0.21.1"
 ndk-context = "0.1.1"
