@@ -1,5 +1,8 @@
 #[cfg(target_os = "android")]
 use std::thread;
+
+#[cfg(target_os = "android")]
+use std::sync::{mpsc, RwLock};
 #[cfg(target_os = "android")]
 static HAPTIC_SENDER: RwLock<Option<mpsc::Sender<()>>> = RwLock::new(None);
 
