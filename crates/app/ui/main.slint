@@ -25,25 +25,37 @@ export component InventoryItem inherits Rectangle {
             border-radius: 12px;
             y: (85px - 45px) / 2;
             
+            // Border changes color and width when focused
+            border-width: input.has-focus ? 1.5px : 0px;
+            border-color: #ff9d00;
+            
             // Placeholder "0" logic
-            if (value == ""): Text {
+            if (value == "" && !input.has-focus): Text {
                 text: "0";
-                color: #3b3b3b; // Robado de la imagen (gris oscuro sutil)
+                color: #3b3b3b;
                 font-size: 20px;
                 font-weight: 800;
                 vertical-alignment: center;
                 horizontal-alignment: center;
             }
-            TextInput {
+            input := TextInput {
                 width: 100%;
                 height: 100%;
                 text <=> value;
                 font-size: 20px;
-                color: #ff9d00; // Naranja vibrante para el texto ingresado
+                color: #ff9d00;
+                selection-background-color: #ff9d0033; // Translucent orange selection
                 vertical-alignment: center;
                 horizontal-alignment: center;
                 single-line: true;
                 input-type: number;
+            }
+
+            // Area to easily focus the input
+            TouchArea {
+                clicked => {
+                    input.focus();
+                }
             }
         }
     }
