@@ -1,17 +1,20 @@
 import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
 import { InventoryItem } from "../components/inventory_item.slint";
+import { LumberItem } from "../components/lumber_item.slint";
 import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
 import { NumericKeypad } from "../components/numeric_keypad.slint";
 
 export component BaseScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
+    in-out property <[int]> inv_lengths; // indices parallel to inv_vals
     in-out property <int> active_idx;
     callback request-copy();
     callback request-share();
     callback menu-pressed();
     callback request-activate-item(int);
-    callback request-append-digit(string); // Logic moved to Rust for length limit
+    callback request-append-digit(string);
+    callback request-set-length(int, int); // idx, length_idx
 
     VerticalLayout {
         TopBar {
@@ -115,57 +118,81 @@ export component BaseScreen inherits Rectangle {
                     title: "VIGAS Y MADERA";
                 }
 
-                InventoryItem {
+                LumberItem {
                     label: "2x3\"";
                     value: root.inv_vals[7];
                     has-focus: root.active_idx == 7;
+                    selected-length: root.inv_lengths[7];
                     request-focus => {
                         root.request-activate-item(7);
                     }
+                    set-length(l) => {
+                        root.request-set-length(7, l);
+                    }
                 }
 
-                InventoryItem {
+                LumberItem {
                     label: "2x4\"";
                     value: root.inv_vals[8];
                     has-focus: root.active_idx == 8;
+                    selected-length: root.inv_lengths[8];
                     request-focus => {
                         root.request-activate-item(8);
                     }
+                    set-length(l) => {
+                        root.request-set-length(8, l);
+                    }
                 }
 
-                InventoryItem {
+                LumberItem {
                     label: "2x5\"";
                     value: root.inv_vals[9];
                     has-focus: root.active_idx == 9;
+                    selected-length: root.inv_lengths[9];
                     request-focus => {
                         root.request-activate-item(9);
                     }
+                    set-length(l) => {
+                        root.request-set-length(9, l);
+                    }
                 }
 
-                InventoryItem {
+                LumberItem {
                     label: "2x6\"";
                     value: root.inv_vals[10];
                     has-focus: root.active_idx == 10;
+                    selected-length: root.inv_lengths[10];
                     request-focus => {
                         root.request-activate-item(10);
                     }
-                }
-
-                InventoryItem {
-                    label: "2x8\"";
-                    value: root.inv_vals[11];
-                    has-focus: root.active_idx == 11;
-                    request-focus => {
-                        root.request-activate-item(11);
+                    set-length(l) => {
+                        root.request-set-length(10, l);
                     }
                 }
 
-                InventoryItem {
+                LumberItem {
+                    label: "2x8\"";
+                    value: root.inv_vals[11];
+                    has-focus: root.active_idx == 11;
+                    selected-length: root.inv_lengths[11];
+                    request-focus => {
+                        root.request-activate-item(11);
+                    }
+                    set-length(l) => {
+                        root.request-set-length(11, l);
+                    }
+                }
+
+                LumberItem {
                     label: "2x10\"";
                     value: root.inv_vals[12];
                     has-focus: root.active_idx == 12;
+                    selected-length: root.inv_lengths[12];
                     request-focus => {
                         root.request-activate-item(12);
+                    }
+                    set-length(l) => {
+                        root.request-set-length(12, l);
                     }
                 }
 

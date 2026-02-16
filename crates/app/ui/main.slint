@@ -9,6 +9,7 @@ export component AppWindow inherits Window {
     min-width: 360px;
     min-height: 640px;
     in-out property <[string]> inv_vals: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+    in-out property <[int]> inv_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     in-out property <int> active_idx: -1;
     in-out property <bool> show_copy_toast: false;
     in-out property <int> toast_request_id: 0;
@@ -21,7 +22,9 @@ export component AppWindow inherits Window {
     callback request-share();
     callback request-menu-open(); // New callback for Rust
     callback request-activate-item(int); // New callback for Keypad
+
     callback request-append-digit(string); // New callback for digit input
+    callback request-set-length(int, int); // idx, length_idx
 
     Rectangle {
         width: 100%;
@@ -30,6 +33,7 @@ export component AppWindow inherits Window {
             width: 100%;
             height: 100%;
             inv_vals <=> root.inv_vals;
+            inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
             
             // Delegate menu open to Rust (for Haptics)
@@ -47,6 +51,9 @@ export component AppWindow inherits Window {
             }
             request-append-digit(k) => {
                 root.request-append-digit(k);
+            }
+            request-set-length(idx, len) => {
+                root.request-set-length(idx, len);
             }
         }
 

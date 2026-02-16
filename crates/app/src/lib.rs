@@ -27,7 +27,7 @@ pub fn run() -> Result<(), slint::PlatformError> {
     let ui_weak_copy = ui_handle.clone();
     ui.on_request_copy(move || {
         if let Some(ui) = ui_weak_copy.upgrade() {
-            let data = format_inventory(ui.get_inv_vals());
+            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths());
             android_utils::copy_to_clipboard(&data);
             
             let next_id = ui.get_toast_request_id() + 1;
@@ -52,7 +52,7 @@ pub fn run() -> Result<(), slint::PlatformError> {
     let ui_weak_share = ui_handle.clone();
     ui.on_request_share(move || {
         if let Some(ui) = ui_weak_share.upgrade() {
-            let data = format_inventory(ui.get_inv_vals());
+            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths());
             android_utils::share_text(&data);
         }
     });
@@ -102,6 +102,26 @@ pub fn run() -> Result<(), slint::PlatformError> {
     let inv_model = std::rc::Rc::new(slint::VecModel::from(inv_data));
     ui.set_inv_vals(inv_model.clone().into());
 
+    // Data Model for Lengths
+    let length_data: Vec<i32> = vec![0; 17];
+    let length_model = std::rc::Rc::new(slint::VecModel::from(length_data));
+    ui.set_inv_lengths(length_model.clone().into());
+
+    // Length Set Handler
+    let length_model_weak = length_model.clone();
+    let ui_weak_len = ui_handle.clone();
+    ui.on_request_set_length(move |idx, len_idx| {
+        #[cfg(target_os = "android")]
+        android_utils::trigger_haptic_feedback();
+
+        if let Some(_ui) = ui_weak_len.upgrade() {
+            let i = idx as usize;
+            if i < length_model_weak.row_count() {
+                length_model_weak.set_row_data(i, len_idx);
+            }
+        }
+    });
+
     // Append Digit Handler (7-char Limit)
     let model_weak = inv_model.clone();
     let ui_weak_input = ui_handle.clone();
@@ -125,7 +145,10 @@ pub fn run() -> Result<(), slint::PlatformError> {
     ui.run()
 }
 
-fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
+fn format_inventory(
+    model: slint::ModelRc<slint::SharedString>,
+    length_model: slint::ModelRc<i32>
+) -> String {
     struct Section<'a> {
         header: &'a str,
         range: std::ops::Range<usize>,
@@ -164,11 +187,21 @@ fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
             if let Some(val) = model.row_data(i) {
                 let val_str = val.as_str();
                 if !val_str.is_empty() && val_str != "0" {
-                    if section.header == "Cemento" {
-                         section_lines.push(format!("- {} bolsas", val_str));
-                    } else {
-                         section_lines.push(format!("- {} de {}", val_str, label));
-                    }
+                     if section.header == "Cemento" {
+                          section_lines.push(format!("- {} bolsas", val_str));
+                     } else if section.header == "Vigas y Madera" {
+                          let len_idx = length_model.row_data(i).unwrap_or(0);
+                          let len_str = match len_idx {
+                              0 => "3.2m",
+                              1 => "4m",
+                              2 => "5m",
+                              3 => "6m",
+                              _ => "3.2m",
+                          };
+                          section_lines.push(format!("- {} de {} de {}", val_str, label, len_str));
+                     } else {
+                          section_lines.push(format!("- {} de {}", val_str, label));
+                     }
                 }
             }
         }

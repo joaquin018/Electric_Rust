@@ -1,0 +1,140 @@
+import { Button } from "std-widgets.slint";
+
+component LengthChip inherits Rectangle {
+    in property <string> text;
+    in property <bool> selected;
+    callback clicked <=> touch.clicked;
+    width: 60px;
+    height: 32px;
+    border-radius: 8px;
+    background: selected ? #FFAB40 : rgba(255, 255, 255, 0.05);
+    border-width: 1px;
+    border-color: selected ? #FFAB40 : rgba(255, 255, 255, 0.1);
+    Text {
+        text: root.text;
+        color: selected ? #000000 : #aaaaaa;
+        font-size: 12px;
+        font-weight: 600;
+        vertical-alignment: center;
+        horizontal-alignment: center;
+    }
+
+    touch := TouchArea { }
+}
+
+export component LumberItem inherits Rectangle {
+    in property <string> label;
+    in property <string> value;
+    in property <bool> has-focus: false;
+    in property <int> selected-length: 0; // 0=3.2, 1=4, 2=5, 3=6
+    callback request-focus();
+    callback set-length(int);
+
+    // MaterialCard styling (Taller)
+    height: 130px; // Increased to fit buttons
+    background: #1E1E1E;
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.05);
+    
+    // Shadow
+    drop-shadow-color: rgba(0, 0, 0, 0.2);
+    drop-shadow-blur: 10px;
+    drop-shadow-offset-y: 4px;
+    VerticalLayout {
+        padding: 16px;
+        spacing: 12px;
+
+        // Top Row: Label vs Value (Original InventoryItem Layout)
+        HorizontalLayout {
+            alignment: space-between;
+            
+            // Material Label
+            Text {
+                text: label;
+                color: #ffffff;
+                font-size: 16px;
+                font-weight: 500;
+                vertical-alignment: center;
+            }
+
+            // Input Field Container Wrapper
+            VerticalLayout {
+                alignment: center;
+                Rectangle {
+                    width: 100px;
+                    height: 44px;
+                    background: rgba(0, 0, 0, 0.3);
+                    border-radius: 10px;
+                    border-width: 1px;
+                    border-color: has-focus ? #FFAB40 : rgba(255, 255, 255, 0.05);
+                    TouchArea {
+                        clicked => {
+                            root.request-focus();
+                        }
+                    }
+
+                    HorizontalLayout {
+                        padding-right: 12px;
+                        alignment: end;
+                        spacing: 2px;
+                        Text {
+                            text: value == "" ? "0" : value;
+                            color: value == "" ? rgba(255, 255, 255, 0.1) : #FFAB40;
+                            font-size: value == "" ? 14px : 18px;
+                            font-weight: value == "" ? 400 : 700;
+                            vertical-alignment: center;
+                            horizontal-alignment: right;
+                        }
+
+                        Rectangle {
+                            width: 2px;
+                            height: 20px;
+                            background: #FFAB40;
+                            border-radius: 1px;
+                            y: (parent.height - self.height) / 2;
+                            opacity: !root.has-focus ? 0 : (Math.sin(animation-tick() / 1s * 360deg) > 0 ? 1 : 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Bottom Row: Length Chips
+        HorizontalLayout {
+            alignment: space-between;
+            spacing: 8px;
+            LengthChip {
+                text: "3.2m";
+                selected: root.selected-length == 0;
+                clicked => {
+                    root.set-length(0);
+                }
+            }
+
+            LengthChip {
+                text: "4m";
+                selected: root.selected-length == 1;
+                clicked => {
+                    root.set-length(1);
+                }
+            }
+
+            LengthChip {
+                text: "5m";
+                selected: root.selected-length == 2;
+                clicked => {
+                    root.set-length(2);
+                }
+            }
+
+            LengthChip {
+                text: "6m";
+                selected: root.selected-length == 3;
+                clicked => {
+                    root.set-length(3);
+                }
+            }
+        }
+    }
+}
