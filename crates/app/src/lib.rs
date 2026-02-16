@@ -47,38 +47,84 @@ fn main() -> Result<(), slint::PlatformError> {
 }
 
 fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
-    let labels = [
-        "Apoyos 30 cm", "Apoyos 40 cm", "Apoyos 50 cm", "Apoyos 60 cm", 
-        "Apoyos 70 cm", "Apoyos 80 cm", "Apoyos 90 cm",
-        "Viga 2x3\"", "Viga 2x4\"", "Viga 2x5\"", "Viga 2x6\"", "Viga 2x8\"", "Viga 2x10\"",
-        "Clavos 3\"", "Clavos 3 1/2\"", "Clavos 4\"",
-        "Cemento (Bolsas)"
+    struct Section<'a> {
+        header: &'a str,
+        range: std::ops::Range<usize>,
+        labels: &'a [&'a str],
+    }
+
+    let sections = [
+        Section {
+            header: "Apoyos",
+            range: 0..7,
+            labels: &[
+                "30 cm", "40 cm", "50 cm", "60 cm", 
+                "70 cm", "80 cm", "90 cm"
+            ],
+        },
+        Section {
+            header: "Vigas y Madera",
+            range: 7..13,
+            labels: &[
+                "2x3\"", "2x4\"", "2x5\"", "2x6\"", 
+                "2x8\"", "2x10\""
+            ],
+        },
+        Section {
+            header: "Clavos",
+            range: 13..16,
+            labels: &[
+                "3\"", "3 1/2\"", "4\""
+            ],
+        },
+        Section {
+            header: "Cemento",
+            range: 16..17,
+            labels: &["Bolsas"],
+        },
     ];
 
-    let mut result = String::from("INVENTARIO CONSTRUCT:\n\n");
-    let mut has_content = false;
+    let mut result = String::new();
+    let mut is_first_section = true;
 
-    // ModelRc isn't guaranteed to be exactly the length we expect in dynamic UI, 
-    // but here it is fixed.
-    let count = model.row_count();
-    
-    for i in 0..count {
-        if i >= labels.len() { break; }
-        
-        // Safe access to model data
-        if let Some(val) = model.row_data(i) {
-            let val_str = val.as_str();
-            // Filter empty or "0" values to share only relevant data?
-            // Or share everything? Usually better to share non-empty.
-            if !val_str.is_empty() && val_str != "0" {
-                result.push_str(&format!("{}: {}\n", labels[i], val_str));
-                has_content = true;
+    for section in sections.iter() {
+        let mut section_lines = Vec::new();
+
+        // Collect valid items in this section
+        for (i, label) in section.range.clone().zip(section.labels.iter()) {
+            if let Some(val) = model.row_data(i) {
+                let val_str = val.as_str();
+                // Check if value is numeric and > 0
+                // We treat anything not empty and not "0" as valid.
+                if !val_str.is_empty() && val_str != "0" {
+                    // Special formatting for Cemento
+                    if section.header == "Cemento" {
+                         section_lines.push(format!("- {} bolsas", val_str));
+                    } else {
+                         section_lines.push(format!("- {} de {}", val_str, label));
+                    }
+                }
             }
+        }
+
+        // If we found items, append header and lines
+        if !section_lines.is_empty() {
+            if !is_first_section {
+                result.push_str("\n");
+            }
+            result.push_str(section.header);
+            result.push_str("\n");
+            
+            for line in section_lines {
+                result.push_str(&line);
+                result.push_str("\n");
+            }
+            is_first_section = false;
         }
     }
 
-    if !has_content {
-        result.push_str("(Sin items registrados)");
+    if result.is_empty() {
+        return String::from("(Sin items seleccionados)");
     }
     
     result
