@@ -3,6 +3,7 @@ mod android_utils;
 slint::include_modules!();
 use slint::ComponentHandle;
 use slint::Model;
+use std::time::Duration;
 
 #[cfg(target_os = "android")]
 #[no_mangle]
@@ -28,6 +29,20 @@ fn main() -> Result<(), slint::PlatformError> {
             android_utils::copy_to_clipboard(&data);
             #[cfg(not(target_os = "android"))]
             println!("COPY: {}", data);
+            
+            // Show toast
+            ui.set_show_copy_toast(true);
+            
+            // Auto-hide after 2.5s using thread (simpler than keeping Timer alive)
+            let ui_weak_thread = ui_weak_copy.clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(Duration::from_millis(2500));
+                slint::invoke_from_event_loop(move || {
+                    if let Some(ui) = ui_weak_thread.upgrade() {
+                        ui.set_show_copy_toast(false);
+                    }
+                }).unwrap();
+            });
         }
     });
 

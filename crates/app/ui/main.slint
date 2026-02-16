@@ -3,6 +3,7 @@ import { InventoryItem } from "components/inventory_item.slint";
 import { SectionHeader } from "components/section_header.slint";
 import { TopBar } from "components/top_bar.slint";
 import { NumericKeypad } from "components/numeric_keypad.slint";
+import { Toast } from "components/toast.slint";
 
 export component AppWindow inherits Window {
     title: "Construct";
@@ -21,6 +22,9 @@ export component AppWindow inherits Window {
         ""                          // 1 item
     ];
     property <int> active_idx: -1;
+    
+    // State for Toast Notification
+    in-out property <bool> show_copy_toast: false;
     callback request-copy();
     callback request-share();
     Rectangle {
@@ -232,6 +236,16 @@ export component AppWindow inherits Window {
             close-pressed() => {
                 root.active_idx = -1;
             }
+        }
+
+        Toast {
+            y: root.show_copy_toast ? parent.height - self.height : parent.height;
+            animate y {
+                duration: 250ms;
+                easing: ease-out;
+            }
+            z: 100;
+            message: "Copiado al portapapeles";
         }
     }
 }

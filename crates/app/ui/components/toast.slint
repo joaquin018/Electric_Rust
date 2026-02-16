@@ -1,0 +1,21 @@
+import { VerticalBox } from "std-widgets.slint";
+
+export component Toast inherits Rectangle {
+    in property <string> message: "Copiado al portapapeles";
+    height: 50px;
+    width: 100%;
+    background: #ff9d00;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    HorizontalLayout {
+        padding-left: 20px;
+        alignment: start;
+        Text {
+            text: root.message;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 600;
+            vertical-alignment: center;
+        }
+    }
+}
