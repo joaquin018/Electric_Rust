@@ -17,6 +17,10 @@ fn main() -> Result<(), slint::PlatformError> {
     let rt = tokio::runtime::Runtime::new().unwrap();
     let _guard = rt.enter();
 
+    // Init Haptics Persistent Thread (Android)
+    #[cfg(target_os = "android")]
+    android_utils::init_haptics();
+
     let ui = AppWindow::new()?;
     let ui_handle = ui.as_weak();
 
@@ -30,14 +34,10 @@ fn main() -> Result<(), slint::PlatformError> {
             #[cfg(not(target_os = "android"))]
             println!("COPY: {}", data);
             
-            // Increment Toast Request ID
             let next_id = ui.get_toast_request_id() + 1;
             ui.set_toast_request_id(next_id);
-            
-            // Show toast
             ui.set_show_copy_toast(true);
             
-            // Auto-hide toast
             let ui_weak_thread = ui_weak_copy.clone();
             std::thread::spawn(move || {
                 std::thread::sleep(Duration::from_millis(2500));
@@ -64,17 +64,19 @@ fn main() -> Result<(), slint::PlatformError> {
         }
     });
 
-    // Menu Open Handler (Haptic Wake-Up Hack)
+    // Menu Open Handler (Non-Blocking Haptic + Aggressive Redraw)
     let ui_weak_menu = ui_handle.clone();
     ui.on_request_menu_open(move || {
          #[cfg(target_os = "android")]
-         android_utils::trigger_haptic_feedback();
+         android_utils::trigger_haptic_feedback(); // Now non-blocking (channel send)
          
          if let Some(ui) = ui_weak_menu.upgrade() {
              ui.set_show_sidebar(true);
              
-             // Stabilized: 4 aggressive frames are enough to kickstart the compositor
-             for i in 0..4 { // 4 frames cover ~32ms of critical start-up
+             // AGGRESSIVE WAKE-UP
+             // Force redraws for the first ~96ms (120Hz ticks) 
+             // to guarantee the animation starts with high priority
+             for i in 0..12 {
                  let ui_weak = ui_weak_menu.clone();
                  slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
                      if let Some(ui) = ui_weak.upgrade() {
@@ -99,25 +101,17 @@ fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
         Section {
             header: "Apoyos",
             range: 0..7,
-            labels: &[
-                "30 cm", "40 cm", "50 cm", "60 cm", 
-                "70 cm", "80 cm", "90 cm"
-            ],
+            labels: &["30 cm", "40 cm", "50 cm", "60 cm", "70 cm", "80 cm", "90 cm"],
         },
         Section {
             header: "Vigas y Madera",
             range: 7..13,
-            labels: &[
-                "2x3\"", "2x4\"", "2x5\"", "2x6\"", 
-                "2x8\"", "2x10\""
-            ],
+            labels: &["2x3\"", "2x4\"", "2x5\"", "2x6\"", "2x8\"", "2x10\""],
         },
         Section {
             header: "Clavos",
             range: 13..16,
-            labels: &[
-                "3\"", "3 1/2\"", "4\""
-            ],
+            labels: &["3\"", "3 1/2\"", "4\""],
         },
         Section {
             header: "Cemento",
@@ -131,7 +125,6 @@ fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
 
     for section in sections.iter() {
         let mut section_lines = Vec::new();
-
         for (i, label) in section.range.clone().zip(section.labels.iter()) {
             if let Some(val) = model.row_data(i) {
                 let val_str = val.as_str();
@@ -144,25 +137,13 @@ fn format_inventory(model: slint::ModelRc<slint::SharedString>) -> String {
                 }
             }
         }
-
         if !section_lines.is_empty() {
-            if !is_first_section {
-                result.push_str("\n");
-            }
-            result.push_str(section.header);
-            result.push_str("\n");
-            
-            for line in section_lines {
-                result.push_str(&line);
-                result.push_str("\n");
-            }
+            if !is_first_section { result.push_str("\n"); }
+            result.push_str(section.header); result.push_str("\n");
+            for line in section_lines { result.push_str(&line); result.push_str("\n"); }
             is_first_section = false;
         }
     }
-
-    if result.is_empty() {
-        return String::from("(Sin items seleccionados)");
-    }
-    
+    if result.is_empty() { return String::from("(Sin items seleccionados)"); }
     result
 }
