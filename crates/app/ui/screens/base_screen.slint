@@ -104,10 +104,10 @@ export component BaseScreen inherits Rectangle {
                     }
                 }
                 
-                // Placeholder
+                // Placeholder - Hidden
                 InventoryItem {
-                    label: "1 mt";
-                    value: root.inv_vals[16];
+                    label: "Hidden";
+                    value: root.inv_vals[17];
                     has-focus: false;
                     width: 0px;
                     height: 0px;
@@ -227,16 +227,25 @@ export component BaseScreen inherits Rectangle {
                     }
                 }
 
+                InventoryItem {
+                    label: "Techo 2 1/2\"";
+                    value: root.inv_vals[16];
+                    has-focus: root.active_idx == 16;
+                    request-focus => {
+                        root.request-activate-item(16);
+                    }
+                }
+
                 SectionHeader {
                     title: "CEMENTO";
                 }
 
                 InventoryItem {
                     label: "Bolsas";
-                    value: root.inv_vals[16];
-                    has-focus: root.active_idx == 16;
+                    value: root.inv_vals[17];
+                    has-focus: root.active_idx == 17;
                     request-focus => {
-                        root.request-activate-item(16);
+                        root.request-activate-item(17);
                     }
                 }
             }

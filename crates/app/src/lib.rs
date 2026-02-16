@@ -98,12 +98,12 @@ pub fn run() -> Result<(), slint::PlatformError> {
     });
 
     // Data Model for Inventory (Mutable from Rust)
-    let inv_data: Vec<slint::SharedString> = vec!["".into(); 17];
+    let inv_data: Vec<slint::SharedString> = vec!["".into(); 18];
     let inv_model = std::rc::Rc::new(slint::VecModel::from(inv_data));
     ui.set_inv_vals(inv_model.clone().into());
 
     // Data Model for Lengths
-    let length_data: Vec<i32> = vec![0; 17];
+    let length_data: Vec<i32> = vec![0; 18];
     let length_model = std::rc::Rc::new(slint::VecModel::from(length_data));
     ui.set_inv_lengths(length_model.clone().into());
 
@@ -168,12 +168,12 @@ fn format_inventory(
         },
         Section {
             header: "Clavos",
-            range: 13..16,
-            labels: &["3\"", "3 1/2\"", "4\""],
+            range: 13..17,
+            labels: &["3\"", "3 1/2\"", "4\"", "Techo 2 1/2\""],
         },
         Section {
             header: "Cemento",
-            range: 16..17,
+            range: 17..18,
             labels: &["Bolsas"],
         },
     ];
