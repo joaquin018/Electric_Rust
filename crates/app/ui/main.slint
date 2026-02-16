@@ -1,9 +1,7 @@
 import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
-import { InventoryItem } from "components/inventory_item.slint";
-import { SectionHeader } from "components/section_header.slint";
-import { TopBar } from "components/top_bar.slint";
-import { NumericKeypad } from "components/numeric_keypad.slint";
 import { Toast } from "components/toast.slint";
+import { BaseScreen } from "screens/base_screen.slint";
+import { SideBar } from "components/sidebar.slint";
 
 export component AppWindow inherits Window {
     title: "Construct";
@@ -11,241 +9,64 @@ export component AppWindow inherits Window {
     min-width: 360px;
     min-height: 640px;
     
-    // Model for inventory values (17 items total)
-    // 0-6: Apoyos
-    // 7-12: Vigas
-    // 13-15: Clavos
-    // 16: Cemento
-    in-out property <[string]> inv_vals: ["", "", "", "", "", "", "", // 7 items
-        "", "", "", "", "", "",     // 6 items
-        "", "", "",                 // 3 items
-        ""                          // 1 item
-    ];
-    property <int> active_idx: -1;
+    // Model and State
+    in-out property <[string]> inv_vals: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+    in-out property <int> active_idx: -1;
     
-    // State for Toast Notification
+    // Toast State
     in-out property <bool> show_copy_toast: false;
     in-out property <int> toast_request_id: 0;
+
+    // Sidebar State
+    in-out property <bool> show_sidebar: false;
     callback request-copy();
     callback request-share();
+
+    // Layout
     Rectangle {
         width: 100%;
         height: 100%;
-        VerticalLayout {
-            TopBar {
-                copy-pressed => {
-                    root.request-copy();
-                }
-                share-pressed => {
-                    root.request-share();
-                }
+        
+        // Main Content (Base Screen)
+        BaseScreen {
+            width: 100%;
+            height: 100%;
+            inv_vals <=> root.inv_vals;
+            active_idx <=> root.active_idx;
+            menu-pressed => {
+                root.show_sidebar = true;
             }
+            request-copy => {
+                root.request-copy();
+            }
+            request-share => {
+                root.request-share();
+            }
+        }
 
-            Flickable {
-                viewport-height: content.preferred-height;
-                content := VerticalBox {
-                    padding-left: 16px;
-                    padding-right: 16px;
-                    padding-bottom: 350px; // Add padding for keypad overlap
-                    spacing: 12px;
-                    alignment: start;
-                    SectionHeader {
-                        title: "APOYOS";
-                    }
-
-                    InventoryItem {
-                        label: "30 cm";
-                        value: root.inv_vals[0];
-                        has-focus: root.active_idx == 0;
-                        request-focus => {
-                            root.active_idx = 0;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "40 cm";
-                        value: root.inv_vals[1];
-                        has-focus: root.active_idx == 1;
-                        request-focus => {
-                            root.active_idx = 1;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "50 cm";
-                        value: root.inv_vals[2];
-                        has-focus: root.active_idx == 2;
-                        request-focus => {
-                            root.active_idx = 2;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "60 cm";
-                        value: root.inv_vals[3];
-                        has-focus: root.active_idx == 3;
-                        request-focus => {
-                            root.active_idx = 3;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "70 cm";
-                        value: root.inv_vals[4];
-                        has-focus: root.active_idx == 4;
-                        request-focus => {
-                            root.active_idx = 4;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "80 cm";
-                        value: root.inv_vals[5];
-                        has-focus: root.active_idx == 5;
-                        request-focus => {
-                            root.active_idx = 5;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "90 cm";
-                        value: root.inv_vals[6];
-                        has-focus: root.active_idx == 6;
-                        request-focus => {
-                            root.active_idx = 6;
-                        }
-                    }
-
-                    SectionHeader {
-                        title: "VIGAS Y MADERA";
-                    }
-
-                    InventoryItem {
-                        label: "2x3\"";
-                        value: root.inv_vals[7];
-                        has-focus: root.active_idx == 7;
-                        request-focus => {
-                            root.active_idx = 7;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "2x4\"";
-                        value: root.inv_vals[8];
-                        has-focus: root.active_idx == 8;
-                        request-focus => {
-                            root.active_idx = 8;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "2x5\"";
-                        value: root.inv_vals[9];
-                        has-focus: root.active_idx == 9;
-                        request-focus => {
-                            root.active_idx = 9;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "2x6\"";
-                        value: root.inv_vals[10];
-                        has-focus: root.active_idx == 10;
-                        request-focus => {
-                            root.active_idx = 10;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "2x8\"";
-                        value: root.inv_vals[11];
-                        has-focus: root.active_idx == 11;
-                        request-focus => {
-                            root.active_idx = 11;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "2x10\"";
-                        value: root.inv_vals[12];
-                        has-focus: root.active_idx == 12;
-                        request-focus => {
-                            root.active_idx = 12;
-                        }
-                    }
-
-                    SectionHeader {
-                        title: "CLAVOS";
-                    }
-
-                    InventoryItem {
-                        label: "3\"";
-                        value: root.inv_vals[13];
-                        has-focus: root.active_idx == 13;
-                        request-focus => {
-                            root.active_idx = 13;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "3 1/2\"";
-                        value: root.inv_vals[14];
-                        has-focus: root.active_idx == 14;
-                        request-focus => {
-                            root.active_idx = 14;
-                        }
-                    }
-
-                    InventoryItem {
-                        label: "4\"";
-                        value: root.inv_vals[15];
-                        has-focus: root.active_idx == 15;
-                        request-focus => {
-                            root.active_idx = 15;
-                        }
-                    }
-
-                    SectionHeader {
-                        title: "CEMENTO";
-                    }
-
-                    InventoryItem {
-                        label: "Bolsas";
-                        value: root.inv_vals[16];
-                        has-focus: root.active_idx == 16;
-                        request-focus => {
-                            root.active_idx = 16;
-                        }
-                    }
+        // Sidebar Navigation Drawer (Z-Index implicit by order, above BaseScreen)
+        SideBar {
+            open: root.show_sidebar;
+            close-requested => {
+                root.show_sidebar = false;
+            }
+            navigate-to(idx) => {
+                // Handle navigation (Currently only 0=Base supported)
+                if (idx == 0) {
+                    root.show_sidebar = false;
+                    // Already on Base, just close
                 }
             }
         }
 
-        NumericKeypad {
-            open: root.active_idx != -1;
-            custom-key-pressed(k) => {
-                if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
-                    root.inv_vals[root.active_idx] += k;
-                }
-            }
-            backspace-pressed() => {
-                 // Simple clear for MVP
-                 if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
-                    root.inv_vals[root.active_idx] = "";
-                }
-            }
-            close-pressed() => {
-                root.active_idx = -1;
-            }
-        }
-
+        // Global Toast (Overlay above everything)
         Toast {
             y: root.show_copy_toast ? parent.height - self.height : parent.height;
             animate y {
                 duration: 250ms;
                 easing: ease-out;
             }
-            z: 100;
+            z: 200; // Explicitly above Sidebar
             message: "Copiado al portapapeles";
         }
     }

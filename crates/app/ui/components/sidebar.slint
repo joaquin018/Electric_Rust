@@ -1,0 +1,173 @@
+import { Button, VerticalBox } from "std-widgets.slint";
+
+export component SideBar inherits Rectangle {
+    in property <bool> open: false;
+    callback close-requested();
+    callback navigate-to(int); // 0: Base
+
+    // Overlay (dim background)
+    Rectangle {
+        background: #000000;
+        opacity: root.open ? 0.7 : 0;
+        animate opacity { duration: 300ms; }
+        
+        // Block clicks when closed to avoid eating inputs, enable only when open
+        visible: root.open;
+        TouchArea {
+            clicked => {
+                root.close-requested();
+            }
+        }
+    }
+
+    // Drawer Content
+    Rectangle {
+        x: root.open ? 0px : -self.width;
+        width: 280px;
+        height: 100%;
+        background: #1E1E1E;
+        // Shadow for drawer
+        drop-shadow-blur: 20px;
+        drop-shadow-color: #00000088;
+        drop-shadow-offset-x: 5px;
+        animate x {
+            duration: 300ms;
+            easing: cubic-bezier(0.2, 0.0, 0, 1.0);
+        }
+        VerticalLayout {
+            padding: 24px;
+            padding-top: 60px;
+            spacing: 10px;
+            alignment: start;
+            Text {
+                text: "CONSTRUCT";
+                font-size: 28px;
+                font-weight: 900;
+                color: #FFFFFF;
+                letter-spacing: 3px;
+            }
+
+            Text {
+                text: "SISTEMA DE GESTIÓN";
+                font-size: 12px;
+                font-weight: 300;
+                color: #FFAB40;
+                letter-spacing: 2px;
+            }
+
+            Rectangle {
+                height: 40px;
+                background: transparent;
+            } // Spacer
+
+            Text {
+                text: "SECCIONES DISPONIBLES";
+                font-size: 10px;
+                font-weight: 700;
+                color: #FFFFFF44;
+                letter-spacing: 1.5px;
+            }
+
+            Rectangle {
+                height: 10px;
+                background: transparent;
+            }
+
+            // Menu Item: BASE
+            Rectangle {
+                height: 60px;
+                border-radius: 16px;
+                background: #2C2C2C; // Slightly lighter than bg
+                border-width: 1px;
+                border-color: #FFAB40;
+                TouchArea {
+                    clicked => {
+                        root.navigate-to(0);
+                        root.close-requested();
+                    }
+                }
+
+                HorizontalLayout {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    spacing: 16px;
+                    alignment: start;
+                    
+                    // Icon placeholder (Foundation)
+                    Rectangle {
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 8px;
+                        background: #FFFFFF10;
+                        y: (parent.height - self.height) / 2;
+                        // TODO: Add Path icon
+                    }
+
+                    VerticalLayout {
+                        alignment: center;
+                        Text {
+                            text: "BASE";
+                            font-size: 16px;
+                            font-weight: 800;
+                            color: #FFFFFF;
+                            letter-spacing: 1px;
+                        }
+
+                        Text {
+                            text: "Inventario de cimentación";
+                            font-size: 10px;
+                            color: #FFFFFF66;
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                height: 10px;
+                background: transparent;
+            }
+
+            // Placeholder: PROXIMAMENTE
+            Rectangle {
+                height: 60px;
+                border-radius: 16px;
+                background: #1E1E1E;
+                border-width: 1px;
+                border-color: #FFFFFF10;
+                opacity: 0.5;
+                HorizontalLayout {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    spacing: 16px;
+                    alignment: start;
+                    Rectangle {
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 8px;
+                        background: #FFFFFF05;
+                        y: (parent.height - self.height) / 2;
+                    }
+
+                    VerticalLayout {
+                        alignment: center;
+                        Text {
+                            text: "PROXIMAMENTE";
+                            font-size: 16px;
+                            font-weight: 700;
+                            color: #FFFFFF44;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Footer
+        Text {
+            text: "v1.7.3 / Build with Slint";
+            color: #FFFFFF22;
+            font-size: 10px;
+            x: 24px;
+            y: parent.height - 30px;
+        }
+    }
+}

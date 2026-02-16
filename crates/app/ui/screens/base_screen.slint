@@ -1,0 +1,235 @@
+import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
+import { InventoryItem } from "../components/inventory_item.slint";
+import { SectionHeader } from "../components/section_header.slint";
+import { TopBar } from "../components/top_bar.slint";
+import { NumericKeypad } from "../components/numeric_keypad.slint";
+
+export component BaseScreen inherits Rectangle {
+    in-out property <[string]> inv_vals;
+    in-out property <int> active_idx;
+    callback request-copy();
+    callback request-share();
+    callback menu-pressed(); // NEW: Trigger Sidebar
+
+    VerticalLayout {
+        TopBar {
+            menu-pressed => {
+                root.menu-pressed();
+            }
+            copy-pressed => {
+                root.request-copy();
+            }
+            share-pressed => {
+                root.request-share();
+            }
+        }
+
+        Flickable {
+            viewport-height: content.preferred-height;
+            content := VerticalBox {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-bottom: 350px;
+                spacing: 12px;
+                alignment: start;
+                SectionHeader {
+                    title: "APOYOS";
+                }
+
+                InventoryItem {
+                    label: "30 cm";
+                    value: root.inv_vals[0];
+                    has-focus: root.active_idx == 0;
+                    request-focus => {
+                        root.active_idx = 0;
+                    }
+                }
+
+                InventoryItem {
+                    label: "40 cm";
+                    value: root.inv_vals[1];
+                    has-focus: root.active_idx == 1;
+                    request-focus => {
+                        root.active_idx = 1;
+                    }
+                }
+
+                InventoryItem {
+                    label: "50 cm";
+                    value: root.inv_vals[2];
+                    has-focus: root.active_idx == 2;
+                    request-focus => {
+                        root.active_idx = 2;
+                    }
+                }
+
+                InventoryItem {
+                    label: "60 cm";
+                    value: root.inv_vals[3];
+                    has-focus: root.active_idx == 3;
+                    request-focus => {
+                        root.active_idx = 3;
+                    }
+                }
+
+                InventoryItem {
+                    label: "70 cm";
+                    value: root.inv_vals[4];
+                    has-focus: root.active_idx == 4;
+                    request-focus => {
+                        root.active_idx = 4;
+                    }
+                }
+
+                InventoryItem {
+                    label: "80 cm";
+                    value: root.inv_vals[5];
+                    has-focus: root.active_idx == 5;
+                    request-focus => {
+                        root.active_idx = 5;
+                    }
+                }
+
+                InventoryItem {
+                    label: "90 cm";
+                    value: root.inv_vals[6];
+                    has-focus: root.active_idx == 6;
+                    request-focus => {
+                        root.active_idx = 6;
+                    }
+                }
+                // Placeholder for 1mt hidden item logic if needed
+                 InventoryItem {
+                    label: "1 mt";
+                    value: root.inv_vals[16];
+                    has-focus: false;
+                    width: 0px;
+                    height: 0px;
+                    visible: false;
+                }
+
+                SectionHeader {
+                    title: "VIGAS Y MADERA";
+                }
+
+                InventoryItem {
+                    label: "2x3\"";
+                    value: root.inv_vals[7];
+                    has-focus: root.active_idx == 7;
+                    request-focus => {
+                        root.active_idx = 7;
+                    }
+                }
+
+                InventoryItem {
+                    label: "2x4\"";
+                    value: root.inv_vals[8];
+                    has-focus: root.active_idx == 8;
+                    request-focus => {
+                        root.active_idx = 8;
+                    }
+                }
+
+                InventoryItem {
+                    label: "2x5\"";
+                    value: root.inv_vals[9];
+                    has-focus: root.active_idx == 9;
+                    request-focus => {
+                        root.active_idx = 9;
+                    }
+                }
+
+                InventoryItem {
+                    label: "2x6\"";
+                    value: root.inv_vals[10];
+                    has-focus: root.active_idx == 10;
+                    request-focus => {
+                        root.active_idx = 10;
+                    }
+                }
+
+                InventoryItem {
+                    label: "2x8\"";
+                    value: root.inv_vals[11];
+                    has-focus: root.active_idx == 11;
+                    request-focus => {
+                        root.active_idx = 11;
+                    }
+                }
+
+                InventoryItem {
+                    label: "2x10\"";
+                    value: root.inv_vals[12];
+                    has-focus: root.active_idx == 12;
+                    request-focus => {
+                        root.active_idx = 12;
+                    }
+                }
+
+                SectionHeader {
+                    title: "CLAVOS";
+                }
+
+                InventoryItem {
+                    label: "3\"";
+                    value: root.inv_vals[13];
+                    has-focus: root.active_idx == 13;
+                    request-focus => {
+                        root.active_idx = 13;
+                    }
+                }
+
+                InventoryItem {
+                    label: "3 1/2\"";
+                    value: root.inv_vals[14];
+                    has-focus: root.active_idx == 14;
+                    request-focus => {
+                        root.active_idx = 14;
+                    }
+                }
+
+                InventoryItem {
+                    label: "4\"";
+                    value: root.inv_vals[15];
+                    has-focus: root.active_idx == 15;
+                    request-focus => {
+                        root.active_idx = 15;
+                    }
+                }
+
+                SectionHeader {
+                    title: "CEMENTO";
+                }
+
+                InventoryItem {
+                    label: "Bolsas";
+                    value: root.inv_vals[16];
+                    has-focus: root.active_idx == 16;
+                    request-focus => {
+                        root.active_idx = 16;
+                    }
+                }
+            }
+        }
+    }
+
+    NumericKeypad {
+        x: 0;
+        y: parent.height - self.height;
+        z: 50;
+        open: root.active_idx != -1;
+        custom-key-pressed(k) => {
+            if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
+                root.inv_vals[root.active_idx] += k;
+            }
+        }
+        backspace-pressed() => {
+            if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
+                root.inv_vals[root.active_idx] = "";
+            }
+        }
+        close-pressed() => {
+            root.active_idx = -1;
+        }
+    }
+}

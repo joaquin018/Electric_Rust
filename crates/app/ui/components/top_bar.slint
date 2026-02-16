@@ -53,13 +53,25 @@ export component IconButton inherits Rectangle {
 export component TopBar inherits Rectangle {
     callback copy-pressed();
     callback share-pressed();
+    callback menu-pressed(); // NEW: Hook for SideBar
+    
     height: 90px;
     background: transparent;
     HorizontalLayout {
         padding-top: 45px; // Status bar padding
         padding-left: 15px;
         padding-right: 5px;
-        alignment: space-between;
+        spacing: 5px;
+        alignment: start; // Explicit
+
+        // Menu Button (Hamburger)
+        IconButton {
+            icon-path: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z";
+            clicked => {
+                root.menu-pressed();
+            }
+        }
+
         Text {
             text: "CONSTRUCT";
             font-size: 24px;
@@ -67,6 +79,11 @@ export component TopBar inherits Rectangle {
             color: #ffffff;
             vertical-alignment: center;
             letter-spacing: 2px;
+        }
+
+        // Flex Spacer to push actions to the right
+        Rectangle {
+            horizontal-stretch: 1;
         }
 
         HorizontalLayout {
