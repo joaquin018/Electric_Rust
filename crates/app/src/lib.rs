@@ -98,12 +98,12 @@ pub fn run() -> Result<(), slint::PlatformError> {
     });
 
     // Data Model for Inventory (Mutable from Rust)
-    let inv_data: Vec<slint::SharedString> = vec!["".into(); 18];
+    let inv_data: Vec<slint::SharedString> = vec!["".into(); 19];
     let inv_model = std::rc::Rc::new(slint::VecModel::from(inv_data));
     ui.set_inv_vals(inv_model.clone().into());
 
     // Data Model for Lengths
-    let length_data: Vec<i32> = vec![0; 18];
+    let length_data: Vec<i32> = vec![0; 19];
     let length_model = std::rc::Rc::new(slint::VecModel::from(length_data));
     ui.set_inv_lengths(length_model.clone().into());
 
@@ -158,22 +158,22 @@ fn format_inventory(
     let sections = [
         Section {
             header: "Apoyos",
-            range: 0..7,
-            labels: &["30 cm", "40 cm", "50 cm", "60 cm", "70 cm", "80 cm", "90 cm"],
+            range: 0..8,
+            labels: &["30 cm", "40 cm", "50 cm", "60 cm", "70 cm", "80 cm", "90 cm", "1 mt"],
         },
         Section {
             header: "Vigas y Madera",
-            range: 7..13,
+            range: 8..14,
             labels: &["2x3\"", "2x4\"", "2x5\"", "2x6\"", "2x8\"", "2x10\""],
         },
         Section {
             header: "Clavos",
-            range: 13..17,
+            range: 14..18,
             labels: &["3\"", "3 1/2\"", "4\"", "Techo 2 1/2\""],
         },
         Section {
             header: "Cemento",
-            range: 17..18,
+            range: 18..19,
             labels: &["Bolsas"],
         },
     ];
