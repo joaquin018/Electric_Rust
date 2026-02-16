@@ -76,7 +76,7 @@ export component InventoryItem inherits Rectangle {
                         background: #FFAB40;
                         border-radius: 1px;
                         y: (parent.height - self.height) / 2;
-                        opacity: Math.sin(animation-tick() / 500ms * 360deg) > 0 ? 1 : 0;
+                        opacity: Math.sin(animation-tick() / 1s * 360deg) > 0 ? 1 : 0;
                     }
                 }
             }
