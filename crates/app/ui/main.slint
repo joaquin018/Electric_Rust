@@ -21,6 +21,7 @@ export component AppWindow inherits Window {
     callback request-share();
     callback request-menu-open(); // New callback for Rust
     callback request-activate-item(int); // New callback for Keypad
+    callback request-append-digit(string); // New callback for digit input
 
     Rectangle {
         width: 100%;
@@ -43,6 +44,9 @@ export component AppWindow inherits Window {
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
+            }
+            request-append-digit(k) => {
+                root.request-append-digit(k);
             }
         }
 

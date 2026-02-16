@@ -10,7 +10,8 @@ export component BaseScreen inherits Rectangle {
     callback request-copy();
     callback request-share();
     callback menu-pressed();
-    callback request-activate-item(int); // NEW: Delegate input activation to Rust
+    callback request-activate-item(int);
+    callback request-append-digit(string); // Logic moved to Rust for length limit
 
     VerticalLayout {
         TopBar {
@@ -103,7 +104,7 @@ export component BaseScreen inherits Rectangle {
                 // Placeholder
                 InventoryItem {
                     label: "1 mt";
-                    value: root.inv_vals[16]; // reusing last index just for placeholder logic
+                    value: root.inv_vals[16];
                     has-focus: false;
                     width: 0px;
                     height: 0px;
@@ -221,13 +222,11 @@ export component BaseScreen inherits Rectangle {
         z: 50;
         open: root.active_idx != -1;
         custom-key-pressed(k) => {
-            if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
-                root.inv_vals[root.active_idx] += k;
-            }
+            root.request-append-digit(k);
         }
         backspace-pressed() => {
             if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
-                root.inv_vals[root.active_idx] = ""; // Simplified backspace logic for now
+                root.inv_vals[root.active_idx] = "";
             }
         }
         close-pressed() => {

@@ -106,6 +106,31 @@ fn main() -> Result<(), slint::PlatformError> {
          }
     });
 
+    // Data Model for Inventory (Mutable from Rust)
+    let inv_data: Vec<slint::SharedString> = vec!["".into(); 17];
+    let inv_model = std::rc::Rc::new(slint::VecModel::from(inv_data));
+    ui.set_inv_vals(inv_model.clone().into());
+
+    // Append Digit Handler (7-char Limit)
+    let model_weak = inv_model.clone();
+    let ui_weak_input = ui_handle.clone();
+    ui.on_request_append_digit(move |digit| {
+        if let Some(ui) = ui_weak_input.upgrade() {
+             let idx = ui.get_active_idx();
+             if idx >= 0 {
+                 let i = idx as usize;
+                 // Row data access from VecModel is cheap
+                 if let Some(val) = model_weak.row_data(i) {
+                     let s = val.as_str();
+                     if s.len() < 7 {
+                         let new_val = format!("{}{}", s, digit);
+                         model_weak.set_row_data(i, new_val.into());
+                     }
+                 }
+             }
+        }
+    });
+
     ui.run()
 }
 
