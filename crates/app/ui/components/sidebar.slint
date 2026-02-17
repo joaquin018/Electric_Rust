@@ -153,14 +153,20 @@ export component SideBar inherits Rectangle {
                 background: transparent;
             }
 
-            // Placeholder: PROXIMAMENTE
+            // Menu Item: PUERTA
             Rectangle {
                 height: 60px;
                 border-radius: 16px;
-                background: #1E1E1E;
+                background: #2C2C2C;
                 border-width: 1px;
                 border-color: #FFFFFF10;
-                opacity: 0.5;
+                TouchArea {
+                    clicked => {
+                        root.navigate-to(1);
+                        root.close-requested();
+                    }
+                }
+
                 HorizontalLayout {
                     padding-left: 16px;
                     padding-right: 16px;
@@ -170,17 +176,129 @@ export component SideBar inherits Rectangle {
                         width: 32px;
                         height: 32px;
                         border-radius: 8px;
-                        background: #FFFFFF05;
+                        background: #FFFFFF10;
                         y: (parent.height - self.height) / 2;
+                        Path {
+                            width: 24px;
+                            height: 24px;
+                            x: (parent.width - self.width) / 2;
+                            y: (parent.height - self.height) / 2;
+                            commands: "M19 19v-16c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v16H3v2h18v-2h-2zm-2 0h-4V5h4v14z";
+                            fill: #FFAB40;
+                        }
                     }
 
                     VerticalLayout {
                         alignment: center;
                         Text {
-                            text: "PROXIMAMENTE";
+                            text: "PUERTA";
                             font-size: 16px;
-                            font-weight: 700;
-                            color: #FFFFFF44;
+                            font-weight: 800;
+                            color: #FFFFFF;
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                height: 10px;
+                background: transparent;
+            }
+
+            // Menu Item: TINGLE Y TECHO
+            Rectangle {
+                height: 60px;
+                border-radius: 16px;
+                background: #2C2C2C;
+                border-width: 1px;
+                border-color: #FFFFFF10;
+                TouchArea {
+                    clicked => {
+                        root.navigate-to(2);
+                        root.close-requested();
+                    }
+                }
+
+                HorizontalLayout {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    spacing: 16px;
+                    alignment: start;
+                    Rectangle {
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 8px;
+                        background: #FFFFFF10;
+                        y: (parent.height - self.height) / 2;
+                        Path {
+                            width: 24px;
+                            height: 24px;
+                            x: (parent.width - self.width) / 2;
+                            y: (parent.height - self.height) / 2;
+                            commands: "M12 3L2 10.5l1.2 1.6L4 10.61V19c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8.39l.8 1.6L22 10.5 12 3zm5 16H7v-9.11l5-3.75 5 3.75V19z";
+                            fill: #FFAB40;
+                        }
+                    }
+
+                    VerticalLayout {
+                        alignment: center;
+                        Text {
+                            text: "TINGLE Y TECHO";
+                            font-size: 16px;
+                            font-weight: 800;
+                            color: #FFFFFF;
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                height: 10px;
+                background: transparent;
+            }
+
+            // Menu Item: AISLACIÓN
+            Rectangle {
+                height: 60px;
+                border-radius: 16px;
+                background: #2C2C2C;
+                border-width: 1px;
+                border-color: #FFFFFF10;
+                TouchArea {
+                    clicked => {
+                        root.navigate-to(3);
+                        root.close-requested();
+                    }
+                }
+
+                HorizontalLayout {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    spacing: 16px;
+                    alignment: start;
+                    Rectangle {
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 8px;
+                        background: #FFFFFF10;
+                        y: (parent.height - self.height) / 2;
+                        Path {
+                            width: 24px;
+                            height: 24px;
+                            x: (parent.width - self.width) / 2;
+                            y: (parent.height - self.height) / 2;
+                            commands: "M11 13.52c0-.52-.42-.94-.94-.94H6.06c-.52 0-.94.42-.94.94v2.88c0 .52.42.94.94.94h4c.52 0 .94-.42.94-.94v-2.88zm8 0c0-.52-.42-.94-.94-.94h-4c-.52 0-.94.42-.94.94v2.88c0 .52.42.94.94.94h4c.52 0 .94-.42.94-.94v-2.88zM4.06 11h15.88c.59 0 1.06-.47 1.06-1.06V7.06c0-.59-.47-1.06-1.06-1.06H4.06C3.47 6 3 6.47 3 7.06v2.88c0 .59.47 1.06 1.06 1.06z";
+                            fill: #FFAB40;
+                        }
+                    }
+
+                    VerticalLayout {
+                        alignment: center;
+                        Text {
+                            text: "AISLACIÓN";
+                            font-size: 16px;
+                            font-weight: 800;
+                            color: #FFFFFF;
                         }
                     }
                 }

@@ -1,0 +1,34 @@
+import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
+import { TopBar } from "../components/top_bar.slint";
+
+export component InsulationScreen inherits Rectangle {
+    callback request-copy();
+    callback request-share();
+    VerticalLayout {
+        TopBar {
+            copy-pressed => {
+                root.request-copy();
+            }
+            share-pressed => {
+                root.request-share();
+            }
+        }
+
+        VerticalBox {
+            alignment: center;
+            Text {
+                text: "AISLACIÓN";
+                font-size: 24px;
+                color: white;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: "Próximamente";
+                font-size: 16px;
+                color: #FFAB40;
+                horizontal-alignment: center;
+            }
+        }
+    }
+}

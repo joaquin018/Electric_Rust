@@ -1,6 +1,9 @@
 import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
 import { Toast } from "components/toast.slint";
 import { BaseScreen } from "screens/base_screen.slint";
+import { DoorScreen } from "screens/door_screen.slint";
+import { RoofScreen } from "screens/roof_screen.slint";
+import { InsulationScreen } from "screens/insulation_screen.slint";
 import { SideBar } from "components/sidebar.slint";
 
 export component AppWindow inherits Window {
@@ -8,9 +11,74 @@ export component AppWindow inherits Window {
     background: #121212;
     min-width: 360px;
     min-height: 640px;
-    in-out property <[string]> inv_vals: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-    in-out property <[int]> inv_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    in-out property <[string]> inv_vals: [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ];
+    in-out property <[int]> inv_lengths: [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ];
     in-out property <int> active_idx: -1;
+    in-out property <int> current_screen: 0; // 0: Base, 1: Puerta, 2: Tingle/Techo, 3: Aislacion
     in-out property <bool> show_copy_toast: false;
     in-out property <int> toast_request_id: 0;
 
@@ -30,15 +98,12 @@ export component AppWindow inherits Window {
     Rectangle {
         width: 100%;
         height: 100%;
-        BaseScreen {
+        if (root.current_screen == 0): BaseScreen {
             width: 100%;
             height: 100%;
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
-            
-            // Delegate menu open to Rust (for Haptics)
-
             request-copy => {
                 root.request-copy();
             }
@@ -59,6 +124,51 @@ export component AppWindow inherits Window {
             }
         }
 
+        if (root.current_screen == 1): DoorScreen {
+            width: 100%;
+            height: 100%;
+            inv_vals <=> root.inv_vals;
+            inv_lengths <=> root.inv_lengths;
+            active_idx <=> root.active_idx;
+            request-copy => {
+                root.request-copy();
+            }
+            request-share => {
+                root.request-share();
+            }
+            request-activate-item(idx) => {
+                root.request-activate-item(idx);
+            }
+            request-append-digit(k) => {
+                root.request-append-digit(k);
+            }
+            request-backspace => {
+                root.request-backspace();
+            }
+        }
+
+        if (root.current_screen == 2): RoofScreen {
+            width: 100%;
+            height: 100%;
+            request-copy => {
+                root.request-copy();
+            }
+            request-share => {
+                root.request-share();
+            }
+        }
+
+        if (root.current_screen == 3): InsulationScreen {
+            width: 100%;
+            height: 100%;
+            request-copy => {
+                root.request-copy();
+            }
+            request-share => {
+                root.request-share();
+            }
+        }
+
         SideBar {
             open: root.show_sidebar;
             close-requested => {
@@ -68,9 +178,8 @@ export component AppWindow inherits Window {
                 root.request-menu-open();
             }
             navigate-to(idx) => {
-                if (idx == 0) {
-                    root.show_sidebar = false;
-                }
+                root.current_screen = idx;
+                root.show_sidebar = false;
             }
         }
 

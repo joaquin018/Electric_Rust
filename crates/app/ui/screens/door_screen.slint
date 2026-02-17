@@ -1,0 +1,92 @@
+import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
+import { InventoryItem } from "../components/inventory_item.slint";
+import { SectionHeader } from "../components/section_header.slint";
+import { TopBar } from "../components/top_bar.slint";
+import { NumericKeypad } from "../components/numeric_keypad.slint";
+
+export component DoorScreen inherits Rectangle {
+    in-out property <[string]> inv_vals;
+    in-out property <[int]> inv_lengths;
+    in-out property <int> active_idx;
+    callback request-copy();
+    callback request-share();
+    callback request-activate-item(int);
+    callback request-append-digit(string);
+    callback request-backspace();
+    VerticalLayout {
+        TopBar {
+            copy-pressed => {
+                root.request-copy();
+            }
+            share-pressed => {
+                root.request-share();
+            }
+        }
+
+        Flickable {
+            viewport-height: content.preferred-height;
+            content := VerticalBox {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-bottom: 350px;
+                spacing: 12px;
+                alignment: start;
+                SectionHeader {
+                    title: "PUERTA";
+                }
+
+                InventoryItem {
+                    label: "60m";
+                    value: root.inv_vals[19];
+                    has-focus: root.active_idx == 19;
+                    request-focus => {
+                        root.request-activate-item(19);
+                    }
+                }
+
+                InventoryItem {
+                    label: "70m";
+                    value: root.inv_vals[20];
+                    has-focus: root.active_idx == 20;
+                    request-focus => {
+                        root.request-activate-item(20);
+                    }
+                }
+
+                InventoryItem {
+                    label: "80m";
+                    value: root.inv_vals[21];
+                    has-focus: root.active_idx == 21;
+                    request-focus => {
+                        root.request-activate-item(21);
+                    }
+                }
+
+                InventoryItem {
+                    label: "90m";
+                    value: root.inv_vals[22];
+                    has-focus: root.active_idx == 22;
+                    request-focus => {
+                        root.request-activate-item(22);
+                    }
+                }
+            }
+        }
+    }
+
+    NumericKeypad {
+        x: 0;
+        y: parent.height - self.height;
+        z: 50;
+        open: root.active_idx >= 19 && root.active_idx <= 22;
+        custom-key-pressed(k) => {
+            root.request-append-digit(k);
+        }
+        backspace-pressed() => {
+            root.request-backspace();
+        }
+        close-pressed() => {
+            root.active_idx = -1;
+        }
+    }
+}
