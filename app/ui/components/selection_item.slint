@@ -15,38 +15,14 @@ export component SelectionItem inherits Rectangle {
         }
     }
 
-    HorizontalLayout {
-        padding-left: 20px;
-        padding-right: 20px;
-        spacing: 12px;
-        alignment: center;
-        Text {
-            text: root.text;
-            vertical-alignment: center;
-            horizontal-alignment: left;
-            horizontal-stretch: 1;
-            color: root.selected ? #FFAB40 : #FFFFFFCC;
-            font-weight: root.selected ? 800 : 500;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-
-        // Checkmark indicator
-        Rectangle {
-            width: 20px;
-            height: 20px;
-            border-radius: 10px;
-            background: root.selected ? #FFAB40 : #FFFFFF10;
-            border-width: 2px;
-            border-color: root.selected ? transparent : #FFFFFF20;
-            if (root.selected): Text {
-                text: "✓";
-                color: #1E1E1E;
-                font-weight: 900;
-                font-size: 14px;
-                vertical-alignment: center;
-                horizontal-alignment: center;
-            }
-        }
+    Text {
+        text: root.text;
+        vertical-alignment: center;
+        horizontal-alignment: center;
+        color: root.selected ? #FFAB40 : #FFFFFFCC;
+        font-weight: root.selected ? 800 : 500;
+        font-size: 14px;
+        letter-spacing: 1.5px;
+        animate color { duration: 150ms; }
     }
 }
