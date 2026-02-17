@@ -13,10 +13,8 @@ export component BottomBar inherits Rectangle {
     // Callback for screen changes
     callback changed();
     HorizontalLayout {
-        padding: 0px;
+        padding-bottom: root.bottom-padding;
         spacing: 0px;
-        width: 100%;
-        height: parent.height - root.bottom-padding;
         
         // Base Button
         Rectangle {
