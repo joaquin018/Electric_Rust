@@ -36,6 +36,10 @@ export component SharePicker inherits Rectangle {
             duration: 350ms;
             easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);
         }
+        TouchArea {
+            // Blocks clicks from reaching the backdrop
+        }
+
         VerticalLayout {
             padding: 24px;
             spacing: 20px;
