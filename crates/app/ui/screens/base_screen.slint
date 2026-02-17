@@ -9,8 +9,8 @@ export component BaseScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
     in-out property <[int]> inv_lengths; // indices parallel to inv_vals
     in-out property <int> active_idx;
-    callback request-copy();
-    callback request-share();
+    callback selective-share-pressed();
+    callback full-share-pressed();
 
     callback request-activate-item(int);
     callback request-append-digit(string);
@@ -19,11 +19,11 @@ export component BaseScreen inherits Rectangle {
 
     VerticalLayout {
         TopBar {
-            copy-pressed => {
-                root.request-copy();
+            selective-share-pressed => {
+                root.selective-share-pressed();
             }
-            share-pressed => {
-                root.request-share();
+            full-share-pressed => {
+                root.full-share-pressed();
             }
         }
 

@@ -93,24 +93,7 @@ pub fn trigger_haptic_feedback() {
     }
 }
 
-#[cfg(target_os = "android")]
-pub fn copy_to_clipboard(text: &str) {
-    let ctx = ndk_context::android_context();
-    unsafe {
-        let vm = jni::JavaVM::from_raw(ctx.vm().cast()).unwrap();
-        let mut env = match vm.attach_current_thread() { Ok(e) => e, Err(_) => return };
-        let context = JObject::from_raw(ctx.context().cast());
 
-        let service_name = env.new_string("clipboard").unwrap();
-        let clipboard = env.call_method(&context, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;", &[JValue::Object(&service_name)]).unwrap().l().unwrap();
-        
-        let label = env.new_string("Construct").unwrap();
-        let text_j = env.new_string(text).unwrap();
-        let clip_class = env.find_class("android/content/ClipData").unwrap();
-        let clip = env.call_static_method(clip_class, "newPlainText", "(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Landroid/content/ClipData;", &[JValue::Object(&label), JValue::Object(&text_j)]).unwrap().l().unwrap();
-        let _ = env.call_method(&clipboard, "setPrimaryClip", "(Landroid/content/ClipData;)V", &[JValue::Object(&clip)]);
-    }
-}
 
 #[cfg(target_os = "android")]
 pub fn share_text(text: &str) {
@@ -165,10 +148,7 @@ pub fn init_haptics() {}
 #[cfg(not(target_os = "android"))]
 pub fn trigger_haptic_feedback() {}
 
-#[cfg(not(target_os = "android"))]
-pub fn copy_to_clipboard(data: &str) {
-    println!("COPY: {}", data);
-}
+
 
 #[cfg(not(target_os = "android"))]
 pub fn share_text(data: &str) {

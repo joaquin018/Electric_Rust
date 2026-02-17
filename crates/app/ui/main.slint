@@ -4,6 +4,7 @@ import { BaseScreen } from "screens/base_screen.slint";
 import { DoorScreen } from "screens/door_screen.slint";
 import { RoofScreen } from "screens/roof_screen.slint";
 import { InsulationScreen } from "screens/insulation_screen.slint";
+import { SharePicker } from "components/share_picker.slint";
 import { SideBar } from "components/sidebar.slint";
 
 export component AppWindow inherits Window {
@@ -87,15 +88,14 @@ export component AppWindow inherits Window {
     ];
     in-out property <int> active_idx: -1;
     in-out property <int> current_screen: 0; // 0: Base, 1: Puerta, 2: Tingle/Techo, 3: Aislacion
-    in-out property <bool> show_copy_toast: false;
-    in-out property <int> toast_request_id: 0;
-
+    in-out property <bool> show_share_picker: false;
+    
     // Sidebar State
     in-out property <bool> show_sidebar: false;
     
     // Callbacks
-    callback request-copy();
-    callback request-share();
+    callback request-full-share();
+    callback request-selective-share(bool, bool, bool, bool); // base, door, roof, insulation
     callback request-menu-open(); // New callback for Rust
     callback request-activate-item(int); // New callback for Keypad
 
@@ -112,11 +112,11 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
-            request-copy => {
-                root.request-copy();
+            selective-share-pressed => {
+                root.show_share_picker = true;
             }
-            request-share => {
-                root.request-share();
+            full-share-pressed => {
+                root.request-full-share();
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
@@ -138,11 +138,11 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
-            request-copy => {
-                root.request-copy();
+            selective-share-pressed => {
+                root.show_share_picker = true;
             }
-            request-share => {
-                root.request-share();
+            full-share-pressed => {
+                root.request-full-share();
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
@@ -161,11 +161,11 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
-            request-copy => {
-                root.request-copy();
+            selective-share-pressed => {
+                root.show_share_picker = true;
             }
-            request-share => {
-                root.request-share();
+            full-share-pressed => {
+                root.request-full-share();
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
@@ -184,11 +184,11 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
-            request-copy => {
-                root.request-copy();
+            selective-share-pressed => {
+                root.show_share_picker = true;
             }
-            request-share => {
-                root.request-share();
+            full-share-pressed => {
+                root.request-full-share();
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
@@ -198,6 +198,16 @@ export component AppWindow inherits Window {
             }
             request-backspace => {
                 root.request-backspace();
+            }
+        }
+
+        SharePicker {
+            open <=> root.show_share_picker;
+            back-pressed => {
+                root.show_share_picker = false;
+            }
+            share-confirmed(b, d, r, i) => {
+                root.request-selective-share(b, d, r, i);
             }
         }
 
@@ -213,16 +223,6 @@ export component AppWindow inherits Window {
                 root.current_screen = idx;
                 root.show_sidebar = false;
             }
-        }
-
-        Toast {
-            y: root.show_copy_toast ? parent.height - self.height : parent.height;
-            animate y {
-                duration: 250ms;
-                easing: ease-out;
-            }
-            z: 200;
-            message: "Copiado al portapapeles";
         }
     }
 }

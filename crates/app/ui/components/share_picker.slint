@@ -1,0 +1,178 @@
+export component SharePicker inherits Rectangle {
+    in-out property <bool> open: false;
+    in-out property <bool> share-base: true;
+    in-out property <bool> share-door: true;
+    in-out property <bool> share-roof: true;
+    in-out property <bool> share-insulation: true;
+    callback back-pressed();
+    callback share-confirmed(bool, bool, bool, bool);
+
+    // Backdrop
+    Rectangle {
+        background: #000000;
+        opacity: root.open ? 0.7 : 0;
+        visible: self.opacity > 0;
+        animate opacity { duration: 300ms; }
+        TouchArea {
+            clicked => {
+                root.back-pressed();
+            }
+        }
+    }
+
+    // Modal Content
+    Rectangle {
+        width: 300px;
+        height: 480px;
+        background: #1E1E1E;
+        border-radius: 20px;
+        border-width: 1px;
+        border-color: #333333;
+        drop-shadow-blur: 20px;
+        drop-shadow-color: #000000AA;
+        x: (parent.width - self.width) / 2;
+        y: root.open ? (parent.height - self.height) / 2 : parent.height;
+        animate y {
+            duration: 350ms;
+            easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+        }
+        VerticalLayout {
+            padding: 24px;
+            spacing: 20px;
+            alignment: start;
+            Text {
+                text: "SELECCIONAR SECCIONES";
+                color: #FFAB40;
+                font-size: 14px;
+                font-weight: 800;
+                letter-spacing: 2px;
+                horizontal-alignment: center;
+            }
+
+            // Selection List
+            VerticalLayout {
+                spacing: 12px;
+                
+                // Item: Base
+                Rectangle {
+                    height: 50px;
+                    border_radius: 12px;
+                    background: root.share-base ? #FFAB4022 : #2C2C2C;
+                    border-width: root.share-base ? 1.5px : 0px;
+                    border-color: #FFAB40;
+                    TouchArea {
+                        clicked => {
+                            root.share-base = !root.share-base;
+                        }
+                    }
+
+                    Text {
+                        text: "BASE";
+                        x: 16px;
+                        vertical-alignment: center;
+                        color: root.share-base ? #FFAB40 : #FFFFFF;
+                        font-weight: root.share-base ? 700 : 400;
+                    }
+                }
+
+                // Item: Puerta
+                Rectangle {
+                    height: 50px;
+                    border_radius: 12px;
+                    background: root.share-door ? #FFAB4022 : #2C2C2C;
+                    border-width: root.share-door ? 1.5px : 0px;
+                    border-color: #FFAB40;
+                    TouchArea {
+                        clicked => {
+                            root.share-door = !root.share-door;
+                        }
+                    }
+
+                    Text {
+                        text: "PUERTA";
+                        x: 16px;
+                        vertical-alignment: center;
+                        color: root.share-door ? #FFAB40 : #FFFFFF;
+                        font-weight: root.share-door ? 700 : 400;
+                    }
+                }
+
+                // Item: Tingle y Techo
+                Rectangle {
+                    height: 50px;
+                    border_radius: 12px;
+                    background: root.share-roof ? #FFAB4022 : #2C2C2C;
+                    border-width: root.share-roof ? 1.5px : 0px;
+                    border-color: #FFAB40;
+                    TouchArea {
+                        clicked => {
+                            root.share-roof = !root.share-roof;
+                        }
+                    }
+
+                    Text {
+                        text: "TINGLE Y TECHO";
+                        x: 16px;
+                        vertical-alignment: center;
+                        color: root.share-roof ? #FFAB40 : #FFFFFF;
+                        font-weight: root.share-roof ? 700 : 400;
+                    }
+                }
+
+                // Item: Aislacion
+                Rectangle {
+                    height: 50px;
+                    border_radius: 12px;
+                    background: root.share-insulation ? #FFAB4022 : #2C2C2C;
+                    border-width: root.share-insulation ? 1.5px : 0px;
+                    border-color: #FFAB40;
+                    TouchArea {
+                        clicked => {
+                            root.share-insulation = !root.share-insulation;
+                        }
+                    }
+
+                    Text {
+                        text: "AISLACIÓN";
+                        x: 16px;
+                        vertical-alignment: center;
+                        color: root.share-insulation ? #FFAB40 : #FFFFFF;
+                        font-weight: root.share-insulation ? 700 : 400;
+                    }
+                }
+            }
+
+            Rectangle {
+                vertical-stretch: 1;
+            } // Spacer
+
+            // Buttons
+            HorizontalLayout {
+                spacing: 12px;
+                height: 50px;
+
+                // Share Button (Selective)
+                Rectangle {
+                    background: #03A9F4;
+                    border-radius: 12px;
+                    horizontal-stretch: 1;
+                    TouchArea {
+                        clicked => {
+                            root.share-confirmed(root.share-base, root.share-door, root.share-roof, root.share-insulation);
+                            root.open = false;
+                        }
+                    }
+
+                    Text {
+                        text: "COMPARTIR SELECCIÓN";
+                        color: white;
+                        font-weight: 800;
+                        font-size: 11px;
+                        vertical-alignment: center;
+                        horizontal-alignment: center;
+                    }
+                }
+            }
+        }
+    }
+}

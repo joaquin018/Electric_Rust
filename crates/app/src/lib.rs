@@ -58,36 +58,20 @@ pub fn run() -> Result<(), slint::PlatformError> {
     let ui = AppWindow::new()?;
     let ui_handle = ui.as_weak();
 
-    // Copy Handler
-    let ui_weak_copy = ui_handle.clone();
-    ui.on_request_copy(move || {
-        if let Some(ui) = ui_weak_copy.upgrade() {
-            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths());
-            android_utils::copy_to_clipboard(&data);
-            
-            let next_id = ui.get_toast_request_id() + 1;
-            ui.set_toast_request_id(next_id);
-            ui.set_show_copy_toast(true);
-            
-            let ui_weak_thread = ui_weak_copy.clone();
-            std::thread::spawn(move || {
-                std::thread::sleep(Duration::from_millis(2500));
-                slint::invoke_from_event_loop(move || {
-                    if let Some(ui) = ui_weak_thread.upgrade() {
-                        if ui.get_toast_request_id() == next_id {
-                            ui.set_show_copy_toast(false);
-                        }
-                    }
-                }).unwrap();
-            });
+    // Full Share Handler
+    let ui_weak_share_full = ui_handle.clone();
+    ui.on_request_full_share(move || {
+        if let Some(ui) = ui_weak_share_full.upgrade() {
+            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths(), true, true, true, true);
+            android_utils::share_text(&data);
         }
     });
 
-    // Share Handler
-    let ui_weak_share = ui_handle.clone();
-    ui.on_request_share(move || {
-        if let Some(ui) = ui_weak_share.upgrade() {
-            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths());
+    // Selective Share Handler
+    let ui_weak_share_sel = ui_handle.clone();
+    ui.on_request_selective_share(move |base, door, roof, insulation| {
+        if let Some(ui) = ui_weak_share_sel.upgrade() {
+            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths(), base, door, roof, insulation);
             android_utils::share_text(&data);
         }
     });
@@ -221,12 +205,17 @@ pub fn run() -> Result<(), slint::PlatformError> {
 
 fn format_inventory(
     model: slint::ModelRc<slint::SharedString>,
-    length_model: slint::ModelRc<i32>
+    length_model: slint::ModelRc<i32>,
+    inc_base: bool,
+    inc_door: bool,
+    inc_roof: bool,
+    inc_insul: bool,
 ) -> String {
     struct Section<'a> {
         header: &'a str,
         range: std::ops::Range<usize>,
         labels: &'a [&'a str],
+        category: i32, // 0: base, 1: door, 2: roof, 3: insul
     }
 
     let sections = [
@@ -234,51 +223,61 @@ fn format_inventory(
             header: "Apoyos",
             range: 0..8,
             labels: &["30 cm", "40 cm", "50 cm", "60 cm", "70 cm", "80 cm", "90 cm", "1 mt"],
+            category: 0,
         },
         Section {
             header: "Vigas y Madera",
             range: 8..14,
             labels: &["2x3\"", "2x4\"", "2x5\"", "2x6\"", "2x8\"", "2x10\""],
+            category: 0,
         },
         Section {
             header: "Clavos",
             range: 14..18,
             labels: &["3\"", "3 1/2\"", "4\"", "Techo 2 1/2\""],
+            category: 0,
         },
         Section {
             header: "Cemento",
             range: 18..19,
             labels: &["Bolsas"],
+            category: 0,
         },
         Section {
             header: "Puerta",
             range: 19..23,
             labels: &["60m", "70m", "80m", "90m"],
+            category: 1,
         },
         Section {
             header: "Zinc Acanalado",
             range: 23..27,
             labels: &["2.5m", "3.6m", "4m", "6m"],
+            category: 2,
         },
         Section {
             header: "Zinc en V",
             range: 27..30,
             labels: &["2.5m", "3.66m", "4m"],
+            category: 2,
         },
         Section {
             header: "Full Tech",
             range: 30..31,
             labels: &["3.80m"],
+            category: 2,
         },
         Section {
             header: "Lana Vidrio",
             range: 31..32,
             labels: &["Lana vidrio"],
+            category: 3,
         },
         Section {
             header: "Rollo Hidrofuga",
             range: 32..33,
             labels: &["Rollo hidrofuga"],
+            category: 3,
         },
     ];
 
@@ -286,6 +285,16 @@ fn format_inventory(
     let mut is_first_section = true;
 
     for section in sections.iter() {
+        let should_include = match section.category {
+            0 => inc_base,
+            1 => inc_door,
+            2 => inc_roof,
+            3 => inc_insul,
+            _ => false,
+        };
+        
+        if !should_include { continue; }
+
         let mut section_lines = Vec::new();
         for (i, label) in section.range.clone().zip(section.labels.iter()) {
             if let Some(val) = model.row_data(i) {
