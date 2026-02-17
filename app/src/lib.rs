@@ -91,7 +91,27 @@ pub fn run() -> Result<(), slint::PlatformError> {
     android_utils::init_haptics();
 
     let ui = AppWindow::new()?;
+    
+    // Initial Safe Area Check
+    let scale_factor = ui.window().scale_factor();
+    let bottom_physical = android_utils::get_system_bar_bottom();
+    if bottom_physical > 0 {
+         ui.set_system_bottom_padding(bottom_physical as f32 / scale_factor);
+    }
+
     let ui_handle = ui.as_weak();
+
+    // Inset Retry (Wait for View Attachment)
+    let ui_weak_inset = ui_handle.clone();
+    slint::Timer::single_shot(Duration::from_millis(1000), move || {
+         if let Some(ui) = ui_weak_inset.upgrade() {
+             let scale = ui.window().scale_factor();
+             let bottom = android_utils::get_system_bar_bottom();
+             if bottom > 0 {
+                 ui.set_system_bottom_padding(bottom as f32 / scale);
+             }
+         }
+    });
 
     // Scroll Wake-Up Monitor (120Hz Fluidity)
     let scroll_timer = slint::Timer::default();

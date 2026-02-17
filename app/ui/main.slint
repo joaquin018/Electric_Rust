@@ -106,6 +106,9 @@ export component AppWindow inherits Window {
     // Sidebar State
     in-out property <bool> show_sidebar: false;
     
+    // System Insets
+    in-out property <length> system-bottom-padding: 0px;
+    
     // Callbacks
     callback request-selective-share(bool, bool, bool, bool);
     callback request-menu-open();
@@ -125,6 +128,7 @@ export component AppWindow inherits Window {
         if (root.view-mode == 0): ProjectListScreen {
             width: 100%;
             height: 100%;
+            bottom-padding: root.system-bottom-padding;
             project-names <=> root.project-names;
             create-project(name) => {
                 root.request-create-project(name);
@@ -243,12 +247,13 @@ export component AppWindow inherits Window {
 
                 // Bottom Navigation Bar
                 Rectangle {
-                    height: 60px;
+                    height: 60px + root.system-bottom-padding;
                     background: #1E1E1E;
                     border-width: 1px;
                     border-color: #FFFFFF10;
                     HorizontalLayout {
                         padding: 0px;
+                        padding-bottom: root.system-bottom-padding;
                         spacing: 0px;
                         
                         // Base Button
@@ -343,6 +348,7 @@ export component AppWindow inherits Window {
             SideBar {
                 open: root.show_sidebar;
                 current-screen: root.current_screen;
+                bottom-padding: root.system-bottom-padding;
                 close-requested => {
                     root.show_sidebar = false;
                 }

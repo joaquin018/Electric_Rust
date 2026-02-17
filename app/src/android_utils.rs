@@ -159,3 +159,49 @@ pub fn share_text(data: &str) {
 pub fn get_app_files_dir() -> String {
     ".".to_string()
 }
+#[cfg(target_os = "android")]
+pub fn get_system_bar_bottom() -> i32 {
+    let ctx = ndk_context::android_context();
+    unsafe {
+        let vm = jni::JavaVM::from_raw(ctx.vm().cast()).unwrap();
+        let mut env = match vm.attach_current_thread() { Ok(e) => e, Err(_) => return 0 };
+        let context = JObject::from_raw(ctx.context().cast());
+        
+        // Activity activity = (Activity) context;
+        // Window window = activity.getWindow();
+        let window = match env.call_method(&context, "getWindow", "()Landroid/view/Window;", &[]) {
+            Ok(v) => match v.l() { Ok(o) => o, Err(_) => return 0 },
+            Err(_) => return 0,
+        };
+        
+        // View decorView = window.getDecorView();
+        let decor_view = match env.call_method(&window, "getDecorView", "()Landroid/view/View;", &[]) {
+            Ok(v) => match v.l() { Ok(o) => o, Err(_) => return 0 },
+            Err(_) => return 0,
+        };
+        
+        // WindowInsets insets = decorView.getRootWindowInsets();
+        // This might return null if not attached yet.
+        let insets = match env.call_method(&decor_view, "getRootWindowInsets", "()Landroid/view/WindowInsets;", &[]) {
+            Ok(v) => match v.l() { Ok(o) => o, Err(_) => return 0 },
+            Err(_) => return 0, // Fallback handled by caller? or assume safe default?
+        };
+        
+        if insets.is_null() {
+             return 0;
+        }
+
+        // int bottom = insets.getSystemWindowInsetBottom();
+        let bottom = match env.call_method(&insets, "getSystemWindowInsetBottom", "()I", &[]) {
+             Ok(v) => v.i().unwrap_or(0),
+             Err(_) => 0,
+        };
+        
+        bottom
+    }
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn get_system_bar_bottom() -> i32 {
+    0
+}

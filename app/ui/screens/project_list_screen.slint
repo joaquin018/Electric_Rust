@@ -11,6 +11,7 @@ export component ProjectListScreen inherits Rectangle {
     callback delete-project(int);
     callback open-project(int);
     callback rename-project(int, string);
+    in property <length> bottom-padding: 0px;
 
     // New project name buffer
     property <string> new-project-name: "";
@@ -25,6 +26,7 @@ export component ProjectListScreen inherits Rectangle {
     background: #121212;
     VerticalLayout {
         padding: 24px;
+        padding-bottom: 24px + root.bottom-padding;
         spacing: 24px;
         alignment: start;
 
