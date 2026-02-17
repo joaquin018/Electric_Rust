@@ -47,48 +47,17 @@ export component IconButton inherits Rectangle {
     }
 }
 
-component MenuButton inherits Rectangle {
-    callback clicked;
-    width: 48px;
-    height: 48px;
-    background: transparent;
-    Path {
-        width: 24px;
-        height: 24px;
-        x: (parent.width - self.width) / 2;
-        y: (parent.height - self.height) / 2;
-        commands: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z";
-        fill: #FFFFFF;
-    }
-
-    touch := TouchArea {
-        width: 100%;
-        height: 100%;
-        clicked => {
-            root.clicked();
-        }
-    }
-}
-
 export component TopBar inherits Rectangle {
     callback copy-pressed();
     callback share-pressed();
-    callback menu-pressed();
     height: 90px;
     background: transparent;
     HorizontalLayout {
         padding-top: 45px;
-        padding-left: 15px;
+        padding-left: 20px;
         padding-right: 5px;
         spacing: 5px;
         alignment: start;
-
-        // Optimized Menu Button
-        MenuButton {
-            clicked => {
-                root.menu-pressed();
-            }
-        }
 
         Text {
             text: "CONSTRUCT";

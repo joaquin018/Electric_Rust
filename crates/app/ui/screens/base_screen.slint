@@ -11,7 +11,7 @@ export component BaseScreen inherits Rectangle {
     in-out property <int> active_idx;
     callback request-copy();
     callback request-share();
-    callback menu-pressed();
+
     callback request-activate-item(int);
     callback request-append-digit(string);
     callback request-set-length(int, int); // idx, length_idx
@@ -19,9 +19,6 @@ export component BaseScreen inherits Rectangle {
 
     VerticalLayout {
         TopBar {
-            menu-pressed => {
-                root.menu-pressed();
-            }
             copy-pressed => {
                 root.request-copy();
             }

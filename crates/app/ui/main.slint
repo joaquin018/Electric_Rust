@@ -38,9 +38,7 @@ export component AppWindow inherits Window {
             active_idx <=> root.active_idx;
             
             // Delegate menu open to Rust (for Haptics)
-            menu-pressed => {
-                root.request-menu-open();
-            }
+
             request-copy => {
                 root.request-copy();
             }
@@ -67,7 +65,7 @@ export component AppWindow inherits Window {
                 root.show_sidebar = false;
             }
             open-requested => {
-                root.show_sidebar = true;
+                root.request-menu-open();
             }
             navigate-to(idx) => {
                 if (idx == 0) {
