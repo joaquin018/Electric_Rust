@@ -119,7 +119,14 @@ export component SideBar inherits Rectangle {
                         border-radius: 8px;
                         background: #FFFFFF10;
                         y: (parent.height - self.height) / 2;
-                        // TODO: Add Path icon
+                        Path {
+                            width: 24px;
+                            height: 24px;
+                            x: (parent.width - self.width) / 2;
+                            y: (parent.height - self.height) / 2;
+                            commands: "M19 12h3L12 3 2 12h3v8h6v-8h2v8h6v-8zm-10 6H7v-4h2v4zm8 0h-2v-4h2v4z";
+                            fill: #FFAB40;
+                        }
                     }
 
                     VerticalLayout {
