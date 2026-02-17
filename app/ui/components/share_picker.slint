@@ -3,11 +3,11 @@ import { SelectionItem } from "selection_item.slint";
 
 export component SharePicker inherits Rectangle {
     in-out property <bool> open: false;
-    in-out property <bool> share-base: true;
-    in-out property <bool> share-door: true;
-    in-out property <bool> share-roof: true;
-    in-out property <bool> share-insulation: true;
-    in-out property <bool> share-interior: true;
+    in-out property <bool> share-base: false;
+    in-out property <bool> share-door: false;
+    in-out property <bool> share-roof: false;
+    in-out property <bool> share-insulation: false;
+    in-out property <bool> share-interior: false;
     callback back-pressed();
     callback share-confirmed(bool, bool, bool, bool, bool);
 
@@ -40,6 +40,10 @@ export component SharePicker inherits Rectangle {
             duration: 400ms;
             easing: cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        // Bloquear toques dentro del modal para que no cierren la ventana al tocar el fondo
+        TouchArea { }
+
         VerticalLayout {
             padding: 24px;
             spacing: 20px;
