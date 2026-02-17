@@ -30,6 +30,7 @@ export component SharePicker inherits Rectangle {
         border-color: #333333;
         drop-shadow-blur: 20px;
         drop-shadow-color: #000000AA;
+        cache-rendering-hint: true;
         x: (parent.width - self.width) / 2;
         y: root.open ? (parent.height - self.height) / 2 : parent.height;
         animate y {

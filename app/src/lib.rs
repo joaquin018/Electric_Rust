@@ -66,6 +66,35 @@ pub fn run() -> Result<(), slint::PlatformError> {
         if let Some(ui) = ui_weak_share_sel.upgrade() {
             let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths(), base, door, roof, insulation);
             android_utils::share_text(&data);
+            
+            // WAKE-UP after share return (restore fluidity)
+            for i in 0..15 {
+                let ui_weak = ui_weak_share_sel.clone();
+                slint::Timer::single_shot(Duration::from_millis(i * 10), move || {
+                    if let Some(ui) = ui_weak.upgrade() {
+                        ui.window().request_redraw();
+                    }
+                });
+            }
+        }
+    });
+
+    // Share Picker Open Handler (Aggressive Redraw for 120Hz)
+    let ui_weak_share_open = ui_handle.clone();
+    ui.on_request_share_picker_open(move || {
+        android_utils::trigger_haptic_feedback();
+        
+        if let Some(_) = ui_weak_share_open.upgrade() {
+            // High-frequency redraws for 600ms to cover 350ms animation + overhead
+            // This forces the Android event loop to stay at maximum refresh rate
+            for i in 0..60 {
+                let ui_weak = ui_weak_share_open.clone();
+                slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
+                    if let Some(ui) = ui_weak.upgrade() {
+                        ui.window().request_redraw();
+                    }
+                });
+            }
         }
     });
 
@@ -77,8 +106,9 @@ pub fn run() -> Result<(), slint::PlatformError> {
          if let Some(ui) = ui_weak_menu.upgrade() {
              ui.set_show_sidebar(true);
              
-             // AGGRESSIVE WAKE-UP Sidebar
-             for i in 0..12 {
+             // UNRELENTING WAKE-UP Sidebar (60 frames @ 8ms = 480ms)
+             // This ensures that even on 120Hz devices, the Android event loop is forced to stay awake
+             for i in 0..60 {
                  let ui_weak = ui_weak_menu.clone();
                  slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
                      if let Some(ui) = ui_weak.upgrade() {
@@ -97,8 +127,8 @@ pub fn run() -> Result<(), slint::PlatformError> {
          if let Some(ui) = ui_weak_keypad.upgrade() {
              ui.set_active_idx(idx);
              
-             // AGGRESSIVE WAKE-UP Keypad
-             for i in 0..12 {
+             // UNRELENTING WAKE-UP Keypad
+             for i in 0..60 {
                  let ui_weak = ui_weak_keypad.clone();
                  slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
                      if let Some(ui) = ui_weak.upgrade() {
