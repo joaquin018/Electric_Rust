@@ -58,6 +58,32 @@ pub fn run() -> Result<(), slint::PlatformError> {
     let ui = AppWindow::new()?;
     let ui_handle = ui.as_weak();
 
+    // Scroll Wake-Up Monitor (120Hz Fluidity)
+    let scroll_timer = slint::Timer::default();
+    {
+        let ui_weak = ui_handle.clone();
+        let mut last_y = ui.get_viewport_y_tracker();
+        let mut frames_unchanged = 0;
+        
+        scroll_timer.start(slint::TimerMode::Repeated, Duration::from_millis(16), move || {
+             if let Some(ui) = ui_weak.upgrade() {
+                 let current_y = ui.get_viewport_y_tracker();
+                 
+                 // If scroll position changed (scrolling active)
+                 if current_y != last_y {
+                     ui.window().request_redraw();
+                     frames_unchanged = 0;
+                 } else {
+                     frames_unchanged += 1;
+                     // Keep waking up for ~300ms (20 frames) after scroll stops for smooth settling
+                     if frames_unchanged < 20 {
+                         ui.window().request_redraw();
+                     }
+                 }
+                 last_y = current_y;
+             }
+        });
+    }
 
 
     // Selective Share Handler

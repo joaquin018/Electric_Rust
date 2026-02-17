@@ -88,6 +88,7 @@ export component AppWindow inherits Window {
     ];
     in-out property <int> active_idx: -1;
     in-out property <int> current_screen: 0; // 0: Base, 1: Puerta, 2: Tingle/Techo, 3: Aislacion
+    in-out property <length> viewport-y-tracker: 0px; // Tracks scroll position globally for 120Hz wake-up logic
     in-out property <bool> show_share_picker: false;
     
     // Sidebar State
@@ -113,6 +114,7 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
+            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
             selective-share-pressed => {
                 root.show_share_picker = true;
                 root.request-share-picker-open();
@@ -139,6 +141,7 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
+            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
             selective-share-pressed => {
                 root.show_share_picker = true;
                 root.request-share-picker-open();
@@ -162,6 +165,7 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
+            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
             selective-share-pressed => {
                 root.show_share_picker = true;
                 root.request-share-picker-open();
@@ -185,6 +189,7 @@ export component AppWindow inherits Window {
             inv_vals <=> root.inv_vals;
             inv_lengths <=> root.inv_lengths;
             active_idx <=> root.active_idx;
+            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
             selective-share-pressed => {
                 root.show_share_picker = true;
                 root.request-share-picker-open();

@@ -9,9 +9,9 @@ export component BaseScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
     in-out property <[int]> inv_lengths; // indices parallel to inv_vals
     in-out property <int> active_idx;
+    in-out property <length> viewport-y; // Exposed for scroll tracking
     callback selective-share-pressed();
     callback trash-pressed();
-
     callback request-activate-item(int);
     callback request-append-digit(string);
     callback request-set-length(int, int); // idx, length_idx
@@ -28,8 +28,10 @@ export component BaseScreen inherits Rectangle {
         }
 
         Flickable {
+            viewport-y <=> root.viewport-y;
             viewport-height: content.preferred-height;
             content := VerticalBox {
+                cache-rendering-hint: true;
                 padding-left: 16px;
                 padding-right: 16px;
                 padding-bottom: 350px;

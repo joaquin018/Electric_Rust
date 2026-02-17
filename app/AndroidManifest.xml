@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.antigravity.construct"
-    android:versionCode="20000006"
-    android:versionName="2.0.6">
+    android:versionCode="20000007"
+    android:versionName="2.0.7">
 
     <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="33" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
