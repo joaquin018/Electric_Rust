@@ -216,9 +216,10 @@ pub fn run() -> Result<(), slint::PlatformError> {
              let il_data: Vec<i32> = il;
 
              if let Some(ui) = ui_weak_open.upgrade() {
+                  ui.set_active_project_name(state.projects[i].name.clone().into());
                   ui.set_inv_vals(std::rc::Rc::new(slint::VecModel::from(inv_data)).into());
                   ui.set_inv_lengths(std::rc::Rc::new(slint::VecModel::from(il_data)).into());
-                  
+                   
                   // Transition to Editor
                   ui.set_view_mode(1);
              }

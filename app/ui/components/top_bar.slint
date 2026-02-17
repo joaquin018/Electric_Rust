@@ -1,6 +1,7 @@
 import { IconButton } from "icon_button.slint";
 
 export component TopBar inherits Rectangle {
+    in property <string> title: "CONSTRUCT";
     callback selective-share-pressed();
     callback trash-pressed();
     height: 90px;
@@ -12,7 +13,7 @@ export component TopBar inherits Rectangle {
         spacing: 5px;
         // alignment: start; // Removed to allow spacer to push content to edges
         Text {
-            text: "CONSTRUCT";
+            text: root.title;
             font-size: 24px;
             font-weight: 900;
             color: #ffffff;

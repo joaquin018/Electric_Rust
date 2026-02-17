@@ -8,6 +8,7 @@ export component RoofScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
     in-out property <[int]> inv_lengths;
     in-out property <int> active_idx;
+    in property <string> project-name: "CONSTRUCT";
     in-out property <length> viewport-y; // Exposed for scroll tracking
     callback selective-share-pressed();
     callback trash-pressed();
@@ -16,6 +17,7 @@ export component RoofScreen inherits Rectangle {
     callback request-backspace();
     VerticalLayout {
         TopBar {
+            title: root.project-name;
             selective-share-pressed => {
                 root.selective-share-pressed();
             }
