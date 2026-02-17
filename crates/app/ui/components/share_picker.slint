@@ -1,9 +1,9 @@
 export component SharePicker inherits Rectangle {
     in-out property <bool> open: false;
-    in-out property <bool> share-base: true;
-    in-out property <bool> share-door: true;
-    in-out property <bool> share-roof: true;
-    in-out property <bool> share-insulation: true;
+    in-out property <bool> share-base: false;
+    in-out property <bool> share-door: false;
+    in-out property <bool> share-roof: false;
+    in-out property <bool> share-insulation: false;
     callback back-pressed();
     callback share-confirmed(bool, bool, bool, bool);
 
