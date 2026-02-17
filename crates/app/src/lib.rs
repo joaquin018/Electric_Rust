@@ -135,9 +135,9 @@ pub fn run() -> Result<(), slint::PlatformError> {
     // Data Model for Inventory (Mutable from Rust)
     let loaded_state = load_state().unwrap_or_default();
     
-    // Ensure we have correct size (31) even if loaded state is different/empty
+    // Ensure we have correct size (35) even if loaded state is different/empty
     let mut iv = loaded_state.inv_vals;
-    if iv.len() < 31 { iv.resize(31, "".to_string()); }
+    if iv.len() < 35 { iv.resize(35, "".to_string()); }
     
     let inv_data: Vec<slint::SharedString> = iv.iter().map(|s| s.into()).collect();
     let inv_model = std::rc::Rc::new(slint::VecModel::from(inv_data));
@@ -145,7 +145,7 @@ pub fn run() -> Result<(), slint::PlatformError> {
 
     // Data Model for Lengths
     let mut il = loaded_state.inv_lengths;
-    if il.len() < 31 { il.resize(31, 0); }
+    if il.len() < 35 { il.resize(35, 0); }
     
     let length_data: Vec<i32> = il;
     let length_model = std::rc::Rc::new(slint::VecModel::from(length_data));
@@ -256,13 +256,23 @@ fn format_inventory(
             labels: &["60m", "70m", "80m", "90m"],
         },
         Section {
-            header: "Tingle y Techo",
+            header: "Zinc Acanalado",
             range: 23..27,
-            labels: &["Tingle 1", "Tingle 2", "Techo 1", "Techo 2"],
+            labels: &["2.5m", "3.6m", "4m", "6m"],
+        },
+        Section {
+            header: "Zinc en V",
+            range: 27..30,
+            labels: &["2.5m", "3.66m", "4m"],
+        },
+        Section {
+            header: "Full Tech",
+            range: 30..31,
+            labels: &["3.80m"],
         },
         Section {
             header: "Aislación",
-            range: 27..31,
+            range: 31..35,
             labels: &["Rollo 1", "Rollo 2", "Plancha 1", "Plancha 2"],
         },
     ];

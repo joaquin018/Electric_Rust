@@ -1,9 +1,18 @@
 import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
+import { InventoryItem } from "../components/inventory_item.slint";
+import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
+import { NumericKeypad } from "../components/numeric_keypad.slint";
 
 export component RoofScreen inherits Rectangle {
+    in-out property <[string]> inv_vals;
+    in-out property <[int]> inv_lengths;
+    in-out property <int> active_idx;
     callback request-copy();
     callback request-share();
+    callback request-activate-item(int);
+    callback request-append-digit(string);
+    callback request-backspace();
     VerticalLayout {
         TopBar {
             copy-pressed => {
@@ -14,21 +23,114 @@ export component RoofScreen inherits Rectangle {
             }
         }
 
-        VerticalBox {
-            alignment: center;
-            Text {
-                text: "TINGLE Y TECHO";
-                font-size: 24px;
-                color: white;
-                horizontal-alignment: center;
-            }
+        Flickable {
+            viewport-height: content.preferred-height;
+            content := VerticalBox {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-bottom: 350px;
+                spacing: 12px;
+                alignment: start;
+                SectionHeader {
+                    title: "ZINC ACANALADO";
+                }
 
-            Text {
-                text: "Próximamente";
-                font-size: 16px;
-                color: #FFAB40;
-                horizontal-alignment: center;
+                InventoryItem {
+                    label: "2.5m";
+                    value: root.inv_vals[23];
+                    has-focus: root.active_idx == 23;
+                    request-focus => {
+                        root.request-activate-item(23);
+                    }
+                }
+
+                InventoryItem {
+                    label: "3.6m";
+                    value: root.inv_vals[24];
+                    has-focus: root.active_idx == 24;
+                    request-focus => {
+                        root.request-activate-item(24);
+                    }
+                }
+
+                InventoryItem {
+                    label: "4m";
+                    value: root.inv_vals[25];
+                    has-focus: root.active_idx == 25;
+                    request-focus => {
+                        root.request-activate-item(25);
+                    }
+                }
+
+                InventoryItem {
+                    label: "6m";
+                    value: root.inv_vals[26];
+                    has-focus: root.active_idx == 26;
+                    request-focus => {
+                        root.request-activate-item(26);
+                    }
+                }
+
+                SectionHeader {
+                    title: "ZINC EN V";
+                }
+
+                InventoryItem {
+                    label: "2.5m";
+                    value: root.inv_vals[27];
+                    has-focus: root.active_idx == 27;
+                    request-focus => {
+                        root.request-activate-item(27);
+                    }
+                }
+
+                InventoryItem {
+                    label: "3.66m";
+                    value: root.inv_vals[28];
+                    has-focus: root.active_idx == 28;
+                    request-focus => {
+                        root.request-activate-item(28);
+                    }
+                }
+
+                InventoryItem {
+                    label: "4m";
+                    value: root.inv_vals[29];
+                    has-focus: root.active_idx == 29;
+                    request-focus => {
+                        root.request-activate-item(29);
+                    }
+                }
+
+                SectionHeader {
+                    title: "FULL TECH";
+                }
+
+                InventoryItem {
+                    label: "3.80m";
+                    value: root.inv_vals[30];
+                    has-focus: root.active_idx == 30;
+                    request-focus => {
+                        root.request-activate-item(30);
+                    }
+                }
             }
+        }
+    }
+
+    NumericKeypad {
+        x: 0;
+        y: parent.height - self.height;
+        z: 50;
+        open: root.active_idx >= 23 && root.active_idx <= 30;
+        custom-key-pressed(k) => {
+            root.request-append-digit(k);
+        }
+        backspace-pressed() => {
+            root.request-backspace();
+        }
+        close-pressed() => {
+            root.active_idx = -1;
         }
     }
 }
