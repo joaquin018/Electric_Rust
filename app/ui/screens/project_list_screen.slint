@@ -161,55 +161,69 @@ export component ProjectListScreen inherits Rectangle {
     if root.show-create-dialog: Rectangle {
         width: 100%;
         height: 100%;
-        background: #00000088;
-        TouchArea { } // Block inputs
+        background: #000000AA;
+        
+        // Bloquear toques al fondo
+        TouchArea { }
 
         Rectangle {
-            width: 300px;
-            height: 200px;
+            width: 330px;
+            // Vinculamos la altura al contenido para que no se estire
+            height: main-layout.preferred-height;
             background: #1E1E1E;
-            border-radius: 16px;
+            border-radius: 24px;
+            border-width: 1px;
+            border-color: #333333;
+            drop-shadow-blur: 30px;
+            drop-shadow-color: #000000;
             x: (parent.width - self.width) / 2;
             y: (parent.height - self.height) / 2;
-            VerticalLayout {
-                padding: 20px;
-                spacing: 16px;
+            main-layout := VerticalLayout {
+                padding: 28px;
+                spacing: 24px;
                 alignment: center;
                 Text {
                     text: "Crear Nuevo Proyecto";
-                    font-size: 18px;
-                    font-weight: 700;
+                    font-size: 20px;
+                    font-weight: 800;
                     color: #FFFFFF;
                     horizontal-alignment: center;
                 }
 
+                // Caja de entrada
                 Rectangle {
-                    height: 40px;
-                    width: 100%;
-                    background: #00000044;
-                    border-radius: 8px;
+                    height: 56px;
+                    background: #252525;
+                    border-radius: 12px;
+                    border-width: 1px;
+                    border-color: #FFFFFF10;
                     HorizontalLayout {
-                        padding-left: 10px;
+                        padding-left: 16px;
+                        padding-right: 16px;
                         TextInput {
                             text <=> root.new-project-name;
                             color: #FFFFFF;
                             font-size: 16px;
-                            height: 100%;
+                            font-weight: 500;
                             vertical-alignment: center;
                         }
                     }
                 }
 
+                // Botones de acción
                 HorizontalLayout {
                     spacing: 12px;
+                    
+                    // Cancelar
                     Rectangle {
-                        height: 40px;
-                        width: 120px;
-                        border-radius: 8px;
-                        background: #FFFFFF20;
+                        height: 50px;
+                        horizontal-stretch: 1;
+                        border-radius: 25px;
+                        background: #333333;
                         Text {
                             text: "Cancelar";
                             color: #FFFFFF;
+                            font-weight: 600;
                             vertical-alignment: center;
                             horizontal-alignment: center;
                         }
@@ -221,15 +235,16 @@ export component ProjectListScreen inherits Rectangle {
                         }
                     }
 
+                    // Crear
                     Rectangle {
-                        height: 40px;
-                        width: 120px;
-                        border-radius: 8px;
+                        height: 50px;
+                        horizontal-stretch: 1;
+                        border-radius: 25px;
                         background: #FFAB40;
                         Text {
                             text: "Crear";
-                            color: #000000;
-                            font-weight: 700;
+                            color: #121212;
+                            font-weight: 800;
                             vertical-alignment: center;
                             horizontal-alignment: center;
                         }
