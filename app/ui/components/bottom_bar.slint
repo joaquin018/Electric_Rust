@@ -10,119 +10,130 @@ export component BottomBar inherits Rectangle {
     background: #1E1E1E;
     border-width: 1px;
     border-color: #FFFFFF10;
-    HorizontalLayout {
-        padding: 0px;
-        padding-bottom: root.bottom-padding;
-        spacing: 0px;
-        
-        // Base Button
-        Rectangle {
-            width: 20%;
-            background: root.current-screen == 0 ? #FFFFFF10 : transparent;
-            TouchArea {
-                clicked => {
-                    root.current-screen = 0;
-                }
-            }
-
-            VerticalLayout {
-                alignment: center;
-                Text {
-                    text: "Base";
-                    color: root.current-screen == 0 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
-                    font-weight: 700;
-                    horizontal-alignment: center;
-                }
+    // Layout Manual para precisión absoluta y evitar bugs de flexbox
+    // Base Button
+    Rectangle {
+        x: 0;
+        width: 20%;
+        height: parent.height - root.bottom-padding;
+        y: 0;
+        background: root.current-screen == 0 ? #FFFFFF10 : transparent;
+        TouchArea {
+            clicked => {
+                root.current-screen = 0;
             }
         }
-        
-        // Door Button
-        Rectangle {
-            width: 20%;
-            background: root.current-screen == 1 ? #FFFFFF10 : transparent;
-            TouchArea {
-                clicked => {
-                    root.current-screen = 1;
-                }
-            }
 
-            VerticalLayout {
-                alignment: center;
-                Text {
-                    text: "Puerta";
-                    color: root.current-screen == 1 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
-                    font-weight: 700;
-                    horizontal-alignment: center;
-                }
+        Text {
+            width: 100%;
+            height: 100%;
+            text: "Base";
+            color: root.current-screen == 0 ? #FFAB40 : #FFFFFF88;
+            font-size: 14px;
+            font-weight: 700;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+    }
+    
+    // Door Button
+    Rectangle {
+        x: parent.width * 0.20;
+        width: 20%;
+        height: parent.height - root.bottom-padding;
+        y: 0;
+        background: root.current-screen == 1 ? #FFFFFF10 : transparent;
+        TouchArea {
+            clicked => {
+                root.current-screen = 1;
             }
         }
-        
-        // Roof Button
-        Rectangle {
-            width: 20%;
-            background: root.current-screen == 2 ? #FFFFFF10 : transparent;
-            TouchArea {
-                clicked => {
-                    root.current-screen = 2;
-                }
-            }
 
-            VerticalLayout {
-                alignment: center;
-                Text {
-                    text: "Tingle y techo";
-                    color: root.current-screen == 2 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
-                    font-weight: 700;
-                    horizontal-alignment: center;
-                }
+        Text {
+            width: 100%;
+            height: 100%;
+            text: "Puerta";
+            color: root.current-screen == 1 ? #FFAB40 : #FFFFFF88;
+            font-size: 14px;
+            font-weight: 700;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+    }
+    
+    // Roof Button
+    Rectangle {
+        x: parent.width * 0.40;
+        width: 20%;
+        height: parent.height - root.bottom-padding;
+        y: 0;
+        background: root.current-screen == 2 ? #FFFFFF10 : transparent;
+        TouchArea {
+            clicked => {
+                root.current-screen = 2;
             }
         }
-        
-        // Insulation Button
-        Rectangle {
-            width: 20%;
-            background: root.current-screen == 3 ? #FFFFFF10 : transparent;
-            TouchArea {
-                clicked => {
-                    root.current-screen = 3;
-                }
-            }
 
-            VerticalLayout {
-                alignment: center;
-                Text {
-                    text: "Aislación";
-                    color: root.current-screen == 3 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
-                    font-weight: 700;
-                    horizontal-alignment: center;
-                }
+        Text {
+            width: 100%;
+            height: 100%;
+            text: "Tingle y techo";
+            color: root.current-screen == 2 ? #FFAB40 : #FFFFFF88;
+            font-size: 14px;
+            font-weight: 700;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            wrap: word-wrap;
+        }
+    }
+    
+    // Insulation Button
+    Rectangle {
+        x: parent.width * 0.60;
+        width: 20%;
+        height: parent.height - root.bottom-padding;
+        y: 0;
+        background: root.current-screen == 3 ? #FFFFFF10 : transparent;
+        TouchArea {
+            clicked => {
+                root.current-screen = 3;
             }
         }
-        
-        // Interior Button
-        Rectangle {
-            width: 20%;
-            background: root.current-screen == 4 ? #FFFFFF10 : transparent;
-            TouchArea {
-                clicked => {
-                    root.current-screen = 4;
-                }
-            }
 
-            VerticalLayout {
-                alignment: center;
-                Text {
-                    text: "Interior";
-                    color: root.current-screen == 4 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
-                    font-weight: 700;
-                    horizontal-alignment: center;
-                }
+        Text {
+            width: 100%;
+            height: 100%;
+            text: "Aislación";
+            color: root.current-screen == 3 ? #FFAB40 : #FFFFFF88;
+            font-size: 14px;
+            font-weight: 700;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+    }
+    
+    // Interior Button
+    Rectangle {
+        x: parent.width * 0.80;
+        width: 20%;
+        height: parent.height - root.bottom-padding;
+        y: 0;
+        background: root.current-screen == 4 ? #FFFFFF10 : transparent;
+        TouchArea {
+            clicked => {
+                root.current-screen = 4;
             }
+        }
+
+        Text {
+            width: 100%;
+            height: 100%;
+            text: "Interior";
+            color: root.current-screen == 4 ? #FFAB40 : #FFFFFF88;
+            font-size: 14px;
+            font-weight: 700;
+            horizontal-alignment: center;
+            vertical-alignment: center;
         }
     }
 }
