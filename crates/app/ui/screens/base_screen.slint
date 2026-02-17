@@ -15,6 +15,7 @@ export component BaseScreen inherits Rectangle {
     callback request-activate-item(int);
     callback request-append-digit(string);
     callback request-set-length(int, int); // idx, length_idx
+    callback request-backspace(); // New callback for Rust persistence
 
     VerticalLayout {
         TopBar {
@@ -270,9 +271,7 @@ export component BaseScreen inherits Rectangle {
             root.request-append-digit(k);
         }
         backspace-pressed() => {
-            if (root.active_idx >= 0 && root.active_idx < root.inv_vals.length) {
-                root.inv_vals[root.active_idx] = "";
-            }
+            root.request-backspace();
         }
         close-pressed() => {
             root.active_idx = -1;

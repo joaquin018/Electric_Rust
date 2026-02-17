@@ -4,6 +4,41 @@ slint::include_modules!();
 use slint::ComponentHandle;
 use slint::Model;
 use std::time::Duration;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Default)]
+struct AppState {
+    inv_vals: Vec<String>,
+    inv_lengths: Vec<i32>,
+}
+
+fn save_state(vals: &slint::ModelRc<slint::SharedString>, lengths: &slint::ModelRc<i32>) {
+    let vals_vec: Vec<String> = vals.iter().map(|s| s.to_string()).collect();
+    let lengths_vec: Vec<i32> = lengths.iter().collect();
+
+    let state = AppState {
+        inv_vals: vals_vec,
+        inv_lengths: lengths_vec,
+    };
+    
+    let dir = android_utils::get_app_files_dir();
+    let path = format!("{}/construct_data.json", dir);
+    
+    if let Ok(json) = serde_json::to_string(&state) {
+        let _ = std::fs::write(path, json);
+    }
+}
+
+fn load_state() -> Option<AppState> {
+    let dir = android_utils::get_app_files_dir();
+    let path = format!("{}/construct_data.json", dir);
+    
+    if let Ok(content) = std::fs::read_to_string(path) {
+        serde_json::from_str(&content).ok()
+    } else {
+        None
+    }
+}
 
 #[cfg(target_os = "android")]
 #[no_mangle]
@@ -98,17 +133,27 @@ pub fn run() -> Result<(), slint::PlatformError> {
     });
 
     // Data Model for Inventory (Mutable from Rust)
-    let inv_data: Vec<slint::SharedString> = vec!["".into(); 19];
+    let loaded_state = load_state().unwrap_or_default();
+    
+    // Ensure we have correct size (19) even if loaded state is different/empty
+    let mut iv = loaded_state.inv_vals;
+    if iv.len() < 19 { iv.resize(19, "".to_string()); }
+    
+    let inv_data: Vec<slint::SharedString> = iv.iter().map(|s| s.into()).collect();
     let inv_model = std::rc::Rc::new(slint::VecModel::from(inv_data));
     ui.set_inv_vals(inv_model.clone().into());
 
     // Data Model for Lengths
-    let length_data: Vec<i32> = vec![0; 19];
+    let mut il = loaded_state.inv_lengths;
+    if il.len() < 19 { il.resize(19, 0); }
+    
+    let length_data: Vec<i32> = il;
     let length_model = std::rc::Rc::new(slint::VecModel::from(length_data));
     ui.set_inv_lengths(length_model.clone().into());
 
     // Length Set Handler
     let length_model_weak = length_model.clone();
+    let inv_model_weak_for_save = inv_model.clone();
     let ui_weak_len = ui_handle.clone();
     ui.on_request_set_length(move |idx, len_idx| {
         #[cfg(target_os = "android")]
@@ -118,12 +163,14 @@ pub fn run() -> Result<(), slint::PlatformError> {
             let i = idx as usize;
             if i < length_model_weak.row_count() {
                 length_model_weak.set_row_data(i, len_idx);
+                save_state(&inv_model_weak_for_save.clone().into(), &length_model_weak.clone().into());
             }
         }
     });
 
     // Append Digit Handler (7-char Limit)
     let model_weak = inv_model.clone();
+    let len_model_weak_for_save = length_model.clone();
     let ui_weak_input = ui_handle.clone();
     ui.on_request_append_digit(move |digit| {
         if let Some(ui) = ui_weak_input.upgrade() {
@@ -136,6 +183,33 @@ pub fn run() -> Result<(), slint::PlatformError> {
                      if s.len() < 7 {
                          let new_val = format!("{}{}", s, digit);
                          model_weak.set_row_data(i, new_val.into());
+                         save_state(&model_weak.clone().into(), &len_model_weak_for_save.clone().into());
+                     }
+                 }
+             }
+        }
+    });
+    
+    // Backspace Handler
+    let model_weak_bs = inv_model.clone();
+    let len_model_weak_bs = length_model.clone();
+    let ui_weak_bs = ui_handle.clone();
+    ui.on_request_backspace(move || {
+        #[cfg(target_os = "android")]
+        android_utils::trigger_haptic_feedback();
+        
+        if let Some(ui) = ui_weak_bs.upgrade() {
+             let idx = ui.get_active_idx();
+             if idx >= 0 {
+                 let i = idx as usize;
+                 if let Some(val) = model_weak_bs.row_data(i) {
+                     let s = val.as_str();
+                     if !s.is_empty() {
+                         let mut chars = s.chars();
+                         chars.next_back();
+                         let new_val = chars.as_str();
+                         model_weak_bs.set_row_data(i, new_val.into());
+                         save_state(&model_weak_bs.clone().into(), &len_model_weak_bs.clone().into());
                      }
                  }
              }

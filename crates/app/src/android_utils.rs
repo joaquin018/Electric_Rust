@@ -139,6 +139,25 @@ pub fn share_text(text: &str) {
     }
 }
 
+#[cfg(target_os = "android")]
+pub fn get_app_files_dir() -> String {
+    let ctx = ndk_context::android_context();
+    unsafe {
+        let vm = jni::JavaVM::from_raw(ctx.vm().cast()).unwrap();
+        let mut env = vm.attach_current_thread().unwrap();
+        let context = JObject::from_raw(ctx.context().cast());
+        
+        // File file = context.getFilesDir();
+        let file = env.call_method(&context, "getFilesDir", "()Ljava/io/File;", &[]).unwrap().l().unwrap();
+        
+        // String path = file.getAbsolutePath();
+        let path_jstr = env.call_method(&file, "getAbsolutePath", "()Ljava/lang/String;", &[]).unwrap().l().unwrap();
+        
+        let path: String = env.get_string(&path_jstr.into()).unwrap().into();
+        path
+    }
+}
+
 // Fallbacks for non-Android targets
 #[cfg(not(target_os = "android"))]
 pub fn init_haptics() {}
@@ -154,4 +173,9 @@ pub fn copy_to_clipboard(data: &str) {
 #[cfg(not(target_os = "android"))]
 pub fn share_text(data: &str) {
     println!("SHARE: {}", data);
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn get_app_files_dir() -> String {
+    ".".to_string()
 }
