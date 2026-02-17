@@ -2,7 +2,7 @@ import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
 import { InventoryItem } from "../components/inventory_item.slint";
 import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
-import { NumericKeypad } from "../components/numeric_keypad.slint";
+
 
 export component RoofScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
@@ -119,22 +119,6 @@ export component RoofScreen inherits Rectangle {
                     }
                 }
             }
-        }
-    }
-
-    NumericKeypad {
-        x: 0;
-        y: parent.height - self.height;
-        z: 50;
-        open: root.active_idx >= 23 && root.active_idx <= 30;
-        custom-key-pressed(k) => {
-            root.request-append-digit(k);
-        }
-        backspace-pressed() => {
-            root.request-backspace();
-        }
-        close-pressed() => {
-            root.active_idx = -1;
         }
     }
 }

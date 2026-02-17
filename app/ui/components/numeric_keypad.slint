@@ -3,28 +3,35 @@ import { KeyButton } from "key_button.slint";
 
 export component NumericKeypad inherits Rectangle {
     in property <bool> open: false;
+    in property <length> bottom-padding: 0px;
     callback custom-key-pressed(string);
     callback backspace-pressed();
     callback close-pressed();
-
-    // Cover the whole screen area (assuming placed in a full-size container)
     width: 100%;
     height: 100%;
-    
-    // Position relative to the root container (screen)
-    // When open: align to bottom (parent.height - self.height) -> Wait, this acts on the *inner* rectangle y
-    // The outer Rectangle matches parent size.
-    
-    // The Sliding Panel
+
+    // Solo visible cuando está abierto o animándose
+    visible: root.open || panel.y < root.height;
+
+    // Backdrop: tocar fuera cierra el teclado
     Rectangle {
+        background: black;
+        opacity: root.open ? 0.3 : 0;
+        animate opacity { duration: 200ms; }
+        TouchArea {
+            clicked => {
+                root.close-pressed();
+            }
+        }
+    }
+
+    // Panel deslizante (sin botón LISTO, más compacto)
+    panel := Rectangle {
         background: #1e1e1e;
         border-top-left-radius: 16px;
         border-top-right-radius: 16px;
-        height: 350px; // Slightly taller
+        height: 280px + root.bottom-padding;
         width: 100%;
-        
-        // Performance Optimization
-        cache-rendering-hint: true;
         y: root.open ? parent.height - self.height : parent.height;
         animate y {
             duration: 220ms;
@@ -32,33 +39,8 @@ export component NumericKeypad inherits Rectangle {
         }
         VerticalLayout {
             padding: 10px;
-            spacing: 10px;
-
-            // Header with Done button
-            HorizontalLayout {
-                alignment: end;
-                height: 40px;
-                Rectangle {
-                    width: 80px;
-                    height: 36px;
-                    background: #ff9d00;
-                    border-radius: 8px;
-                    TouchArea {
-                        clicked => {
-                            root.close-pressed();
-                        }
-                    }
-
-                    Text {
-                        text: "Done";
-                        color: black;
-                        font-weight: 700;
-                        vertical-alignment: center;
-                        horizontal-alignment: center;
-                    }
-                }
-            }
-
+            padding-bottom: 10px + root.bottom-padding;
+            spacing: 8px;
             GridLayout {
                 spacing: 8px;
                 Row {
@@ -146,7 +128,6 @@ export component NumericKeypad inherits Rectangle {
                     }
 
                     KeyButton {
-                        // Material Design Backspace Icon
                         icon-path: "M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z";
                         special: true;
                         clicked => {

@@ -8,6 +8,7 @@ import { InteriorScreen } from "screens/interior_screen.slint";
 import { SharePicker } from "components/share_picker.slint";
 import { GestureHandler } from "components/gesture_handler.slint";
 import { BottomBar } from "components/bottom_bar.slint";
+import { NumericKeypad } from "components/numeric_keypad.slint";
 import { ProjectListScreen } from "screens/project_list_screen.slint";
 
 export component AppWindow inherits Window {
@@ -328,6 +329,22 @@ export component AppWindow inherits Window {
                 share-confirmed(b, d, r, i, intr) => {
                     root.request-selective-share(b, d, r, i, intr);
                 }
+            }
+        }
+        NumericKeypad {
+            width: 100%;
+            height: 100%;
+            z: 200;
+            open: root.active_idx != -1;
+            bottom-padding: root.system-bottom-padding;
+            custom-key-pressed(k) => {
+                root.request-append-digit(k);
+            }
+            backspace-pressed() => {
+                root.request-backspace();
+            }
+            close-pressed() => {
+                root.active_idx = -1;
             }
         }
     }
