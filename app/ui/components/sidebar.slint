@@ -1,169 +1,29 @@
-import { Button, VerticalBox } from "std-widgets.slint";
-import { SidebarItem } from "sidebar_item.slint";
+
 
 export component SideBar inherits Rectangle {
+    // Properties kept for API compatibility with main.slint (though unused internally now)
     in-out property <bool> open: false;
     callback close-requested();
-    callback open-requested(); // NEW
-    callback navigate-to(int); // 0: Base
+    callback open-requested();
+    callback navigate-to(int);
     in-out property <int> current-screen: 0;
     in property <length> bottom-padding: 0px;
 
+    // Dimensions
+    width: 20px; // Only the catch area
+    height: 100%;
+    x: 0;
+    background: transparent;
+
     // Edge Swipe Detector (Trigger)
     TouchArea {
-        width: 20px;
+        width: 100%;
         height: 100%;
-        x: 0;
-        visible: !root.open; // Active only when closed
         moved => {
-            // If dragged more than 50px to the right
+            // Sensitivity
             if (self.pressed && self.mouse-x > 50px) {
                 root.open-requested();
             }
-        }
-    }
-
-    // Overlay (dim background)
-    Rectangle {
-        background: #000000;
-        opacity: root.open ? 0.7 : 0;
-        animate opacity { duration: 300ms; }
-        
-        // Block clicks when closed to avoid eating inputs, enable only when open
-        visible: root.open;
-        TouchArea {
-            clicked => {
-                root.close-requested();
-            }
-        }
-    }
-
-    // Drawer Content
-    Rectangle {
-        x: root.open ? 0px : -self.width;
-        width: 280px;
-        height: 100%;
-        background: #1E1E1E;
-        
-        // Performance Optimization: Cache rendering for smooth sliding
-        cache-rendering-hint: true;
-
-        // Shadow for drawer (Reduced blur for performance)
-        drop-shadow-blur: 10px;
-        drop-shadow-color: #00000088;
-        drop-shadow-offset-x: 5px;
-        animate x {
-            duration: 300ms;
-            easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);
-        }
-        VerticalLayout {
-            padding: 24px;
-            padding-top: 60px;
-            padding-bottom: 24px + root.bottom-padding;
-            spacing: 10px;
-            alignment: start;
-            Text {
-                text: "CONSTRUCT";
-                font-size: 28px;
-                font-weight: 900;
-                color: #FFFFFF;
-                letter-spacing: 3px;
-            }
-
-            Text {
-                text: "SISTEMA DE GESTIÓN";
-                font-size: 12px;
-                font-weight: 300;
-                color: #FFAB40;
-                letter-spacing: 2px;
-            }
-
-            Rectangle {
-                height: 40px;
-                background: transparent;
-            } // Spacer
-
-            Text {
-                text: "SECCIONES DISPONIBLES";
-                font-size: 10px;
-                font-weight: 700;
-                color: #FFFFFF44;
-                letter-spacing: 1.5px;
-            }
-
-            Rectangle {
-                height: 10px;
-                background: transparent;
-            }
-
-            // Menu Item: BASE
-            SidebarItem {
-                text: "BASE";
-                subtext: "Inventario de cimentación";
-                icon-path: "M19 12h3L12 3 2 12h3v8h6v-8h2v8h6v-8zm-10 6H7v-4h2v4zm8 0h-2v-4h2v4z";
-                selected: root.current-screen == 0;
-                clicked => {
-                    root.navigate-to(0);
-                    root.close-requested();
-                }
-            }
-
-            Rectangle {
-                height: 10px;
-                background: transparent;
-            }
-
-            // Menu Item: PUERTA
-            SidebarItem {
-                text: "PUERTA";
-                icon-path: "M19 19v-16c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v16H3v2h18v-2h-2zm-2 0h-4V5h4v14z";
-                selected: root.current-screen == 1;
-                clicked => {
-                    root.navigate-to(1);
-                    root.close-requested();
-                }
-            }
-
-            Rectangle {
-                height: 10px;
-                background: transparent;
-            }
-
-            // Menu Item: TINGLE Y TECHO
-            SidebarItem {
-                text: "TINGLE Y TECHO";
-                icon-path: "M12 3L2 10.5l1.2 1.6L4 10.61V19c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8.39l.8 1.6L22 10.5 12 3zm5 16H7v-9.11l5-3.75 5 3.75V19z";
-                selected: root.current-screen == 2;
-                clicked => {
-                    root.navigate-to(2);
-                    root.close-requested();
-                }
-            }
-
-            Rectangle {
-                height: 10px;
-                background: transparent;
-            }
-
-            // Menu Item: AISLACIÓN
-            SidebarItem {
-                text: "AISLACIÓN";
-                icon-path: "M11 13.52c0-.52-.42-.94-.94-.94H6.06c-.52 0-.94.42-.94.94v2.88c0 .52.42.94.94.94h4c.52 0 .94-.42.94-.94v-2.88zm8 0c0-.52-.42-.94-.94-.94h-4c-.52 0-.94.42-.94.94v2.88c0 .52.42.94.94.94h4c.52 0 .94-.42.94-.94v-2.88zM4.06 11h15.88c.59 0 1.06-.47 1.06-1.06V7.06c0-.59-.47-1.06-1.06-1.06H4.06C3.47 6 3 6.47 3 7.06v2.88c0 .59.47 1.06 1.06 1.06z";
-                selected: root.current-screen == 3;
-                clicked => {
-                    root.navigate-to(3);
-                    root.close-requested();
-                }
-            }
-        }
-
-        // Footer
-        Text {
-            text: "v2.1.4-exp / Build with Slint";
-            color: #FFFFFF22;
-            font-size: 10px;
-            x: 24px;
-            y: parent.height - 30px - root.bottom-padding;
         }
     }
 }
