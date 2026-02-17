@@ -5,7 +5,7 @@
         <item name="android:textSelectHandle">@drawable/transparent_cursor</item>
         <item name="android:textSelectHandleLeft">@drawable/transparent_cursor</item>
         <item name="android:textSelectHandleRight">@drawable/transparent_cursor</item>
-        <item name="android:textSelectHandleWindowStyle">@android:style/Widget.TextView.TextSelectHandle</item>
+
         
         <!-- Opcional: Hacer transparente el color de selección si también molesta -->
         <!-- <item name="android:textColorHighlight">#00000000</item> -->

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.antigravity.construct"
-    android:versionCode="1"
-    android:versionName="2.0.3">
+    android:versionCode="20000004"
+    android:versionName="2.0.4">
 
     <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="33" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
@@ -12,6 +12,8 @@
     <!-- Aplicamos el tema a toda la aplicación -->
     <application
         android:label="Construct"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
         android:hasCode="false"
         android:theme="@style/ConstructTheme"
         tools:replace="android:theme"
