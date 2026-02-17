@@ -26,8 +26,8 @@ export component ProjectListScreen inherits Rectangle {
     background: #121212;
     VerticalLayout {
         padding-top: 60px;
-        padding-left: 24px;
-        padding-right: 24px;
+        padding-left: 16px;
+        padding-right: 16px;
         padding-bottom: 24px + root.bottom-padding;
         spacing: 24px;
         alignment: start;
@@ -48,7 +48,7 @@ export component ProjectListScreen inherits Rectangle {
                 spacing: 12px;
                 alignment: start;
                 for name[i] in root.project-names: Rectangle {
-                    height: 80px;
+                    height: 96px;
                     border-radius: 16px;
                     background: #2C2C2C;
                     border-width: 1px;
@@ -130,7 +130,7 @@ export component ProjectListScreen inherits Rectangle {
     // Floating Action Button
     Rectangle {
         x: parent.width - 80px;
-        y: parent.height - 80px - root.bottom-padding;
+        y: parent.height - 96px - root.bottom-padding;
         width: 56px;
         height: 56px;
         border-radius: 28px;
