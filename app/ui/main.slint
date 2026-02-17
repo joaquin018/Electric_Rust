@@ -6,6 +6,7 @@ import { RoofScreen } from "screens/roof_screen.slint";
 import { InsulationScreen } from "screens/insulation_screen.slint";
 import { SharePicker } from "components/share_picker.slint";
 import { SideBar } from "components/sidebar.slint";
+import { BottomBar } from "components/bottom_bar.slint";
 import { ProjectListScreen } from "screens/project_list_screen.slint";
 
 export component AppWindow inherits Window {
@@ -246,101 +247,9 @@ export component AppWindow inherits Window {
                 }
 
                 // Bottom Navigation Bar
-                Rectangle {
-                    height: 60px + root.system-bottom-padding;
-                    background: #1E1E1E;
-                    border-width: 1px;
-                    border-color: #FFFFFF10;
-                    HorizontalLayout {
-                        padding: 0px;
-                        padding-bottom: root.system-bottom-padding;
-                        spacing: 0px;
-                        
-                        // Base Button
-                        Rectangle {
-                            horizontal-stretch: 1;
-                            background: root.current_screen == 0 ? #FFFFFF10 : transparent;
-                            TouchArea {
-                                clicked => {
-                                    root.current_screen = 0;
-                                }
-                            }
-
-                            VerticalLayout {
-                                alignment: center;
-                                Text {
-                                    text: "Base";
-                                    color: root.current_screen == 0 ? #FFAB40 : #FFFFFF88;
-                                    font-size: 14px;
-                                    font-weight: 700;
-                                    horizontal-alignment: center;
-                                }
-                            }
-                        }
-                        // Door Button
-                        Rectangle {
-                            horizontal-stretch: 1;
-                            background: root.current_screen == 1 ? #FFFFFF10 : transparent;
-                            TouchArea {
-                                clicked => {
-                                    root.current_screen = 1;
-                                }
-                            }
-
-                            VerticalLayout {
-                                alignment: center;
-                                Text {
-                                    text: "Puerta";
-                                    color: root.current_screen == 1 ? #FFAB40 : #FFFFFF88;
-                                    font-size: 14px;
-                                    font-weight: 700;
-                                    horizontal-alignment: center;
-                                }
-                            }
-                        }
-                        // Roof Button
-                        Rectangle {
-                            horizontal-stretch: 1;
-                            background: root.current_screen == 2 ? #FFFFFF10 : transparent;
-                            TouchArea {
-                                clicked => {
-                                    root.current_screen = 2;
-                                }
-                            }
-
-                            VerticalLayout {
-                                alignment: center;
-                                Text {
-                                    text: "Techo";
-                                    color: root.current_screen == 2 ? #FFAB40 : #FFFFFF88;
-                                    font-size: 14px;
-                                    font-weight: 700;
-                                    horizontal-alignment: center;
-                                }
-                            }
-                        }
-                        // Insulation Button
-                        Rectangle {
-                            horizontal-stretch: 1;
-                            background: root.current_screen == 3 ? #FFFFFF10 : transparent;
-                            TouchArea {
-                                clicked => {
-                                    root.current_screen = 3;
-                                }
-                            }
-
-                            VerticalLayout {
-                                alignment: center;
-                                Text {
-                                    text: "Aisl.";
-                                    color: root.current_screen == 3 ? #FFAB40 : #FFFFFF88;
-                                    font-size: 14px;
-                                    font-weight: 700;
-                                    horizontal-alignment: center;
-                                }
-                            }
-                        }
-                    }
+                BottomBar {
+                    current-screen <=> root.current_screen;
+                    bottom-padding: root.system-bottom-padding;
                 }
             }
             

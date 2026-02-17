@@ -1,0 +1,106 @@
+import { VerticalBox } from "std-widgets.slint";
+
+export component BottomBar inherits Rectangle {
+    // Properties
+    in-out property <int> current-screen: 0;
+    in property <length> bottom-padding: 0px;
+
+    // Styling
+    height: 60px + root.bottom-padding;
+    background: #1E1E1E;
+    border-width: 1px;
+    border-color: #FFFFFF10;
+    HorizontalLayout {
+        padding: 0px;
+        padding-bottom: root.bottom-padding;
+        spacing: 0px;
+        
+        // Base Button
+        Rectangle {
+            horizontal-stretch: 1;
+            background: root.current-screen == 0 ? #FFFFFF10 : transparent;
+            TouchArea {
+                clicked => {
+                    root.current-screen = 0;
+                }
+            }
+
+            VerticalLayout {
+                alignment: center;
+                Text {
+                    text: "Base";
+                    color: root.current-screen == 0 ? #FFAB40 : #FFFFFF88;
+                    font-size: 14px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+        
+        // Door Button
+        Rectangle {
+            horizontal-stretch: 1;
+            background: root.current-screen == 1 ? #FFFFFF10 : transparent;
+            TouchArea {
+                clicked => {
+                    root.current-screen = 1;
+                }
+            }
+
+            VerticalLayout {
+                alignment: center;
+                Text {
+                    text: "Puerta";
+                    color: root.current-screen == 1 ? #FFAB40 : #FFFFFF88;
+                    font-size: 14px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+        
+        // Roof Button
+        Rectangle {
+            horizontal-stretch: 1;
+            background: root.current-screen == 2 ? #FFFFFF10 : transparent;
+            TouchArea {
+                clicked => {
+                    root.current-screen = 2;
+                }
+            }
+
+            VerticalLayout {
+                alignment: center;
+                Text {
+                    text: "Techo";
+                    color: root.current-screen == 2 ? #FFAB40 : #FFFFFF88;
+                    font-size: 14px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+        
+        // Insulation Button
+        Rectangle {
+            horizontal-stretch: 1;
+            background: root.current-screen == 3 ? #FFFFFF10 : transparent;
+            TouchArea {
+                clicked => {
+                    root.current-screen = 3;
+                }
+            }
+
+            VerticalLayout {
+                alignment: center;
+                Text {
+                    text: "Aisl.";
+                    color: root.current-screen == 3 ? #FFAB40 : #FFFFFF88;
+                    font-size: 14px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+    }
+}
