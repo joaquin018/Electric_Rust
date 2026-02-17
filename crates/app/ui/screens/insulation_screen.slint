@@ -1,9 +1,18 @@
 import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
+import { InventoryItem } from "../components/inventory_item.slint";
+import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
+import { NumericKeypad } from "../components/numeric_keypad.slint";
 
 export component InsulationScreen inherits Rectangle {
+    in-out property <[string]> inv_vals;
+    in-out property <[int]> inv_lengths;
+    in-out property <int> active_idx;
     callback request-copy();
     callback request-share();
+    callback request-activate-item(int);
+    callback request-append-digit(string);
+    callback request-backspace();
     VerticalLayout {
         TopBar {
             copy-pressed => {
@@ -14,21 +23,56 @@ export component InsulationScreen inherits Rectangle {
             }
         }
 
-        VerticalBox {
-            alignment: center;
-            Text {
-                text: "AISLACIÓN";
-                font-size: 24px;
-                color: white;
-                horizontal-alignment: center;
-            }
+        Flickable {
+            viewport-height: content.preferred-height;
+            content := VerticalBox {
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-bottom: 350px;
+                spacing: 12px;
+                alignment: start;
+                SectionHeader {
+                    title: "LANA VIDRIO";
+                }
 
-            Text {
-                text: "Próximamente";
-                font-size: 16px;
-                color: #FFAB40;
-                horizontal-alignment: center;
+                InventoryItem {
+                    label: "Lana vidrio";
+                    value: root.inv_vals[31];
+                    has-focus: root.active_idx == 31;
+                    request-focus => {
+                        root.request-activate-item(31);
+                    }
+                }
+
+                SectionHeader {
+                    title: "ROLLO HIDROFUGA";
+                }
+
+                InventoryItem {
+                    label: "Rollo hidrofuga";
+                    value: root.inv_vals[32];
+                    has-focus: root.active_idx == 32;
+                    request-focus => {
+                        root.request-activate-item(32);
+                    }
+                }
             }
+        }
+    }
+
+    NumericKeypad {
+        x: 0;
+        y: parent.height - self.height;
+        z: 50;
+        open: root.active_idx >= 31 && root.active_idx <= 32;
+        custom-key-pressed(k) => {
+            root.request-append-digit(k);
+        }
+        backspace-pressed() => {
+            root.request-backspace();
+        }
+        close-pressed() => {
+            root.active_idx = -1;
         }
     }
 }

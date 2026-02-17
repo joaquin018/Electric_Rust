@@ -271,9 +271,14 @@ fn format_inventory(
             labels: &["3.80m"],
         },
         Section {
-            header: "Aislación",
-            range: 31..35,
-            labels: &["Rollo 1", "Rollo 2", "Plancha 1", "Plancha 2"],
+            header: "Lana Vidrio",
+            range: 31..32,
+            labels: &["Lana vidrio"],
+        },
+        Section {
+            header: "Rollo Hidrofuga",
+            range: 32..33,
+            labels: &["Rollo hidrofuga"],
         },
     ];
 
