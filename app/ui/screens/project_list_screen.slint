@@ -1,0 +1,244 @@
+import {
+    Button,
+    VerticalBox,
+    ScrollView,
+    StandardTableView,
+} from "std-widgets.slint";
+
+export component ProjectListScreen inherits Rectangle {
+    in property <[string]> project-names;
+    callback create-project(string);
+    callback delete-project(int);
+    callback open-project(int);
+    callback rename-project(int, string);
+
+    // New project name buffer
+    property <string> new-project-name: "";
+    property <bool> show-create-dialog: false;
+
+    // Rename
+    property <int> rename-index: -1;
+    property <string> rename-buffer: "";
+    property <bool> show-rename-dialog: false;
+
+    // Background
+    background: #121212;
+    VerticalLayout {
+        padding: 24px;
+        spacing: 24px;
+        alignment: start;
+
+        // Header
+        Text {
+            text: "PROYECTOS";
+            font-size: 28px;
+            font-weight: 900;
+            color: #FFFFFF;
+            letter-spacing: 2px;
+        }
+
+        // Project List
+        Flickable {
+            viewport-height: content.preferred-height;
+            content := VerticalBox {
+                spacing: 12px;
+                alignment: start;
+                for name[i] in root.project-names: Rectangle {
+                    height: 80px;
+                    border-radius: 16px;
+                    background: #2C2C2C;
+                    border-width: 1px;
+                    border-color: #FFFFFF10;
+                    HorizontalLayout {
+                        padding-left: 20px;
+                        padding-right: 20px;
+                        spacing: 20px;
+                        alignment: space-between;
+                        
+                        // Icon + Text
+                        HorizontalLayout {
+                            spacing: 16px;
+                            Rectangle {
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 10px;
+                                background: #FFAB4020;
+                                y: (parent.height - self.height) / 2;
+                                Path {
+                                    width: 24px;
+                                    height: 24px;
+                                    x: (parent.width - self.width) / 2;
+                                    y: (parent.height - self.height) / 2;
+                                    commands: "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z";
+                                    fill: #FFAB40;
+                                }
+                            }
+
+                            Text {
+                                text: name;
+                                color: #FFFFFF;
+                                font-size: 18px;
+                                font-weight: 600;
+                                vertical-alignment: center;
+                            }
+                        }
+
+                        // Actions
+                        HorizontalLayout {
+                            spacing: 12px;
+                           // Delete Button
+                           Rectangle {
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 20px;
+                                background: #FF404020;
+                                y: (parent.height - self.height) / 2;
+                                Path {
+                                    width: 20px;
+                                    height: 20px;
+                                    x: (parent.width - self.width) / 2;
+                                    y: (parent.height - self.height) / 2;
+                                    commands: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z";
+                                    fill: #FF4040;
+                                }
+
+                                TouchArea {
+                                    clicked => {
+                                        root.delete-project(i);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Open Click
+                    TouchArea {
+                        z: -1; // Below actions
+                         clicked => {
+                            root.open-project(i);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Floating Action Button
+    Rectangle {
+        x: parent.width - 80px;
+        y: parent.height - 80px;
+        width: 56px;
+        height: 56px;
+        border-radius: 28px;
+        background: #FFAB40;
+        
+        // Shadow
+        drop-shadow-color: #00000066;
+        drop-shadow-blur: 8px;
+        drop-shadow-offset-y: 4px;
+        Path {
+            width: 24px;
+            height: 24px;
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+            commands: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z";
+            fill: #000000;
+        }
+
+        TouchArea {
+            clicked => {
+                root.show-create-dialog = true;
+                root.new-project-name = "Nuevo Proyecto"; // Reset
+            }
+        }
+    }
+
+    // Modal Dialog (Create)
+    if root.show-create-dialog: Rectangle {
+        width: 100%;
+        height: 100%;
+        background: #00000088;
+        TouchArea { } // Block inputs
+
+        Rectangle {
+            width: 300px;
+            height: 200px;
+            background: #1E1E1E;
+            border-radius: 16px;
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+            VerticalLayout {
+                padding: 20px;
+                spacing: 16px;
+                alignment: center;
+                Text {
+                    text: "Crear Nuevo Proyecto";
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #FFFFFF;
+                    horizontal-alignment: center;
+                }
+
+                Rectangle {
+                    height: 40px;
+                    width: 100%;
+                    background: #00000044;
+                    border-radius: 8px;
+                    HorizontalLayout {
+                        padding-left: 10px;
+                        TextInput {
+                            text <=> root.new-project-name;
+                            color: #FFFFFF;
+                            font-size: 16px;
+                            height: 100%;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Rectangle {
+                        height: 40px;
+                        width: 120px;
+                        border-radius: 8px;
+                        background: #FFFFFF20;
+                        Text {
+                            text: "Cancelar";
+                            color: #FFFFFF;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
+
+                        TouchArea {
+                            clicked => {
+                                root.show-create-dialog = false;
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        height: 40px;
+                        width: 120px;
+                        border-radius: 8px;
+                        background: #FFAB40;
+                        Text {
+                            text: "Crear";
+                            color: #000000;
+                            font-weight: 700;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
+
+                        TouchArea {
+                            clicked => {
+                                root.create-project(root.new-project-name);
+                                root.show-create-dialog = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

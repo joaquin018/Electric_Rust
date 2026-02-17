@@ -6,38 +6,73 @@ use slint::Model;
 use std::time::Duration;
 use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize, Clone, Default)]
+struct Project {
+    id: String,
+    name: String,
+    inv_vals: Vec<String>,
+    inv_lengths: Vec<i32>,
+    last_modified: u64,
+}
+
 #[derive(Serialize, Deserialize, Default)]
 struct AppState {
+    projects: Vec<Project>,
+    active_project_id: Option<String>,
+}
+
+// Fallback for migration: old structure
+#[derive(Serialize, Deserialize)]
+struct OldAppState {
     inv_vals: Vec<String>,
     inv_lengths: Vec<i32>,
 }
 
-fn save_state(vals: &slint::ModelRc<slint::SharedString>, lengths: &slint::ModelRc<i32>) {
-    let vals_vec: Vec<String> = vals.iter().map(|s| s.to_string()).collect();
-    let lengths_vec: Vec<i32> = lengths.iter().collect();
-
-    let state = AppState {
-        inv_vals: vals_vec,
-        inv_lengths: lengths_vec,
-    };
-    
+fn save_state(state: &AppState) {
     let dir = android_utils::get_app_files_dir();
-    let path = format!("{}/construct_data.json", dir);
+    let path = format!("{}/construct_data_v2.json", dir);
     
-    if let Ok(json) = serde_json::to_string(&state) {
+    if let Ok(json) = serde_json::to_string(state) {
         let _ = std::fs::write(path, json);
     }
 }
 
-fn load_state() -> Option<AppState> {
+fn load_state() -> AppState {
     let dir = android_utils::get_app_files_dir();
-    let path = format!("{}/construct_data.json", dir);
+    let path_v2 = format!("{}/construct_data_v2.json", dir);
     
-    if let Ok(content) = std::fs::read_to_string(path) {
-        serde_json::from_str(&content).ok()
-    } else {
-        None
+    // Try loading v2
+    if let Ok(content) = std::fs::read_to_string(&path_v2) {
+        if let Ok(state) = serde_json::from_str::<AppState>(&content) {
+            return state;
+        }
     }
+    
+    // Migration: Check for v1
+    let path_v1 = format!("{}/construct_data.json", dir);
+    if let Ok(content) = std::fs::read_to_string(&path_v1) {
+        if let Ok(old_state) = serde_json::from_str::<OldAppState>(&content) {
+            // Create default project from old state
+            let default_project = Project {
+                id: uuid::Uuid::new_v4().to_string(),
+                name: "Proyecto Principal".to_string(),
+                inv_vals: old_state.inv_vals,
+                inv_lengths: old_state.inv_lengths,
+                last_modified: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs(),
+            };
+            
+            let new_state = AppState {
+                projects: vec![default_project.clone()],
+                active_project_id: Some(default_project.id),
+            };
+            save_state(&new_state); // Save as v2
+            return new_state;
+        }
+    }
+
+    // Default if nothing found: Create one empty project so user lands on it?
+    // User wants "create menu". Let's return empty state.
+    AppState::default()
 }
 
 #[cfg(target_os = "android")]
@@ -85,6 +120,198 @@ pub fn run() -> Result<(), slint::PlatformError> {
         });
     }
 
+    // Load State
+    let app_state = load_state();
+    let state_rc = std::rc::Rc::new(std::cell::RefCell::new(app_state));
+
+    // Callbacks
+    
+    // Create Project
+    let state_weak_create = state_rc.clone();
+    let ui_weak_create = ui_handle.clone();
+    ui.on_request_create_project(move |name| {
+        let mut state = state_weak_create.borrow_mut();
+        
+        // Use uuid v4
+        let new_project = Project {
+            id: uuid::Uuid::new_v4().to_string(),
+            name: name.to_string(),
+            inv_vals: vec!["".to_string(); 35],
+            inv_lengths: vec![0; 35],
+            last_modified: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs(),
+        };
+
+        state.projects.push(new_project);
+        save_state(&state);
+
+        // Update UI List
+        if let Some(ui) = ui_weak_create.upgrade() {
+             let names: Vec<slint::SharedString> = state.projects.iter().map(|p| p.name.clone().into()).collect();
+             ui.set_project_names(std::rc::Rc::new(slint::VecModel::from(names)).into());
+        }
+    });
+
+    // Delete Project
+    let state_weak_del = state_rc.clone();
+    let ui_weak_del = ui_handle.clone();
+    ui.on_request_delete_project(move |idx| {
+         let mut state = state_weak_del.borrow_mut();
+         let i = idx as usize;
+         if i < state.projects.len() {
+             let deleted_id = state.projects[i].id.clone();
+             state.projects.remove(i);
+             if state.active_project_id.as_ref() == Some(&deleted_id) {
+                 state.active_project_id = None;
+             }
+             save_state(&state);
+
+             if let Some(ui) = ui_weak_del.upgrade() {
+                 let names: Vec<slint::SharedString> = state.projects.iter().map(|p| p.name.clone().into()).collect();
+                 ui.set_project_names(std::rc::Rc::new(slint::VecModel::from(names)).into());
+             }
+         }
+    });
+
+    // Open Project
+    let state_weak_open = state_rc.clone();
+    let ui_weak_open = ui_handle.clone();
+    ui.on_request_open_project(move |idx| {
+         let mut state = state_weak_open.borrow_mut();
+         let i = idx as usize;
+         if i < state.projects.len() {
+             // 1. Get ID and Data efficiently
+             let new_active_id = state.projects[i].id.clone();
+             let mut iv = state.projects[i].inv_vals.clone();
+             let mut il = state.projects[i].inv_lengths.clone();
+             
+             // 2. Update State
+             state.active_project_id = Some(new_active_id);
+             save_state(&state);
+             
+             // 3. Prepare UI Data
+             if iv.len() < 35 { iv.resize(35, "".to_string()); }
+             let inv_data: Vec<slint::SharedString> = iv.iter().map(|s| s.into()).collect();
+             
+             if il.len() < 35 { il.resize(35, 0); }
+             let il_data: Vec<i32> = il;
+
+             if let Some(ui) = ui_weak_open.upgrade() {
+                  ui.set_inv_vals(std::rc::Rc::new(slint::VecModel::from(inv_data)).into());
+                  ui.set_inv_lengths(std::rc::Rc::new(slint::VecModel::from(il_data)).into());
+                  
+                  // Transition to Editor
+                  ui.set_view_mode(1);
+             }
+         }
+    });
+
+    // Rename Project
+    let state_weak_rename = state_rc.clone();
+    let ui_weak_rename = ui_handle.clone();
+    ui.on_request_rename_project(move |idx, new_name| {
+        let mut state = state_weak_rename.borrow_mut();
+        let i = idx as usize;
+        if i < state.projects.len() {
+            state.projects[i].name = new_name.to_string();
+            save_state(&state);
+             if let Some(ui) = ui_weak_rename.upgrade() {
+                 let names: Vec<slint::SharedString> = state.projects.iter().map(|p| p.name.clone().into()).collect();
+                 ui.set_project_names(std::rc::Rc::new(slint::VecModel::from(names)).into());
+             }
+        }
+    });
+
+    // Append Digit
+    let state_weak_append = state_rc.clone();
+    let ui_weak_append = ui_handle.clone();
+    ui.on_request_append_digit(move |digit| {
+        if let Some(ui) = ui_weak_append.upgrade() {
+             let idx = ui.get_active_idx();
+             if idx >= 0 {
+                 let i = idx as usize;
+                 let model = ui.get_inv_vals(); // Get current model
+                 if let Some(val) = model.row_data(i) {
+                     let s = val.as_str();
+                     if s.len() < 7 {
+                         let new_val = format!("{}{}", s, digit);
+                         model.set_row_data(i, new_val.clone().into());
+                         
+                         let mut state = state_weak_append.borrow_mut();
+                         let active_id = state.active_project_id.clone(); // Clone ID to avoid borrow conflict
+                         if let Some(active_id) = active_id {
+                             if let Some(proj) = state.projects.iter_mut().find(|p| p.id == active_id) {
+                                 if i < proj.inv_vals.len() {
+                                     proj.inv_vals[i] = new_val;
+                                 }
+                             }
+                             save_state(&state); // Save after mutable borrow of proj ends
+                         }
+                     }
+                 }
+             }
+        }
+    });
+
+    // Backspace
+    let state_weak_bs = state_rc.clone();
+    let ui_weak_bs = ui_handle.clone();
+    ui.on_request_backspace(move || {
+        #[cfg(target_os = "android")]
+        android_utils::trigger_haptic_feedback();
+        
+        if let Some(ui) = ui_weak_bs.upgrade() {
+             let idx = ui.get_active_idx();
+             if idx >= 0 {
+                 let i = idx as usize;
+                 let model = ui.get_inv_vals();
+                 if let Some(val) = model.row_data(i) {
+                     let s = val.as_str();
+                     if !s.is_empty() {
+                         let mut chars = s.chars();
+                         chars.next_back();
+                         let new_val = chars.as_str().to_string();
+                         model.set_row_data(i, new_val.clone().into());
+                         
+                         let mut state = state_weak_bs.borrow_mut();
+                         let active_id = state.active_project_id.clone();
+                         if let Some(active_id) = active_id {
+                             if let Some(proj) = state.projects.iter_mut().find(|p| p.id == active_id) {
+                                  if i < proj.inv_vals.len() {
+                                      proj.inv_vals[i] = new_val;
+                                  }
+                             }
+                             save_state(&state);
+                         }
+                     }
+                 }
+             }
+        }
+    });
+
+    // Set Length
+    let state_weak_len = state_rc.clone();
+    let ui_weak_len = ui_handle.clone();
+    ui.on_request_set_length(move |idx, len_idx| {
+        #[cfg(target_os = "android")]
+        android_utils::trigger_haptic_feedback();
+
+        if let Some(ui) = ui_weak_len.upgrade() {
+             let i = idx as usize;
+             let model = ui.get_inv_lengths();
+             model.set_row_data(i, len_idx);
+             
+             let mut state = state_weak_len.borrow_mut();
+             let active_id = state.active_project_id.clone();
+             if let Some(active_id) = active_id {
+                 if let Some(proj) = state.projects.iter_mut().find(|p| p.id == active_id) {
+                      if i < proj.inv_lengths.len() {
+                          proj.inv_lengths[i] = len_idx;
+                      }
+                 }
+                 save_state(&state);
+             }
+        }
+    });
 
     // Selective Share Handler
     let ui_weak_share_sel = ui_handle.clone();
@@ -105,14 +332,12 @@ pub fn run() -> Result<(), slint::PlatformError> {
         }
     });
 
-    // Share Picker Open Handler (Aggressive Redraw for 120Hz)
+    // Share Picker Open Handler
     let ui_weak_share_open = ui_handle.clone();
     ui.on_request_share_picker_open(move || {
         android_utils::trigger_haptic_feedback();
         
         if let Some(_) = ui_weak_share_open.upgrade() {
-            // High-frequency redraws for 600ms to cover 350ms animation + overhead
-            // This forces the Android event loop to stay at maximum refresh rate
             for i in 0..60 {
                 let ui_weak = ui_weak_share_open.clone();
                 slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
@@ -124,36 +349,27 @@ pub fn run() -> Result<(), slint::PlatformError> {
         }
     });
 
-    // Menu Open Handler (Non-Blocking Haptic + Aggressive Redraw)
+    // Menu Open Handler (Sidebar Gesture -> Project List)
     let ui_weak_menu = ui_handle.clone();
     ui.on_request_menu_open(move || {
          android_utils::trigger_haptic_feedback(); 
-         
          if let Some(ui) = ui_weak_menu.upgrade() {
-             ui.set_show_sidebar(true);
+             // Close sidebar (visual drawer) if it was somehow open
+             ui.set_show_sidebar(false);
+             // Switch to Project List (View Mode 0)
+             ui.set_view_mode(0);
              
-             // UNRELENTING WAKE-UP Sidebar (60 frames @ 8ms = 480ms)
-             // This ensures that even on 120Hz devices, the Android event loop is forced to stay awake
-             for i in 0..60 {
-                 let ui_weak = ui_weak_menu.clone();
-                 slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
-                     if let Some(ui) = ui_weak.upgrade() {
-                         ui.window().request_redraw();
-                     }
-                 });
-             }
+             // Wake up for transition
+             ui.window().request_redraw();
          }
     });
 
-    // Keypad Open Handler (Same WAKE-UP Logic)
+    // Keypad Open Handler
     let ui_weak_keypad = ui_handle.clone();
     ui.on_request_activate_item(move |idx| {
          android_utils::trigger_haptic_feedback();
-         
          if let Some(ui) = ui_weak_keypad.upgrade() {
              ui.set_active_idx(idx);
-             
-             // UNRELENTING WAKE-UP Keypad
              for i in 0..60 {
                  let ui_weak = ui_weak_keypad.clone();
                  slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
@@ -164,90 +380,13 @@ pub fn run() -> Result<(), slint::PlatformError> {
              }
          }
     });
-
-    // Data Model for Inventory (Mutable from Rust)
-    let loaded_state = load_state().unwrap_or_default();
     
-    // Ensure we have correct size (35) even if loaded state is different/empty
-    let mut iv = loaded_state.inv_vals;
-    if iv.len() < 35 { iv.resize(35, "".to_string()); }
-    
-    let inv_data: Vec<slint::SharedString> = iv.iter().map(|s| s.into()).collect();
-    let inv_model = std::rc::Rc::new(slint::VecModel::from(inv_data));
-    ui.set_inv_vals(inv_model.clone().into());
-
-    // Data Model for Lengths
-    let mut il = loaded_state.inv_lengths;
-    if il.len() < 35 { il.resize(35, 0); }
-    
-    let length_data: Vec<i32> = il;
-    let length_model = std::rc::Rc::new(slint::VecModel::from(length_data));
-    ui.set_inv_lengths(length_model.clone().into());
-
-    // Length Set Handler
-    let length_model_weak = length_model.clone();
-    let inv_model_weak_for_save = inv_model.clone();
-    let ui_weak_len = ui_handle.clone();
-    ui.on_request_set_length(move |idx, len_idx| {
-        #[cfg(target_os = "android")]
-        android_utils::trigger_haptic_feedback();
-
-        if let Some(_ui) = ui_weak_len.upgrade() {
-            let i = idx as usize;
-            if i < length_model_weak.row_count() {
-                length_model_weak.set_row_data(i, len_idx);
-                save_state(&inv_model_weak_for_save.clone().into(), &length_model_weak.clone().into());
-            }
-        }
-    });
-
-    // Append Digit Handler (7-char Limit)
-    let model_weak = inv_model.clone();
-    let len_model_weak_for_save = length_model.clone();
-    let ui_weak_input = ui_handle.clone();
-    ui.on_request_append_digit(move |digit| {
-        if let Some(ui) = ui_weak_input.upgrade() {
-             let idx = ui.get_active_idx();
-             if idx >= 0 {
-                 let i = idx as usize;
-                 // Row data access from VecModel is cheap
-                 if let Some(val) = model_weak.row_data(i) {
-                     let s = val.as_str();
-                     if s.len() < 7 {
-                         let new_val = format!("{}{}", s, digit);
-                         model_weak.set_row_data(i, new_val.into());
-                         save_state(&model_weak.clone().into(), &len_model_weak_for_save.clone().into());
-                     }
-                 }
-             }
-        }
-    });
-    
-    // Backspace Handler
-    let model_weak_bs = inv_model.clone();
-    let len_model_weak_bs = length_model.clone();
-    let ui_weak_bs = ui_handle.clone();
-    ui.on_request_backspace(move || {
-        #[cfg(target_os = "android")]
-        android_utils::trigger_haptic_feedback();
-        
-        if let Some(ui) = ui_weak_bs.upgrade() {
-             let idx = ui.get_active_idx();
-             if idx >= 0 {
-                 let i = idx as usize;
-                 if let Some(val) = model_weak_bs.row_data(i) {
-                     let s = val.as_str();
-                     if !s.is_empty() {
-                         let mut chars = s.chars();
-                         chars.next_back();
-                         let new_val = chars.as_str();
-                         model_weak_bs.set_row_data(i, new_val.into());
-                         save_state(&model_weak_bs.clone().into(), &len_model_weak_bs.clone().into());
-                     }
-                 }
-             }
-        }
-    });
+    // Initial Load - Populate Project List
+    {
+        let state = state_rc.borrow();
+        let names: Vec<slint::SharedString> = state.projects.iter().map(|p| p.name.clone().into()).collect();
+        ui.set_project_names(std::rc::Rc::new(slint::VecModel::from(names)).into());
+    }
 
     ui.run()
 }

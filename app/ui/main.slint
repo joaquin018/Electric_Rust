@@ -6,12 +6,24 @@ import { RoofScreen } from "screens/roof_screen.slint";
 import { InsulationScreen } from "screens/insulation_screen.slint";
 import { SharePicker } from "components/share_picker.slint";
 import { SideBar } from "components/sidebar.slint";
+import { ProjectListScreen } from "screens/project_list_screen.slint";
 
 export component AppWindow inherits Window {
     title: "Construct";
     background: #121212;
     min-width: 360px;
     min-height: 640px;
+    
+    // View Mode: 0 = Project List, 1 = Editor
+    in-out property <int> view-mode: 0;
+    
+    // Project Data
+    in-out property <[string]> project-names: [];
+    callback request-create-project(string);
+    callback request-delete-project(int);
+    callback request-open-project(int);
+    callback request-rename-project(int, string);
+    callback invoke-transition-to-editor();
     in-out property <[string]> inv_vals: [
         "",
         "",
@@ -88,147 +100,269 @@ export component AppWindow inherits Window {
     ];
     in-out property <int> active_idx: -1;
     in-out property <int> current_screen: 0; // 0: Base, 1: Puerta, 2: Tingle/Techo, 3: Aislacion
-    in-out property <length> viewport-y-tracker: 0px; // Tracks scroll position globally for 120Hz wake-up logic
+    in-out property <length> viewport-y-tracker: 0px;
     in-out property <bool> show_share_picker: false;
     
     // Sidebar State
     in-out property <bool> show_sidebar: false;
     
     // Callbacks
-    callback request-selective-share(bool, bool, bool, bool); // base, door, roof, insulation
-    callback request-menu-open(); // New callback for Rust
-    callback request-activate-item(int); // New callback for Keypad
-
-    callback request-append-digit(string); // New callback for digit input
-    callback request-set-length(int, int); // idx, length_idx
-    callback request-backspace(); // Backspace handler (Rust)
-    callback request-share-picker-open(); // Notify Rust to wake up event loop for share menu
-
-
+    callback request-selective-share(bool, bool, bool, bool);
+    callback request-menu-open();
+    callback request-activate-item(int);
+    callback request-append-digit(string);
+    callback request-set-length(int, int);
+    callback request-backspace();
+    callback request-share-picker-open();
+    invoke-transition-to-editor => {
+        root.view-mode = 1;
+    }
     Rectangle {
         width: 100%;
         height: 100%;
-        if (root.current_screen == 0): BaseScreen {
+        
+        // Project List View
+        if (root.view-mode == 0): ProjectListScreen {
             width: 100%;
             height: 100%;
-            inv_vals <=> root.inv_vals;
-            inv_lengths <=> root.inv_lengths;
-            active_idx <=> root.active_idx;
-            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
-            selective-share-pressed => {
-                root.show_share_picker = true;
-                root.request-share-picker-open();
+            project-names <=> root.project-names;
+            create-project(name) => {
+                root.request-create-project(name);
             }
-            trash-pressed => {
-                // Future Implementation
+            delete-project(idx) => {
+                root.request-delete-project(idx);
             }
-            request-activate-item(idx) => {
-                root.request-activate-item(idx);
+            open-project(idx) => {
+                root.request-open-project(idx);
             }
-            request-append-digit(k) => {
-                root.request-append-digit(k);
-            }
-            request-set-length(idx, len) => {
-                root.request-set-length(idx, len);
-            }
-            request-backspace => {
-                root.request-backspace();
-            }
-        }
-        if (root.current_screen == 1): DoorScreen {
-            width: 100%;
-            height: 100%;
-            inv_vals <=> root.inv_vals;
-            inv_lengths <=> root.inv_lengths;
-            active_idx <=> root.active_idx;
-            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
-            selective-share-pressed => {
-                root.show_share_picker = true;
-                root.request-share-picker-open();
-            }
-            trash-pressed => {
-                // Future Implementation
-            }
-            request-activate-item(idx) => {
-                root.request-activate-item(idx);
-            }
-            request-append-digit(k) => {
-                root.request-append-digit(k);
-            }
-            request-backspace => {
-                root.request-backspace();
-            }
-        }
-        if (root.current_screen == 2): RoofScreen {
-            width: 100%;
-            height: 100%;
-            inv_vals <=> root.inv_vals;
-            inv_lengths <=> root.inv_lengths;
-            active_idx <=> root.active_idx;
-            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
-            selective-share-pressed => {
-                root.show_share_picker = true;
-                root.request-share-picker-open();
-            }
-            trash-pressed => {
-                // Future Implementation
-            }
-            request-activate-item(idx) => {
-                root.request-activate-item(idx);
-            }
-            request-append-digit(k) => {
-                root.request-append-digit(k);
-            }
-            request-backspace => {
-                root.request-backspace();
-            }
-        }
-        if (root.current_screen == 3): InsulationScreen {
-            width: 100%;
-            height: 100%;
-            inv_vals <=> root.inv_vals;
-            inv_lengths <=> root.inv_lengths;
-            active_idx <=> root.active_idx;
-            viewport-y <=> root.viewport-y-tracker; // Global Scroll Tracking
-            selective-share-pressed => {
-                root.show_share_picker = true;
-                root.request-share-picker-open();
-            }
-            trash-pressed => {
-                // Future Implementation
-            }
-            request-activate-item(idx) => {
-                root.request-activate-item(idx);
-            }
-            request-append-digit(k) => {
-                root.request-append-digit(k);
-            }
-            request-backspace => {
-                root.request-backspace();
-            }
-        }
-        SharePicker {
-            open <=> root.show_share_picker;
-            back-pressed => {
-                root.show_share_picker = false;
-            }
-            share-confirmed(b, d, r, i) => {
-                root.request-selective-share(b, d, r, i);
+            rename-project(idx, name) => {
+                root.request-rename-project(idx, name);
             }
         }
 
-        SideBar {
-            open: root.show_sidebar;
-            current-screen: root.current_screen;
-            close-requested => {
-                root.show_sidebar = false;
+        // Editor View
+        if (root.view-mode == 1): Rectangle {
+            width: 100%;
+            height: 100%;
+            VerticalLayout {
+                // Main Content Area
+                Rectangle {
+                    vertical-stretch: 1;
+                    if (root.current_screen == 0): BaseScreen {
+                        width: 100%;
+                        height: 100%;
+                        inv_vals <=> root.inv_vals;
+                        inv_lengths <=> root.inv_lengths;
+                        active_idx <=> root.active_idx;
+                        viewport-y <=> root.viewport-y-tracker;
+                        selective-share-pressed => {
+                            root.show_share_picker = true;
+                            root.request-share-picker-open();
+                        }
+                        trash-pressed => { /* Future */ }
+                        request-activate-item(idx) => {
+                            root.request-activate-item(idx);
+                        }
+                        request-append-digit(k) => {
+                            root.request-append-digit(k);
+                        }
+                        request-set-length(idx, len) => {
+                            root.request-set-length(idx, len);
+                        }
+                        request-backspace => {
+                            root.request-backspace();
+                        }
+                    }
+                    if (root.current_screen == 1): DoorScreen {
+                        width: 100%;
+                        height: 100%;
+                        inv_vals <=> root.inv_vals;
+                        inv_lengths <=> root.inv_lengths;
+                        active_idx <=> root.active_idx;
+                        viewport-y <=> root.viewport-y-tracker;
+                        selective-share-pressed => {
+                            root.show_share_picker = true;
+                            root.request-share-picker-open();
+                        }
+                        trash-pressed => { /* Future */ }
+                        request-activate-item(idx) => {
+                            root.request-activate-item(idx);
+                        }
+                        request-append-digit(k) => {
+                            root.request-append-digit(k);
+                        }
+                        request-backspace => {
+                            root.request-backspace();
+                        }
+                    }
+                    if (root.current_screen == 2): RoofScreen {
+                        width: 100%;
+                        height: 100%;
+                        inv_vals <=> root.inv_vals;
+                        inv_lengths <=> root.inv_lengths;
+                        active_idx <=> root.active_idx;
+                        viewport-y <=> root.viewport-y-tracker;
+                        selective-share-pressed => {
+                            root.show_share_picker = true;
+                            root.request-share-picker-open();
+                        }
+                        trash-pressed => { /* Future */ }
+                        request-activate-item(idx) => {
+                            root.request-activate-item(idx);
+                        }
+                        request-append-digit(k) => {
+                            root.request-append-digit(k);
+                        }
+                        request-backspace => {
+                            root.request-backspace();
+                        }
+                    }
+                    if (root.current_screen == 3): InsulationScreen {
+                        width: 100%;
+                        height: 100%;
+                        inv_vals <=> root.inv_vals;
+                        inv_lengths <=> root.inv_lengths;
+                        active_idx <=> root.active_idx;
+                        viewport-y <=> root.viewport-y-tracker;
+                        selective-share-pressed => {
+                            root.show_share_picker = true;
+                            root.request-share-picker-open();
+                        }
+                        trash-pressed => { /* Future */ }
+                        request-activate-item(idx) => {
+                            root.request-activate-item(idx);
+                        }
+                        request-append-digit(k) => {
+                            root.request-append-digit(k);
+                        }
+                        request-backspace => {
+                            root.request-backspace();
+                        }
+                    }
+                }
+
+                // Bottom Navigation Bar
+                Rectangle {
+                    height: 60px;
+                    background: #1E1E1E;
+                    border-width: 1px;
+                    border-color: #FFFFFF10;
+                    HorizontalLayout {
+                        padding: 0px;
+                        spacing: 0px;
+                        
+                        // Base Button
+                        Rectangle {
+                            horizontal-stretch: 1;
+                            background: root.current_screen == 0 ? #FFFFFF10 : transparent;
+                            TouchArea {
+                                clicked => {
+                                    root.current_screen = 0;
+                                }
+                            }
+
+                            VerticalLayout {
+                                alignment: center;
+                                Text {
+                                    text: "Base";
+                                    color: root.current_screen == 0 ? #FFAB40 : #FFFFFF88;
+                                    font-size: 14px;
+                                    font-weight: 700;
+                                    horizontal-alignment: center;
+                                }
+                            }
+                        }
+                        // Door Button
+                        Rectangle {
+                            horizontal-stretch: 1;
+                            background: root.current_screen == 1 ? #FFFFFF10 : transparent;
+                            TouchArea {
+                                clicked => {
+                                    root.current_screen = 1;
+                                }
+                            }
+
+                            VerticalLayout {
+                                alignment: center;
+                                Text {
+                                    text: "Puerta";
+                                    color: root.current_screen == 1 ? #FFAB40 : #FFFFFF88;
+                                    font-size: 14px;
+                                    font-weight: 700;
+                                    horizontal-alignment: center;
+                                }
+                            }
+                        }
+                        // Roof Button
+                        Rectangle {
+                            horizontal-stretch: 1;
+                            background: root.current_screen == 2 ? #FFFFFF10 : transparent;
+                            TouchArea {
+                                clicked => {
+                                    root.current_screen = 2;
+                                }
+                            }
+
+                            VerticalLayout {
+                                alignment: center;
+                                Text {
+                                    text: "Techo";
+                                    color: root.current_screen == 2 ? #FFAB40 : #FFFFFF88;
+                                    font-size: 14px;
+                                    font-weight: 700;
+                                    horizontal-alignment: center;
+                                }
+                            }
+                        }
+                        // Insulation Button
+                        Rectangle {
+                            horizontal-stretch: 1;
+                            background: root.current_screen == 3 ? #FFFFFF10 : transparent;
+                            TouchArea {
+                                clicked => {
+                                    root.current_screen = 3;
+                                }
+                            }
+
+                            VerticalLayout {
+                                alignment: center;
+                                Text {
+                                    text: "Aisl.";
+                                    color: root.current_screen == 3 ? #FFAB40 : #FFFFFF88;
+                                    font-size: 14px;
+                                    font-weight: 700;
+                                    horizontal-alignment: center;
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            open-requested => {
-                root.request-menu-open();
+            
+            // Gesture Detector (Invisible SideBar) - Placed after content to ensure z-order on top
+            SideBar {
+                open: root.show_sidebar;
+                current-screen: root.current_screen;
+                close-requested => {
+                    root.show_sidebar = false;
+                }
+                open-requested => {
+                    root.request-menu-open();
+                }
+                navigate-to(idx) => {
+                    root.current_screen = idx;
+                    root.show_sidebar = false;
+                }
             }
-            navigate-to(idx) => {
-                root.current_screen = idx;
-                root.show_sidebar = false;
+
+            SharePicker {
+                open <=> root.show_share_picker;
+                back-pressed => {
+                    root.show_share_picker = false;
+                }
+                share-confirmed(b, d, r, i) => {
+                    root.request-selective-share(b, d, r, i);
+                }
             }
         }
     }
