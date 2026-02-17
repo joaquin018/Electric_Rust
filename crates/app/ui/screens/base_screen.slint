@@ -10,7 +10,7 @@ export component BaseScreen inherits Rectangle {
     in-out property <[int]> inv_lengths; // indices parallel to inv_vals
     in-out property <int> active_idx;
     callback selective-share-pressed();
-    callback full-share-pressed();
+    callback trash-pressed();
 
     callback request-activate-item(int);
     callback request-append-digit(string);
@@ -22,8 +22,8 @@ export component BaseScreen inherits Rectangle {
             selective-share-pressed => {
                 root.selective-share-pressed();
             }
-            full-share-pressed => {
-                root.full-share-pressed();
+            trash-pressed => {
+                root.trash-pressed();
             }
         }
 

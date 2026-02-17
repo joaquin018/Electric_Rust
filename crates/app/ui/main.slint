@@ -94,7 +94,6 @@ export component AppWindow inherits Window {
     in-out property <bool> show_sidebar: false;
     
     // Callbacks
-    callback request-full-share();
     callback request-selective-share(bool, bool, bool, bool); // base, door, roof, insulation
     callback request-menu-open(); // New callback for Rust
     callback request-activate-item(int); // New callback for Keypad
@@ -115,8 +114,8 @@ export component AppWindow inherits Window {
             selective-share-pressed => {
                 root.show_share_picker = true;
             }
-            full-share-pressed => {
-                root.request-full-share();
+            trash-pressed => {
+                // Future Implementation
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
@@ -141,8 +140,8 @@ export component AppWindow inherits Window {
             selective-share-pressed => {
                 root.show_share_picker = true;
             }
-            full-share-pressed => {
-                root.request-full-share();
+            trash-pressed => {
+                // Future Implementation
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
@@ -164,8 +163,8 @@ export component AppWindow inherits Window {
             selective-share-pressed => {
                 root.show_share_picker = true;
             }
-            full-share-pressed => {
-                root.request-full-share();
+            trash-pressed => {
+                // Future Implementation
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);
@@ -187,8 +186,8 @@ export component AppWindow inherits Window {
             selective-share-pressed => {
                 root.show_share_picker = true;
             }
-            full-share-pressed => {
-                root.request-full-share();
+            trash-pressed => {
+                // Future Implementation
             }
             request-activate-item(idx) => {
                 root.request-activate-item(idx);

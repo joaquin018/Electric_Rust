@@ -58,14 +58,7 @@ pub fn run() -> Result<(), slint::PlatformError> {
     let ui = AppWindow::new()?;
     let ui_handle = ui.as_weak();
 
-    // Full Share Handler
-    let ui_weak_share_full = ui_handle.clone();
-    ui.on_request_full_share(move || {
-        if let Some(ui) = ui_weak_share_full.upgrade() {
-            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths(), true, true, true, true);
-            android_utils::share_text(&data);
-        }
-    });
+
 
     // Selective Share Handler
     let ui_weak_share_sel = ui_handle.clone();

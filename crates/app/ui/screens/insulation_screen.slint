@@ -9,7 +9,7 @@ export component InsulationScreen inherits Rectangle {
     in-out property <[int]> inv_lengths;
     in-out property <int> active_idx;
     callback selective-share-pressed();
-    callback full-share-pressed();
+    callback trash-pressed();
     callback request-activate-item(int);
     callback request-append-digit(string);
     callback request-backspace();
@@ -18,8 +18,8 @@ export component InsulationScreen inherits Rectangle {
             selective-share-pressed => {
                 root.selective-share-pressed();
             }
-            full-share-pressed => {
-                root.full-share-pressed();
+            trash-pressed => {
+                root.trash-pressed();
             }
         }
 
