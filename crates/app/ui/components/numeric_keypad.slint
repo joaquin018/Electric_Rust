@@ -4,16 +4,28 @@ component KeyButton inherits Rectangle {
     in property <string> text;
     in property <bool> special: false;
     callback clicked;
+    in property <string> icon-path: ""; // New property for icon support
+
     background: touch.pressed ? #333333 : (special ? #2a2a2a : #252525);
     border-radius: 8px;
     height: 50px;
-    Text {
+
+    if (root.icon-path == ""): Text {
         text: root.text;
         color: special ? #ff9d00 : white;
         font-size: 24px;
         font-weight: 500;
         vertical-alignment: center;
         horizontal-alignment: center;
+    }
+
+    if (root.icon-path != ""): Path {
+        width: 24px;
+        height: 24px;
+        commands: root.icon-path;
+        fill: special ? #ff9d00 : white;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
     }
 
     touch := TouchArea {
@@ -181,7 +193,8 @@ export component NumericKeypad inherits Rectangle {
                     }
 
                     KeyButton {
-                        text: "⌫"; // Backspace symbol
+                        // Material Design Backspace Icon
+                        icon-path: "M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z";
                         special: true;
                         clicked => {
                             root.backspace-pressed();
