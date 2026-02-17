@@ -184,7 +184,7 @@ pub fn get_system_bar_bottom() -> i32 {
         // This might return null if not attached yet.
         let insets = match env.call_method(&decor_view, "getRootWindowInsets", "()Landroid/view/WindowInsets;", &[]) {
             Ok(v) => match v.l() { Ok(o) => o, Err(_) => return 0 },
-            Err(_) => return 0, // Fallback handled by caller? or assume safe default?
+            Err(_) => return 0,
         };
         
         if insets.is_null() {

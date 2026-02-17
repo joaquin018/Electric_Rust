@@ -13,24 +13,12 @@ export component NumericKeypad inherits Rectangle {
     // Solo visible cuando está abierto o animándose
     visible: root.open || panel.y < root.height;
 
-    // Backdrop: tocar fuera cierra el teclado
-    Rectangle {
-        background: black;
-        opacity: root.open ? 0.3 : 0;
-        animate opacity { duration: 200ms; }
-        TouchArea {
-            clicked => {
-                root.close-pressed();
-            }
-        }
-    }
-
-    // Panel deslizante (sin botón LISTO, más compacto)
+    // Panel deslizante compacto (sin botón LISTO)
     panel := Rectangle {
         background: #1e1e1e;
         border-top-left-radius: 16px;
         border-top-right-radius: 16px;
-        height: 280px + root.bottom-padding;
+        height: 270px + root.bottom-padding;
         width: 100%;
         y: root.open ? parent.height - self.height : parent.height;
         animate y {

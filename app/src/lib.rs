@@ -408,6 +408,37 @@ pub fn run() -> Result<(), slint::PlatformError> {
         let names: Vec<slint::SharedString> = state.projects.iter().map(|p| p.name.clone().into()).collect();
         ui.set_project_names(std::rc::Rc::new(slint::VecModel::from(names)).into());
     }
+    // Back Button Handler (Android)
+    // When Android's back button is pressed, Slint marks it as unhandled,
+    // causing the Activity to call finish(). This triggers on_close_requested.
+    // If the keypad (or share picker / sidebar) is open, we close it instead of quitting.
+    let ui_weak_back = ui_handle.clone();
+    ui.window().on_close_requested(move || {
+        if let Some(ui) = ui_weak_back.upgrade() {
+            // If keypad is open, close it
+            if ui.get_active_idx() != -1 {
+                ui.set_active_idx(-1);
+                return slint::CloseRequestResponse::KeepWindowShown;
+            }
+            // If share picker is open, close it
+            if ui.get_show_share_picker() {
+                ui.set_show_share_picker(false);
+                return slint::CloseRequestResponse::KeepWindowShown;
+            }
+            // If sidebar is open, close it
+            if ui.get_show_sidebar() {
+                ui.set_show_sidebar(false);
+                return slint::CloseRequestResponse::KeepWindowShown;
+            }
+            // If in editor view, go back to project list
+            if ui.get_view_mode() == 1 {
+                ui.set_view_mode(0);
+                ui.set_active_idx(-1);
+                return slint::CloseRequestResponse::KeepWindowShown;
+            }
+        }
+        slint::CloseRequestResponse::HideWindow
+    });
 
     ui.run()
 }
