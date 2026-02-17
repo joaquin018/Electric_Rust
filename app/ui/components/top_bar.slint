@@ -56,10 +56,9 @@ export component TopBar inherits Rectangle {
     HorizontalLayout {
         padding-top: 45px;
         padding-left: 20px;
-        padding-right: 5px;
+        padding-right: 0px;
         spacing: 5px;
-        alignment: start;
-
+        // alignment: start; // Removed to allow spacer to push content to edges
         Text {
             text: "CONSTRUCT";
             font-size: 24px;
