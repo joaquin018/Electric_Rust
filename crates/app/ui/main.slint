@@ -213,6 +213,7 @@ export component AppWindow inherits Window {
 
         SideBar {
             open: root.show_sidebar;
+            current-screen: root.current_screen;
             close-requested => {
                 root.show_sidebar = false;
             }

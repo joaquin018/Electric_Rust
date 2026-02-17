@@ -5,6 +5,7 @@ export component SideBar inherits Rectangle {
     callback close-requested();
     callback open-requested(); // NEW
     callback navigate-to(int); // 0: Base
+    in-out property <int> current-screen: 0;
 
     // Edge Swipe Detector (Trigger)
     TouchArea {
@@ -96,9 +97,9 @@ export component SideBar inherits Rectangle {
             Rectangle {
                 height: 60px;
                 border-radius: 16px;
-                background: #2C2C2C; // Slightly lighter than bg
+                background: root.current-screen == 0 ? #FFAB4015 : #2C2C2C; // Slightly lighter than bg
                 border-width: 1px;
-                border-color: #FFAB40;
+                border-color: root.current-screen == 0 ? #FFAB40 : #FFFFFF10;
                 TouchArea {
                     clicked => {
                         root.navigate-to(0);
@@ -157,9 +158,9 @@ export component SideBar inherits Rectangle {
             Rectangle {
                 height: 60px;
                 border-radius: 16px;
-                background: #2C2C2C;
+                background: root.current-screen == 1 ? #FFAB4015 : #2C2C2C;
                 border-width: 1px;
-                border-color: #FFFFFF10;
+                border-color: root.current-screen == 1 ? #FFAB40 : #FFFFFF10;
                 TouchArea {
                     clicked => {
                         root.navigate-to(1);
@@ -209,9 +210,9 @@ export component SideBar inherits Rectangle {
             Rectangle {
                 height: 60px;
                 border-radius: 16px;
-                background: #2C2C2C;
+                background: root.current-screen == 2 ? #FFAB4015 : #2C2C2C;
                 border-width: 1px;
-                border-color: #FFFFFF10;
+                border-color: root.current-screen == 2 ? #FFAB40 : #FFFFFF10;
                 TouchArea {
                     clicked => {
                         root.navigate-to(2);
@@ -261,9 +262,9 @@ export component SideBar inherits Rectangle {
             Rectangle {
                 height: 60px;
                 border-radius: 16px;
-                background: #2C2C2C;
+                background: root.current-screen == 3 ? #FFAB4015 : #2C2C2C;
                 border-width: 1px;
-                border-color: #FFFFFF10;
+                border-color: root.current-screen == 3 ? #FFAB40 : #FFFFFF10;
                 TouchArea {
                     clicked => {
                         root.navigate-to(3);

@@ -46,10 +46,10 @@ export component SharePicker inherits Rectangle {
             alignment: start;
             Text {
                 text: "SELECCIONAR SECCIONES";
-                color: #FFAB40;
-                font-size: 14px;
-                font-weight: 800;
-                letter-spacing: 2px;
+                color: white;
+                font-size: 16px;
+                font-weight: 900;
+                letter-spacing: 2.5px;
                 horizontal-alignment: center;
             }
 
@@ -58,12 +58,13 @@ export component SharePicker inherits Rectangle {
                 spacing: 12px;
                 
                 // Item: Base
+                // Item: Base
                 Rectangle {
-                    height: 50px;
-                    border_radius: 12px;
-                    background: root.share-base ? #FFAB4022 : #2C2C2C;
-                    border-width: root.share-base ? 1.5px : 0px;
-                    border-color: #FFAB40;
+                    height: 54px;
+                    border_radius: 14px;
+                    background: root.share-base ? #FFAB4015 : #252525;
+                    border-width: 1px;
+                    border-color: root.share-base ? #FFAB40 : #FFFFFF08;
                     TouchArea {
                         clicked => {
                             root.share-base = !root.share-base;
@@ -72,20 +73,21 @@ export component SharePicker inherits Rectangle {
 
                     Text {
                         text: "BASE";
-                        x: 16px;
+                        x: 20px;
                         vertical-alignment: center;
-                        color: root.share-base ? #FFAB40 : #FFFFFF;
-                        font-weight: root.share-base ? 700 : 400;
+                        color: root.share-base ? #FFAB40 : #FFFFFFCC;
+                        font-weight: root.share-base ? 800 : 500;
+                        letter-spacing: 1px;
                     }
                 }
 
                 // Item: Puerta
                 Rectangle {
-                    height: 50px;
-                    border_radius: 12px;
-                    background: root.share-door ? #FFAB4022 : #2C2C2C;
-                    border-width: root.share-door ? 1.5px : 0px;
-                    border-color: #FFAB40;
+                    height: 54px;
+                    border_radius: 14px;
+                    background: root.share-door ? #FFAB4015 : #252525;
+                    border-width: 1px;
+                    border-color: root.share-door ? #FFAB40 : #FFFFFF08;
                     TouchArea {
                         clicked => {
                             root.share-door = !root.share-door;
@@ -94,20 +96,21 @@ export component SharePicker inherits Rectangle {
 
                     Text {
                         text: "PUERTA";
-                        x: 16px;
+                        x: 20px;
                         vertical-alignment: center;
-                        color: root.share-door ? #FFAB40 : #FFFFFF;
-                        font-weight: root.share-door ? 700 : 400;
+                        color: root.share-door ? #FFAB40 : #FFFFFFCC;
+                        font-weight: root.share-door ? 800 : 500;
+                        letter-spacing: 1px;
                     }
                 }
 
                 // Item: Tingle y Techo
                 Rectangle {
-                    height: 50px;
-                    border_radius: 12px;
-                    background: root.share-roof ? #FFAB4022 : #2C2C2C;
-                    border-width: root.share-roof ? 1.5px : 0px;
-                    border-color: #FFAB40;
+                    height: 54px;
+                    border_radius: 14px;
+                    background: root.share-roof ? #FFAB4015 : #252525;
+                    border-width: 1px;
+                    border-color: root.share-roof ? #FFAB40 : #FFFFFF08;
                     TouchArea {
                         clicked => {
                             root.share-roof = !root.share-roof;
@@ -116,20 +119,21 @@ export component SharePicker inherits Rectangle {
 
                     Text {
                         text: "TINGLE Y TECHO";
-                        x: 16px;
+                        x: 20px;
                         vertical-alignment: center;
-                        color: root.share-roof ? #FFAB40 : #FFFFFF;
-                        font-weight: root.share-roof ? 700 : 400;
+                        color: root.share-roof ? #FFAB40 : #FFFFFFCC;
+                        font-weight: root.share-roof ? 800 : 500;
+                        letter-spacing: 1px;
                     }
                 }
 
                 // Item: Aislacion
                 Rectangle {
-                    height: 50px;
-                    border_radius: 12px;
-                    background: root.share-insulation ? #FFAB4022 : #2C2C2C;
-                    border-width: root.share-insulation ? 1.5px : 0px;
-                    border-color: #FFAB40;
+                    height: 54px;
+                    border_radius: 14px;
+                    background: root.share-insulation ? #FFAB4015 : #252525;
+                    border-width: 1px;
+                    border-color: root.share-insulation ? #FFAB40 : #FFFFFF08;
                     TouchArea {
                         clicked => {
                             root.share-insulation = !root.share-insulation;
@@ -138,10 +142,11 @@ export component SharePicker inherits Rectangle {
 
                     Text {
                         text: "AISLACIÓN";
-                        x: 16px;
+                        x: 20px;
                         vertical-alignment: center;
-                        color: root.share-insulation ? #FFAB40 : #FFFFFF;
-                        font-weight: root.share-insulation ? 700 : 400;
+                        color: root.share-insulation ? #FFAB40 : #FFFFFFCC;
+                        font-weight: root.share-insulation ? 800 : 500;
+                        letter-spacing: 1px;
                     }
                 }
             }
@@ -150,30 +155,35 @@ export component SharePicker inherits Rectangle {
                 vertical-stretch: 1;
             } // Spacer
 
-            // Buttons
-            HorizontalLayout {
-                spacing: 12px;
-                height: 50px;
-
-                // Share Button (Selective)
-                Rectangle {
-                    background: #03A9F4;
-                    border-radius: 12px;
-                    horizontal-stretch: 1;
-                    TouchArea {
-                        clicked => {
-                            root.share-confirmed(root.share-base, root.share-door, root.share-roof, root.share-insulation);
-                            root.open = false;
+            // Button Wrapper for centering
+            VerticalLayout {
+                alignment: center;
+                HorizontalLayout {
+                    alignment: center;
+                    // Share Button (Selective)
+                    Rectangle {
+                        width: 200px;
+                        height: 50px;
+                        background: #FFAB40;
+                        border-radius: 25px; // Fully roundedpill
+                        drop-shadow-blur: 8px;
+                        drop-shadow-color: #00000044;
+                        TouchArea {
+                            clicked => {
+                                root.share-confirmed(root.share-base, root.share-door, root.share-roof, root.share-insulation);
+                                root.open = false;
+                            }
                         }
-                    }
 
-                    Text {
-                        text: "COMPARTIR SELECCIÓN";
-                        color: white;
-                        font-weight: 800;
-                        font-size: 11px;
-                        vertical-alignment: center;
-                        horizontal-alignment: center;
+                        Text {
+                            text: "COMPARTIR";
+                            color: #1E1E1E; // Contrast text
+                            font-weight: 900;
+                            font-size: 14px;
+                            letter-spacing: 1px;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
                     }
                 }
             }
