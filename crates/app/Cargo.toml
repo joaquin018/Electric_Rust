@@ -1,6 +1,6 @@
 [package]
 name = "construct"
-version = "1.9.10"
+version = "2.0.0"
 edition = "2021"
 
 [package.metadata.android]
