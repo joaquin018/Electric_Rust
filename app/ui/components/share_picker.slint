@@ -7,8 +7,9 @@ export component SharePicker inherits Rectangle {
     in-out property <bool> share-door: false;
     in-out property <bool> share-roof: false;
     in-out property <bool> share-insulation: false;
+    in-out property <bool> share-interior: false;
     callback back-pressed();
-    callback share-confirmed(bool, bool, bool, bool);
+    callback share-confirmed(bool, bool, bool, bool, bool);
 
     // Backdrop
     Rectangle {
@@ -96,6 +97,15 @@ export component SharePicker inherits Rectangle {
                         root.share-insulation = !root.share-insulation;
                     }
                 }
+
+                // Item: Interior
+                SelectionItem {
+                    text: "INTERIOR";
+                    selected: root.share-interior;
+                    clicked => {
+                        root.share-interior = !root.share-interior;
+                    }
+                }
             }
 
             Rectangle {
@@ -117,7 +127,7 @@ export component SharePicker inherits Rectangle {
                         drop-shadow-color: #00000044;
                         TouchArea {
                             clicked => {
-                                root.share-confirmed(root.share-base, root.share-door, root.share-roof, root.share-insulation);
+                                root.share-confirmed(root.share-base, root.share-door, root.share-roof, root.share-insulation, root.share-interior);
                                 root.open = false;
                             }
                         }

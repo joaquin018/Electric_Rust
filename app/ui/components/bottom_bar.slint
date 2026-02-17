@@ -72,7 +72,7 @@ export component BottomBar inherits Rectangle {
             VerticalLayout {
                 alignment: center;
                 Text {
-                    text: "Techo";
+                    text: "Tingle y techo";
                     color: root.current-screen == 2 ? #FFAB40 : #FFFFFF88;
                     font-size: 14px;
                     font-weight: 700;
@@ -94,8 +94,30 @@ export component BottomBar inherits Rectangle {
             VerticalLayout {
                 alignment: center;
                 Text {
-                    text: "Aisl.";
+                    text: "Aislación";
                     color: root.current-screen == 3 ? #FFAB40 : #FFFFFF88;
+                    font-size: 14px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+        
+        // Interior Button
+        Rectangle {
+            horizontal-stretch: 1;
+            background: root.current-screen == 4 ? #FFFFFF10 : transparent;
+            TouchArea {
+                clicked => {
+                    root.current-screen = 4;
+                }
+            }
+
+            VerticalLayout {
+                alignment: center;
+                Text {
+                    text: "Interior";
+                    color: root.current-screen == 4 ? #FFAB40 : #FFFFFF88;
                     font-size: 14px;
                     font-weight: 700;
                     horizontal-alignment: center;

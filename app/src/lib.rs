@@ -156,8 +156,8 @@ pub fn run() -> Result<(), slint::PlatformError> {
         let new_project = Project {
             id: uuid::Uuid::new_v4().to_string(),
             name: name.to_string(),
-            inv_vals: vec!["".to_string(); 35],
-            inv_lengths: vec![0; 35],
+            inv_vals: vec!["".to_string(); 45],
+            inv_lengths: vec![0; 45],
             last_modified: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs(),
         };
 
@@ -209,10 +209,10 @@ pub fn run() -> Result<(), slint::PlatformError> {
              save_state(&state);
              
              // 3. Prepare UI Data
-             if iv.len() < 35 { iv.resize(35, "".to_string()); }
+             if iv.len() < 45 { iv.resize(45, "".to_string()); }
              let inv_data: Vec<slint::SharedString> = iv.iter().map(|s| s.into()).collect();
              
-             if il.len() < 35 { il.resize(35, 0); }
+             if il.len() < 45 { il.resize(45, 0); }
              let il_data: Vec<i32> = il;
 
              if let Some(ui) = ui_weak_open.upgrade() {
@@ -335,9 +335,9 @@ pub fn run() -> Result<(), slint::PlatformError> {
 
     // Selective Share Handler
     let ui_weak_share_sel = ui_handle.clone();
-    ui.on_request_selective_share(move |base, door, roof, insulation| {
+    ui.on_request_selective_share(move |base, door, roof, insulation, interior| {
         if let Some(ui) = ui_weak_share_sel.upgrade() {
-            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths(), base, door, roof, insulation);
+            let data = format_inventory(ui.get_inv_vals(), ui.get_inv_lengths(), base, door, roof, insulation, interior);
             android_utils::share_text(&data);
             
             // WAKE-UP after share return (restore fluidity)
@@ -418,12 +418,13 @@ fn format_inventory(
     inc_door: bool,
     inc_roof: bool,
     inc_insul: bool,
+    inc_interior: bool,
 ) -> String {
     struct Section<'a> {
         header: &'a str,
         range: std::ops::Range<usize>,
         labels: &'a [&'a str],
-        category: i32, // 0: base, 1: door, 2: roof, 3: insul
+    category: i32, // 0: base, 1: door, 2: roof, 3: insul, 4: interior
     }
 
     let sections = [
@@ -487,6 +488,24 @@ fn format_inventory(
             labels: &["Rollo hidrofuga"],
             category: 3,
         },
+        Section {
+            header: "Estructural",
+            range: 33..36,
+            labels: &["9m", "15m", "18m"],
+            category: 4,
+        },
+        Section {
+            header: "Colonial",
+            range: 36..38,
+            labels: &["9m", "12m"],
+            category: 4,
+        },
+        Section {
+            header: "Clásico",
+            range: 38..41,
+            labels: &["9m", "11m", "12m"],
+            category: 4,
+        },
     ];
 
     let mut result = String::new();
@@ -498,6 +517,7 @@ fn format_inventory(
             1 => inc_door,
             2 => inc_roof,
             3 => inc_insul,
+            4 => inc_interior,
             _ => false,
         };
         

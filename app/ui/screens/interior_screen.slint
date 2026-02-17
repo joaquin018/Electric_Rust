@@ -1,0 +1,139 @@
+import { VerticalBox, ScrollView } from "std-widgets.slint";
+import { InventoryItem } from "../components/inventory_item.slint";
+import { SectionHeader } from "../components/section_header.slint";
+import { TopBar } from "../components/top_bar.slint";
+import { NumericKeypad } from "../components/numeric_keypad.slint";
+
+export component InteriorScreen inherits Rectangle {
+    in-out property <[string]> inv_vals;
+    in-out property <[int]> inv_lengths;
+    in-out property <int> active_idx;
+    in-out property <length> viewport-y;
+    callback selective-share-pressed();
+    callback trash-pressed();
+    callback request-activate-item(int);
+    callback request-append-digit(string);
+    callback request-backspace();
+    VerticalLayout {
+        TopBar {
+            selective-share-pressed => {
+                root.selective-share-pressed();
+            }
+            trash-pressed => {
+                root.trash-pressed();
+            }
+        }
+
+        Flickable {
+            viewport-y <=> root.viewport-y;
+            viewport-height: content.preferred-height;
+            content := VerticalBox {
+                cache-rendering-hint: true;
+                padding-left: 16px;
+                padding-right: 16px;
+                padding-bottom: 350px;
+                spacing: 12px;
+                alignment: start;
+                SectionHeader {
+                    title: "ESTRUCTURAL";
+                }
+
+                InventoryItem {
+                    label: "9m";
+                    value: root.inv_vals[33];
+                    has-focus: root.active_idx == 33;
+                    request-focus => {
+                        root.request-activate-item(33);
+                    }
+                }
+
+                InventoryItem {
+                    label: "15m";
+                    value: root.inv_vals[34];
+                    has-focus: root.active_idx == 34;
+                    request-focus => {
+                        root.request-activate-item(34);
+                    }
+                }
+
+                InventoryItem {
+                    label: "18m";
+                    value: root.inv_vals[35];
+                    has-focus: root.active_idx == 35;
+                    request-focus => {
+                        root.request-activate-item(35);
+                    }
+                }
+
+                SectionHeader {
+                    title: "COLONIAL";
+                }
+
+                InventoryItem {
+                    label: "9m";
+                    value: root.inv_vals[36];
+                    has-focus: root.active_idx == 36;
+                    request-focus => {
+                        root.request-activate-item(36);
+                    }
+                }
+
+                InventoryItem {
+                    label: "12m";
+                    value: root.inv_vals[37];
+                    has-focus: root.active_idx == 37;
+                    request-focus => {
+                        root.request-activate-item(37);
+                    }
+                }
+
+                SectionHeader {
+                    title: "CLÁSICO";
+                }
+
+                InventoryItem {
+                    label: "9m";
+                    value: root.inv_vals[38];
+                    has-focus: root.active_idx == 38;
+                    request-focus => {
+                        root.request-activate-item(38);
+                    }
+                }
+
+                InventoryItem {
+                    label: "11m";
+                    value: root.inv_vals[39];
+                    has-focus: root.active_idx == 39;
+                    request-focus => {
+                        root.request-activate-item(39);
+                    }
+                }
+
+                InventoryItem {
+                    label: "12m";
+                    value: root.inv_vals[40];
+                    has-focus: root.active_idx == 40;
+                    request-focus => {
+                        root.request-activate-item(40);
+                    }
+                }
+            }
+        }
+    }
+
+    NumericKeypad {
+        x: 0;
+        y: parent.height - self.height;
+        z: 50;
+        open: root.active_idx >= 33 && root.active_idx <= 40;
+        custom-key-pressed(k) => {
+            root.request-append-digit(k);
+        }
+        backspace-pressed() => {
+            root.request-backspace();
+        }
+        close-pressed() => {
+            root.active_idx = -1;
+        }
+    }
+}
