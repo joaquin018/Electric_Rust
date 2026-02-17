@@ -3,11 +3,11 @@ import { SelectionItem } from "selection_item.slint";
 
 export component SharePicker inherits Rectangle {
     in-out property <bool> open: false;
-    in-out property <bool> share-base: false;
-    in-out property <bool> share-door: false;
-    in-out property <bool> share-roof: false;
-    in-out property <bool> share-insulation: false;
-    in-out property <bool> share-interior: false;
+    in-out property <bool> share-base: true;
+    in-out property <bool> share-door: true;
+    in-out property <bool> share-roof: true;
+    in-out property <bool> share-insulation: true;
+    in-out property <bool> share-interior: true;
     callback back-pressed();
     callback share-confirmed(bool, bool, bool, bool, bool);
 
@@ -26,122 +26,106 @@ export component SharePicker inherits Rectangle {
 
     // Modal Content
     Rectangle {
-        width: 300px;
-        height: 480px;
+        width: 320px;
+        height: 520px;
         background: #1E1E1E;
-        border-radius: 20px;
+        border-radius: 24px;
         border-width: 1px;
-        border-color: #333333;
-        drop-shadow-blur: 20px;
-        drop-shadow-color: #000000AA;
-        cache-rendering-hint: true;
+        border-color: #444444;
+        drop-shadow-blur: 30px;
+        drop-shadow-color: #000000CC;
         x: (parent.width - self.width) / 2;
-        y: root.open ? (parent.height - self.height) / 2 : parent.height;
+        y: root.open ? (parent.height - self.height) / 2 : parent.height + 100px;
         animate y {
-            duration: 350ms;
-            easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            duration: 400ms;
+            easing: cubic-bezier(0.16, 1, 0.3, 1);
         }
-        TouchArea {
-            // Blocks clicks from reaching the backdrop
-        }
-
         VerticalLayout {
             padding: 24px;
             spacing: 20px;
-            alignment: start;
-            Text {
-                text: "SELECCIONAR SECCIONES";
-                color: white;
-                font-size: 16px;
-                font-weight: 900;
-                letter-spacing: 2.5px;
-                horizontal-alignment: center;
-            }
-
-            // Selection List
+            alignment: space-between;
             VerticalLayout {
-                spacing: 12px;
-                
-                // Item: Base
-                SelectionItem {
-                    text: "BASE";
-                    selected: root.share-base;
-                    clicked => {
-                        root.share-base = !root.share-base;
-                    }
+                spacing: 20px;
+                Text {
+                    text: "SELECCIONAR SECCIONES";
+                    color: white;
+                    font-size: 16px;
+                    font-weight: 900;
+                    letter-spacing: 2px;
+                    horizontal-alignment: center;
                 }
 
-                // Item: Puerta
-                SelectionItem {
-                    text: "PUERTA";
-                    selected: root.share-door;
-                    clicked => {
-                        root.share-door = !root.share-door;
+                // Selection List
+                VerticalLayout {
+                    spacing: 12px;
+                    SelectionItem {
+                        text: "BASE";
+                        selected: root.share-base;
+                        clicked => {
+                            root.share-base = !root.share-base;
+                        }
                     }
-                }
 
-                // Item: Tingle y Techo
-                SelectionItem {
-                    text: "TINGLE Y TECHO";
-                    selected: root.share-roof;
-                    clicked => {
-                        root.share-roof = !root.share-roof;
+                    SelectionItem {
+                        text: "PUERTA";
+                        selected: root.share-door;
+                        clicked => {
+                            root.share-door = !root.share-door;
+                        }
                     }
-                }
 
-                // Item: Aislacion
-                SelectionItem {
-                    text: "AISLACIÓN";
-                    selected: root.share-insulation;
-                    clicked => {
-                        root.share-insulation = !root.share-insulation;
+                    SelectionItem {
+                        text: "TINGLE Y TECHO";
+                        selected: root.share-roof;
+                        clicked => {
+                            root.share-roof = !root.share-roof;
+                        }
                     }
-                }
 
-                // Item: Interior
-                SelectionItem {
-                    text: "INTERIOR";
-                    selected: root.share-interior;
-                    clicked => {
-                        root.share-interior = !root.share-interior;
+                    SelectionItem {
+                        text: "AISLACIÓN";
+                        selected: root.share-insulation;
+                        clicked => {
+                            root.share-insulation = !root.share-insulation;
+                        }
+                    }
+
+                    SelectionItem {
+                        text: "INTERIOR";
+                        selected: root.share-interior;
+                        clicked => {
+                            root.share-interior = !root.share-interior;
+                        }
                     }
                 }
             }
 
+            // Share Button
             Rectangle {
-                vertical-stretch: 1;
-            } // Spacer
-
-            // Button Wrapper for centering
-            VerticalLayout {
-                alignment: center;
-                HorizontalLayout {
-                    alignment: center;
-                    // Share Button (Selective)
-                    Rectangle {
-                        width: 200px;
-                        height: 50px;
-                        background: #FFAB40;
-                        border-radius: 25px; // Fully roundedpill
-                        drop-shadow-blur: 8px;
-                        drop-shadow-color: #00000044;
-                        TouchArea {
-                            clicked => {
-                                root.share-confirmed(root.share-base, root.share-door, root.share-roof, root.share-insulation, root.share-interior);
-                                root.open = false;
-                            }
-                        }
-
-                        Text {
-                            text: "COMPARTIR";
-                            color: #1E1E1E; // Contrast text
-                            font-weight: 900;
-                            font-size: 14px;
-                            letter-spacing: 1px;
-                            vertical-alignment: center;
-                            horizontal-alignment: center;
-                        }
+                height: 56px;
+                background: share-touch.pressed ? #FFB74D : #FFAB40;
+                border-radius: 28px;
+                animate background { duration: 100ms; }
+                share-touch := TouchArea {
+                    clicked => {
+                        root.share-confirmed(
+                            root.share-base, 
+                            root.share-door, 
+                            root.share-roof, 
+                            root.share-insulation, 
+                            root.share-interior);
+                        root.open = false;
                     }
+                }
+
+                Text {
+                    text: "COMPARTIR";
+                    color: #121212;
+                    font-weight: 900;
+                    font-size: 15px;
+                    letter-spacing: 1.5px;
+                    vertical-alignment: center;
+                    horizontal-alignment: center;
                 }
             }
         }
