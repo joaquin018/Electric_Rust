@@ -1,39 +1,5 @@
 import { Button, VerticalBox } from "std-widgets.slint";
-
-component KeyButton inherits Rectangle {
-    in property <string> text;
-    in property <bool> special: false;
-    callback clicked;
-    in property <string> icon-path: ""; // New property for icon support
-
-    background: touch.pressed ? #333333 : (special ? #2a2a2a : #252525);
-    border-radius: 8px;
-    height: 50px;
-
-    if (root.icon-path == ""): Text {
-        text: root.text;
-        color: special ? #ff9d00 : white;
-        font-size: 24px;
-        font-weight: 500;
-        vertical-alignment: center;
-        horizontal-alignment: center;
-    }
-
-    if (root.icon-path != ""): Path {
-        width: 24px;
-        height: 24px;
-        commands: root.icon-path;
-        fill: special ? #ff9d00 : white;
-        x: (parent.width - self.width) / 2;
-        y: (parent.height - self.height) / 2;
-    }
-
-    touch := TouchArea {
-        clicked => {
-            root.clicked();
-        }
-    }
-}
+import { KeyButton } from "key_button.slint";
 
 export component NumericKeypad inherits Rectangle {
     in property <bool> open: false;
@@ -45,18 +11,9 @@ export component NumericKeypad inherits Rectangle {
     width: 100%;
     height: 100%;
     
-    // Allow clicking through if closed? 
-    // If open is false, we want to not block clicks.
-    // We can move the whole component out of the way or set visible.
-    // But we want to animate the panel out.
-    // We'll trust the parent to handle z-ordering or input transparent?
-    // Actually, if we set y to transparent, touch might still block.
-    // Let's use 'visible' for the root, but delayed? No.
-    
-    // Simple solution: When closed, the panel is off-screen.
-    // The area above the panel should be transparent TO TOUCH.
-    // Slint TouchArea blocks if it's there. 
-    // We'll add a TouchArea only for the "backdrop" when open to close it?
+    // Position relative to the root container (screen)
+    // When open: align to bottom (parent.height - self.height) -> Wait, this acts on the *inner* rectangle y
+    // The outer Rectangle matches parent size.
     
     // The Sliding Panel
     Rectangle {
@@ -68,10 +25,6 @@ export component NumericKeypad inherits Rectangle {
         
         // Performance Optimization
         cache-rendering-hint: true;
-        
-        // Position relative to the root container (screen)
-        // When open: align to bottom (parent.height - self.height)
-        // When closed: just below bottom (parent.height)
         y: root.open ? parent.height - self.height : parent.height;
         animate y {
             duration: 220ms;

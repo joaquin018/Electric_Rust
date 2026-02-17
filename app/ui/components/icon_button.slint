@@ -1,0 +1,49 @@
+export component IconButton inherits Rectangle {
+    in property <string> icon-path;
+    callback clicked;
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    clip: true;
+    border-radius: 24px;
+    in property <brush> icon-fill: #FFAB40;
+
+    // Background Flash Effect (Responsive Feedback)
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        border-radius: root.border-radius;
+        background: transparent;
+        
+        // Use states for asymmetric animation (Instant In, Slow Out)
+        states [
+            pressed when touch.pressed: {
+                background: #FFFFFF22; // Visible highlight (White 13%)
+                in {
+                    animate background { duration: 0ms; }
+                }
+                out {
+                    animate background { duration: 50ms; }
+                }
+            }
+        ]
+    }
+
+    // Icon
+    Path {
+        width: 24px;
+        height: 24px;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        commands: root.icon-path;
+        fill: root.icon-fill;
+    }
+
+    touch := TouchArea {
+        width: 100%;
+        height: 100%;
+        clicked => {
+            root.clicked();
+        }
+    }
+}

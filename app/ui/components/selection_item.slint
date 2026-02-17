@@ -1,0 +1,24 @@
+export component SelectionItem inherits Rectangle {
+    in property <string> text;
+    in property <bool> selected;
+    callback clicked();
+    height: 54px;
+    border-radius: 14px;
+    background: root.selected ? #FFAB4015 : #252525;
+    border-width: 1px;
+    border-color: root.selected ? #FFAB40 : #FFFFFF08;
+    TouchArea {
+        clicked => {
+            root.clicked();
+        }
+    }
+
+    Text {
+        text: root.text;
+        x: 20px;
+        vertical-alignment: center;
+        color: root.selected ? #FFAB40 : #FFFFFFCC;
+        font-weight: root.selected ? 800 : 500;
+        letter-spacing: 1px;
+    }
+}

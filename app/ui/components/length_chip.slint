@@ -1,0 +1,21 @@
+export component LengthChip inherits Rectangle {
+    in property <string> text;
+    in property <bool> selected;
+    callback clicked <=> touch.clicked;
+    width: 60px;
+    height: 32px;
+    border-radius: 8px;
+    background: selected ? #FFAB40 : rgba(255, 255, 255, 0.05);
+    border-width: 1px;
+    border-color: selected ? #FFAB40 : rgba(255, 255, 255, 0.1);
+    Text {
+        text: root.text;
+        color: selected ? #000000 : #aaaaaa;
+        font-size: 12px;
+        font-weight: 600;
+        vertical-alignment: center;
+        horizontal-alignment: center;
+    }
+
+    touch := TouchArea { }
+}

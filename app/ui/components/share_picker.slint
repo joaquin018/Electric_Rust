@@ -1,3 +1,6 @@
+import { Button, VerticalBox } from "std-widgets.slint";
+import { SelectionItem } from "selection_item.slint";
+
 export component SharePicker inherits Rectangle {
     in-out property <bool> open: false;
     in-out property <bool> share-base: false;
@@ -59,95 +62,38 @@ export component SharePicker inherits Rectangle {
                 spacing: 12px;
                 
                 // Item: Base
-                // Item: Base
-                Rectangle {
-                    height: 54px;
-                    border_radius: 14px;
-                    background: root.share-base ? #FFAB4015 : #252525;
-                    border-width: 1px;
-                    border-color: root.share-base ? #FFAB40 : #FFFFFF08;
-                    TouchArea {
-                        clicked => {
-                            root.share-base = !root.share-base;
-                        }
-                    }
-
-                    Text {
-                        text: "BASE";
-                        x: 20px;
-                        vertical-alignment: center;
-                        color: root.share-base ? #FFAB40 : #FFFFFFCC;
-                        font-weight: root.share-base ? 800 : 500;
-                        letter-spacing: 1px;
+                SelectionItem {
+                    text: "BASE";
+                    selected: root.share-base;
+                    clicked => {
+                        root.share-base = !root.share-base;
                     }
                 }
 
                 // Item: Puerta
-                Rectangle {
-                    height: 54px;
-                    border_radius: 14px;
-                    background: root.share-door ? #FFAB4015 : #252525;
-                    border-width: 1px;
-                    border-color: root.share-door ? #FFAB40 : #FFFFFF08;
-                    TouchArea {
-                        clicked => {
-                            root.share-door = !root.share-door;
-                        }
-                    }
-
-                    Text {
-                        text: "PUERTA";
-                        x: 20px;
-                        vertical-alignment: center;
-                        color: root.share-door ? #FFAB40 : #FFFFFFCC;
-                        font-weight: root.share-door ? 800 : 500;
-                        letter-spacing: 1px;
+                SelectionItem {
+                    text: "PUERTA";
+                    selected: root.share-door;
+                    clicked => {
+                        root.share-door = !root.share-door;
                     }
                 }
 
                 // Item: Tingle y Techo
-                Rectangle {
-                    height: 54px;
-                    border_radius: 14px;
-                    background: root.share-roof ? #FFAB4015 : #252525;
-                    border-width: 1px;
-                    border-color: root.share-roof ? #FFAB40 : #FFFFFF08;
-                    TouchArea {
-                        clicked => {
-                            root.share-roof = !root.share-roof;
-                        }
-                    }
-
-                    Text {
-                        text: "TINGLE Y TECHO";
-                        x: 20px;
-                        vertical-alignment: center;
-                        color: root.share-roof ? #FFAB40 : #FFFFFFCC;
-                        font-weight: root.share-roof ? 800 : 500;
-                        letter-spacing: 1px;
+                SelectionItem {
+                    text: "TINGLE Y TECHO";
+                    selected: root.share-roof;
+                    clicked => {
+                        root.share-roof = !root.share-roof;
                     }
                 }
 
                 // Item: Aislacion
-                Rectangle {
-                    height: 54px;
-                    border_radius: 14px;
-                    background: root.share-insulation ? #FFAB4015 : #252525;
-                    border-width: 1px;
-                    border-color: root.share-insulation ? #FFAB40 : #FFFFFF08;
-                    TouchArea {
-                        clicked => {
-                            root.share-insulation = !root.share-insulation;
-                        }
-                    }
-
-                    Text {
-                        text: "AISLACIÓN";
-                        x: 20px;
-                        vertical-alignment: center;
-                        color: root.share-insulation ? #FFAB40 : #FFFFFFCC;
-                        font-weight: root.share-insulation ? 800 : 500;
-                        letter-spacing: 1px;
+                SelectionItem {
+                    text: "AISLACIÓN";
+                    selected: root.share-insulation;
+                    clicked => {
+                        root.share-insulation = !root.share-insulation;
                     }
                 }
             }
