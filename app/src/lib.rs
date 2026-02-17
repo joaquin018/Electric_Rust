@@ -90,6 +90,13 @@ pub fn run() -> Result<(), slint::PlatformError> {
     // Init Haptics (Platform Agnostic)
     android_utils::init_haptics();
 
+    // Register Android Back Button Handler (JNI)
+    // Must be called after Slint init but before the event loop starts.
+    // Delayed slightly to ensure the View hierarchy is ready.
+    slint::Timer::single_shot(Duration::from_millis(500), move || {
+        android_utils::register_back_handler();
+    });
+
     let ui = AppWindow::new()?;
     
     // Initial Safe Area Check
@@ -137,6 +144,32 @@ pub fn run() -> Result<(), slint::PlatformError> {
                  }
                  last_y = current_y;
              }
+        });
+    }
+
+    // Android Back Button Poller
+    // Checks the AtomicBool flag set by the Java BackHandler every 100ms.
+    let back_timer = slint::Timer::default();
+    {
+        let ui_weak = ui_handle.clone();
+        back_timer.start(slint::TimerMode::Repeated, Duration::from_millis(100), move || {
+            if android_utils::check_back_pressed() {
+                if let Some(ui) = ui_weak.upgrade() {
+                    // Priority: keypad > share picker > sidebar > navigate back
+                    if ui.get_active_idx() != -1 {
+                        ui.set_active_idx(-1);
+                    } else if ui.get_show_share_picker() {
+                        ui.set_show_share_picker(false);
+                    } else if ui.get_show_sidebar() {
+                        ui.set_show_sidebar(false);
+                    } else if ui.get_view_mode() == 1 {
+                        ui.set_view_mode(0);
+                        ui.set_active_idx(-1);
+                    }
+                    // If on project list (view_mode 0), do nothing (app stays open).
+                    // The Back event was already consumed by our Java handler.
+                }
+            }
         });
     }
 

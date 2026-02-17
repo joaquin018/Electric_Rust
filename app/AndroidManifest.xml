@@ -14,7 +14,7 @@
         android:label="Construct"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
-        android:hasCode="false"
+        android:hasCode="true"
         android:theme="@style/ConstructTheme"
         tools:replace="android:theme"
         android:allowBackup="false">

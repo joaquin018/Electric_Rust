@@ -1,3 +1,5 @@
 /target
 **/*.rs.bk
 Cargo.lock
+/java_build
+/temp_build
