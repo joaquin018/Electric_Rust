@@ -291,6 +291,9 @@ export component AppWindow inherits Window {
                 BottomBar {
                     current-screen <=> root.current_screen;
                     bottom-padding: root.system-bottom-padding;
+                    changed => {
+                        root.active_idx = -1;
+                    }
                 }
             }
             
