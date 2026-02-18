@@ -162,6 +162,10 @@ pub fn run() -> Result<(), slint::PlatformError> {
                         ui.set_show_share_picker(false);
                     } else if ui.get_show_sidebar() {
                         ui.set_show_sidebar(false);
+                    } else if ui.get_show_create_dialog() {
+                        ui.set_show_create_dialog(false);
+                    } else if ui.get_show_delete_dialog() {
+                        ui.set_show_delete_dialog(false);
                     } else if ui.get_view_mode() == 1 {
                         ui.set_view_mode(0);
                         ui.set_active_idx(-1);
@@ -466,6 +470,16 @@ pub fn run() -> Result<(), slint::PlatformError> {
             // If sidebar is open, close it
             if ui.get_show_sidebar() {
                 ui.set_show_sidebar(false);
+                return slint::CloseRequestResponse::KeepWindowShown;
+            }
+            // If create dialog is open
+            if ui.get_show_create_dialog() {
+                ui.set_show_create_dialog(false);
+                return slint::CloseRequestResponse::KeepWindowShown;
+            }
+            // If delete dialog is open
+            if ui.get_show_delete_dialog() {
+                ui.set_show_delete_dialog(false);
                 return slint::CloseRequestResponse::KeepWindowShown;
             }
             // If in editor view, go back to project list

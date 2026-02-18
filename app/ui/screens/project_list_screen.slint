@@ -15,12 +15,18 @@ export component ProjectListScreen inherits Rectangle {
 
     // New project name buffer
     property <string> new-project-name: "";
-    property <bool> show-create-dialog: false;
+    // Modals
+    in-out property <bool> show-create-dialog: false;
+    in-out property <bool> show-delete-dialog: false;
 
     // Rename
     property <int> rename-index: -1;
     property <string> rename-buffer: "";
     property <bool> show-rename-dialog: false;
+
+    // Delete Confirmation
+    property <int> delete-target-index: -1;
+    property <string> delete-target-name: "";
 
     // Background
     background: #121212;
@@ -110,7 +116,9 @@ export component ProjectListScreen inherits Rectangle {
 
                                 TouchArea {
                                     clicked => {
-                                        root.delete-project(i);
+                                        root.delete-target-index = i;
+                                        root.delete-target-name = name;
+                                        root.show-delete-dialog = true;
                                     }
                                 }
                             }
@@ -171,7 +179,7 @@ export component ProjectListScreen inherits Rectangle {
         Rectangle {
             width: 330px;
             // Vinculamos la altura al contenido para que no se estire
-            height: main-layout.preferred-height;
+            height: create-layout.preferred-height;
             background: #1E1E1E;
             border-radius: 24px;
             border-width: 1px;
@@ -180,7 +188,7 @@ export component ProjectListScreen inherits Rectangle {
             drop-shadow-color: #000000;
             x: (parent.width - self.width) / 2;
             y: (parent.height - self.height) / 2;
-            main-layout := VerticalLayout {
+            create-layout := VerticalLayout {
                 padding: 28px;
                 spacing: 24px;
                 alignment: center;
@@ -255,6 +263,118 @@ export component ProjectListScreen inherits Rectangle {
                             clicked => {
                                 root.create-project(root.new-project-name);
                                 root.show-create-dialog = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Modal Dialog (Delete Confirmation)
+    if root.show-delete-dialog: Rectangle {
+        width: 100%;
+        height: 100%;
+        background: #000000AA;
+        TouchArea { } // Block clicks
+
+        Rectangle {
+            width: 320px;
+            height: del-layout.preferred-height;
+            background: #1E1E1E;
+            border-radius: 24px;
+            border-width: 1px;
+            border-color: #FF404033;
+            drop-shadow-blur: 30px;
+            drop-shadow-color: #000000;
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+            del-layout := VerticalLayout {
+                padding: 28px;
+                spacing: 24px;
+                
+                // Warning Icon Container
+                HorizontalLayout {
+                    alignment: center;
+                    Rectangle {
+                        width: 60px;
+                        height: 60px;
+                        background: #FF404015;
+                        border-radius: 30px;
+                        Path {
+                            width: 30px;
+                            height: 30px;
+                            x: (parent.width - self.width) / 2;
+                            y: (parent.height - self.height) / 2;
+                            viewbox-width: 24;
+                            viewbox-height: 24;
+                            commands: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z";
+                            fill: #FF4040;
+                        }
+                    }
+                }
+
+                VerticalLayout {
+                    spacing: 8px;
+                    Text {
+                        text: "¿Eliminar Proyecto?";
+                        font-size: 20px;
+                        font-weight: 800;
+                        color: #FFFFFF;
+                        horizontal-alignment: center;
+                    }
+
+                    Text {
+                        text: "Se eliminará permanentemente:\n\"" + root.delete-target-name + "\"";
+                        font-size: 15px;
+                        color: #AAAAAA;
+                        horizontal-alignment: center;
+                        wrap: word-wrap;
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    
+                    // Cancelar
+                    Rectangle {
+                        height: 50px;
+                        horizontal-stretch: 1;
+                        border-radius: 25px;
+                        background: #333333;
+                        Text {
+                            text: "Atrás";
+                            color: #FFFFFF;
+                            font-weight: 600;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
+
+                        TouchArea {
+                            clicked => {
+                                root.show-delete-dialog = false;
+                            }
+                        }
+                    }
+
+                    // Eliminar
+                    Rectangle {
+                        height: 50px;
+                        horizontal-stretch: 1;
+                        border-radius: 25px;
+                        background: #FF4040;
+                        Text {
+                            text: "Eliminar";
+                            color: #FFFFFF;
+                            font-weight: 800;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
+
+                        TouchArea {
+                            clicked => {
+                                root.delete-project(root.delete-target-index);
+                                root.show-delete-dialog = false;
                             }
                         }
                     }

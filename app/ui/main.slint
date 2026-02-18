@@ -127,6 +127,8 @@ export component AppWindow inherits Window {
     // Sidebar State
     in-out property <bool> show_sidebar: false;
     in-out property <string> active_project_name: "CONSTRUCT";
+    in-out property <bool> show_create_dialog: false;
+    in-out property <bool> show_delete_dialog: false;
     
     // System Insets
     in-out property <length> system-bottom-padding: 32px;
@@ -153,6 +155,8 @@ export component AppWindow inherits Window {
             height: 100%;
             bottom-padding: root.system-bottom-padding;
             project-names <=> root.project-names;
+            show-create-dialog <=> root.show_create_dialog;
+            show-delete-dialog <=> root.show_delete_dialog;
             create-project(name) => {
                 root.request-create-project(name);
             }
