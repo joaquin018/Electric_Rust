@@ -61,6 +61,7 @@ export component ProjectListScreen inherits Rectangle {
                         
                         // Icon + Text
                         HorizontalLayout {
+                            horizontal-stretch: 1;
                             spacing: 16px;
                             Rectangle {
                                 width: 40px;
@@ -84,6 +85,7 @@ export component ProjectListScreen inherits Rectangle {
                                 font-size: 18px;
                                 font-weight: 600;
                                 vertical-alignment: center;
+                                overflow: elide;
                             }
                         }
 
