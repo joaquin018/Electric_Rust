@@ -13,11 +13,11 @@ export component NumericKeypad inherits Rectangle {
     // Solo visible cuando está abierto o animándose
     visible: root.open || panel.y < root.height;
 
-    // Panel deslizante compacto (sin botón LISTO)
+    // Panel deslizante compacto
     panel := Rectangle {
         background: #1e1e1e;
-        border-top-left-radius: 16px;
-        border-top-right-radius: 16px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
         height: 270px + root.bottom-padding;
         width: 100%;
         y: root.open ? parent.height - self.height : parent.height;
@@ -25,10 +25,35 @@ export component NumericKeypad inherits Rectangle {
             duration: 220ms;
             easing: cubic-bezier(0.05, 0.7, 0.1, 1.0);
         }
+
+        // Gesture detection
+        TouchArea {
+            width: 100%;
+            height: 100%;
+            moved => {
+                if (self.pressed && self.mouse-y > 40px) {
+                    root.close-pressed();
+                }
+            }
+        }
+
         VerticalLayout {
             padding: 10px;
-            padding-bottom: 10px + root.bottom-padding;
+            padding-bottom: 15px + root.bottom-padding;
+            padding-top: 12px;
             spacing: 8px;
+            
+            // Handle visual indicator
+            HorizontalLayout {
+                alignment: center;
+                Rectangle {
+                    width: 40px;
+                    height: 4px;
+                    background: #FFFFFF33;
+                    border-radius: 2px;
+                }
+            }
+
             GridLayout {
                 spacing: 8px;
                 Row {
