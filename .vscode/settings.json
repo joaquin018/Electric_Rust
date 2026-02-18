@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "app/java"
+    ],
+    "java.project.referencedLibraries": [
+        "C:/android-dev/platforms/android-36/android.jar"
+    ]
+}

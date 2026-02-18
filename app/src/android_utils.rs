@@ -45,13 +45,34 @@ pub fn register_back_handler() {
         };
         let activity = JObject::from_raw(ctx.context().cast());
 
-        // Register native method for BackHandler class
-        let back_handler_class = match env.find_class("com/antigravity/construct/BackHandler") {
-            Ok(c) => c,
-            Err(_) => return, // Class not found — DEX not included in APK
+        // The Activity IS our BackHandler (NativeActivity subclass).
+        // We need the app's ClassLoader because NativeActivity threads
+        // use the system ClassLoader which can't find APK classes.
+        let class_loader = match env.call_method(&activity, "getClassLoader", "()Ljava/lang/ClassLoader;", &[]) {
+            Ok(v) => match v.l() { Ok(o) => o, Err(_) => return },
+            Err(_) => { let _ = env.exception_clear(); return; },
         };
 
-        // Register the native method so JVM knows where nativeOnBackPressed points
+        let class_name = match env.new_string("com.antigravity.construct.BackHandler") {
+            Ok(s) => s,
+            Err(_) => { let _ = env.exception_clear(); return; },
+        };
+
+        let loaded_class = match env.call_method(
+            &class_loader,
+            "loadClass",
+            "(Ljava/lang/String;)Ljava/lang/Class;",
+            &[JValue::Object(&class_name)],
+        ) {
+            Ok(v) => match v.l() { Ok(o) => o, Err(_) => return },
+            Err(_) => { let _ = env.exception_clear(); return; },
+        };
+
+        let back_handler_class: jni::objects::JClass = loaded_class.into();
+
+        // Register the native method so JVM knows where nativeOnBackPressed() points.
+        // When Android dispatches KEYCODE_BACK, our BackHandler.dispatchKeyEvent()
+        // calls nativeOnBackPressed() which sets the AtomicBool flag.
         let native_methods = [jni::NativeMethod {
             name: "nativeOnBackPressed".into(),
             sig: "()V".into(),
@@ -59,19 +80,11 @@ pub fn register_back_handler() {
         }];
 
         if env.register_native_methods(&back_handler_class, &native_methods).is_err() {
-            return;
+            let _ = env.exception_clear();
         }
-
-        // Call BackHandler.init(activity) — this runs on the current thread 
-        // which should be fine since we call it early during app startup
-        let _ = env.call_static_method(
-            &back_handler_class,
-            "init",
-            "(Landroid/app/Activity;)V",
-            &[JValue::Object(&activity)],
-        );
     }
 }
+
 
 #[cfg(not(target_os = "android"))]
 pub fn register_back_handler() {}

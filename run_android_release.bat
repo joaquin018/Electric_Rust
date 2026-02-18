@@ -14,8 +14,8 @@ call cargo apk build --package construct --release >nul
 echo [2/5] Compilando Java (BackHandler)...
 if exist java_build rmdir /s /q java_build
 mkdir java_build
-javac -source 8 -target 8 -cp "%PLATFORM_JAR%" -d java_build app\java\com\antigravity\construct\BackHandler.java
-"%BUILD_TOOLS%\d8.bat" --output java_build java_build\com\antigravity\construct\BackHandler.class
+javac --release 8 -cp "%PLATFORM_JAR%" -d java_build app\java\com\antigravity\construct\BackHandler.java
+call "%BUILD_TOOLS%\d8.bat" --lib "%PLATFORM_JAR%" --output java_build java_build\com\antigravity\construct\BackHandler.class
 
 echo [3/5] Generando Base de Recursos (Metodo Google)...
 :: AAPT genera el AndroidManifest binario y la tabla de recursos correcta
@@ -47,7 +47,7 @@ if exist Construct_Final.apk del Construct_Final.apk
 call "%BUILD_TOOLS%\apksigner.bat" sign --ks "%KEYSTORE%" --ks-pass pass:android --key-pass pass:android --out Construct_Final.apk Construct_Aligned.apk
 
 adb install -r Construct_Final.apk
-adb shell am start -n com.antigravity.construct/android.app.NativeActivity
+adb shell am start -n com.antigravity.construct/com.antigravity.construct.BackHandler
 
 :: Limpieza
 del resources_base.apk Construct_Unsigned.apk Construct_Aligned.apk Construct_Final.apk Construct_Final.apk.idsig
