@@ -162,7 +162,7 @@ export component ProjectListScreen inherits Rectangle {
         TouchArea {
             clicked => {
                 root.show-create-dialog = true;
-                root.new-project-name = "Nuevo Proyecto"; // Reset
+                root.new-project-name = ""; // Start with empty buffer for placeholder
             }
         }
     }
@@ -207,6 +207,16 @@ export component ProjectListScreen inherits Rectangle {
                     border-radius: 12px;
                     border-width: 1px;
                     border-color: #FFFFFF10;
+                    
+                    // Placeholder Overlay
+                    if root.new-project-name == "": Text {
+                        x: 16px;
+                        text: "Nuevo Proyecto";
+                        color: #AAAAAA;
+                        font-size: 16px;
+                        font-weight: 500;
+                        vertical-alignment: center;
+                    }
                     HorizontalLayout {
                         padding-left: 16px;
                         padding-right: 16px;
@@ -261,7 +271,8 @@ export component ProjectListScreen inherits Rectangle {
 
                         TouchArea {
                             clicked => {
-                                root.create-project(root.new-project-name);
+                                // Use placeholder value as default if empty
+                                root.create-project(root.new-project-name == "" ? "Nuevo Proyecto" : root.new-project-name);
                                 root.show-create-dialog = false;
                             }
                         }
