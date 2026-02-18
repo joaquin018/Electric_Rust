@@ -6,19 +6,26 @@ export component BottomBar inherits Rectangle {
     in property <length> bottom-padding: 0px;
 
     // Styling
-    height: 60px + root.bottom-padding;
+    // Use min-height so the bar can grow if labels wrap.
+    // Fixed height was causing issues with long text.
+    min-height: 60px + root.bottom-padding;
     background: #1E1E1E;
     border-width: 1px;
     border-color: #FFFFFF10;
-    // Callback for screen changes
+    
+    // Callback for screen changes (Required for the Rust logic)
     callback changed();
+
+    // Use a HorizontalLayout to ensure all buttons share the SAME height
+    // and can push the parent height up if they wrap.
     HorizontalLayout {
         padding-bottom: root.bottom-padding;
         spacing: 0px;
         
-        // Base Button
+        // Button 1: Base
         Rectangle {
-            horizontal-stretch: 1;
+            // Force strict 20% width
+            width: root.width / 5;
             background: root.current-screen == 0 ? #FFFFFF10 : transparent;
             TouchArea {
                 clicked => {
@@ -29,19 +36,22 @@ export component BottomBar inherits Rectangle {
 
             VerticalLayout {
                 alignment: center;
+                padding-top: 8px;
+                padding-bottom: 8px;
                 Text {
                     text: "Base";
                     color: root.current-screen == 0 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 700;
                     horizontal-alignment: center;
+                    wrap: word-wrap;
                 }
             }
         }
         
-        // Door Button
+        // Button 2: Puerta
         Rectangle {
-            horizontal-stretch: 1;
+            width: root.width / 5;
             background: root.current-screen == 1 ? #FFFFFF10 : transparent;
             TouchArea {
                 clicked => {
@@ -52,19 +62,22 @@ export component BottomBar inherits Rectangle {
 
             VerticalLayout {
                 alignment: center;
+                padding-top: 8px;
+                padding-bottom: 8px;
                 Text {
                     text: "Puerta";
                     color: root.current-screen == 1 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 700;
                     horizontal-alignment: center;
+                    wrap: word-wrap;
                 }
             }
         }
         
-        // Roof Button
+        // Button 3: Tingle y techo (Long text example)
         Rectangle {
-            horizontal-stretch: 1;
+            width: root.width / 5;
             background: root.current-screen == 2 ? #FFFFFF10 : transparent;
             TouchArea {
                 clicked => {
@@ -75,10 +88,14 @@ export component BottomBar inherits Rectangle {
 
             VerticalLayout {
                 alignment: center;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                padding-left: 2px;
+                padding-right: 2px;
                 Text {
                     text: "Tingle y techo";
                     color: root.current-screen == 2 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 700;
                     horizontal-alignment: center;
                     wrap: word-wrap;
@@ -86,9 +103,9 @@ export component BottomBar inherits Rectangle {
             }
         }
         
-        // Insulation Button
+        // Button 4: Aislación
         Rectangle {
-            horizontal-stretch: 1;
+            width: root.width / 5;
             background: root.current-screen == 3 ? #FFFFFF10 : transparent;
             TouchArea {
                 clicked => {
@@ -99,19 +116,22 @@ export component BottomBar inherits Rectangle {
 
             VerticalLayout {
                 alignment: center;
+                padding-top: 8px;
+                padding-bottom: 8px;
                 Text {
                     text: "Aislación";
                     color: root.current-screen == 3 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 700;
                     horizontal-alignment: center;
+                    wrap: word-wrap;
                 }
             }
         }
         
-        // Interior Button
+        // Button 5: Interior
         Rectangle {
-            horizontal-stretch: 1;
+            width: root.width / 5;
             background: root.current-screen == 4 ? #FFFFFF10 : transparent;
             TouchArea {
                 clicked => {
@@ -122,12 +142,15 @@ export component BottomBar inherits Rectangle {
 
             VerticalLayout {
                 alignment: center;
+                padding-top: 8px;
+                padding-bottom: 8px;
                 Text {
                     text: "Interior";
                     color: root.current-screen == 4 ? #FFAB40 : #FFFFFF88;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 700;
                     horizontal-alignment: center;
+                    wrap: word-wrap;
                 }
             }
         }
