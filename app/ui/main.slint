@@ -141,6 +141,7 @@ export component AppWindow inherits Window {
     callback request-share-picker-open();
     invoke-transition-to-editor => {
         root.view-mode = 1;
+        root.active_idx = -1;
     }
     Rectangle {
         width: 100%;
@@ -183,10 +184,14 @@ export component AppWindow inherits Window {
                         active_idx <=> root.active_idx;
                         viewport-y <=> root.viewport_y-tracker;
                         selective-share-pressed => {
+                            root.active_idx = -1;
                             root.show_share_picker = true;
                             root.request-share-picker-open();
                         }
-                        trash-pressed => { /* Future */ }
+                        trash-pressed => {
+                            root.active_idx = -1;
+                             /* Future trash logic */ 
+                        }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
                         }
@@ -209,10 +214,14 @@ export component AppWindow inherits Window {
                         active_idx <=> root.active_idx;
                         viewport-y <=> root.viewport-y-tracker;
                         selective-share-pressed => {
+                            root.active_idx = -1;
                             root.show_share_picker = true;
                             root.request-share-picker-open();
                         }
-                        trash-pressed => { /* Future */ }
+                        trash-pressed => {
+                            root.active_idx = -1;
+                             /* Future trash logic */ 
+                        }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
                         }
@@ -232,10 +241,14 @@ export component AppWindow inherits Window {
                         active_idx <=> root.active_idx;
                         viewport-y <=> root.viewport-y-tracker;
                         selective-share-pressed => {
+                            root.active_idx = -1;
                             root.show_share_picker = true;
                             root.request-share-picker-open();
                         }
-                        trash-pressed => { /* Future */ }
+                        trash-pressed => {
+                            root.active_idx = -1;
+                             /* Future trash logic */ 
+                        }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
                         }
@@ -255,10 +268,14 @@ export component AppWindow inherits Window {
                         active_idx <=> root.active_idx;
                         viewport-y <=> root.viewport-y-tracker;
                         selective-share-pressed => {
+                            root.active_idx = -1;
                             root.show_share_picker = true;
                             root.request-share-picker-open();
                         }
-                        trash-pressed => { /* Future */ }
+                        trash-pressed => {
+                            root.active_idx = -1;
+                             /* Future trash logic */ 
+                        }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
                         }
@@ -278,10 +295,14 @@ export component AppWindow inherits Window {
                         active_idx <=> root.active_idx;
                         viewport-y <=> root.viewport-y-tracker;
                         selective-share-pressed => {
+                            root.active_idx = -1;
                             root.show_share_picker = true;
                             root.request-share-picker-open();
                         }
-                        trash-pressed => { /* Future */ }
+                        trash-pressed => {
+                            root.active_idx = -1;
+                             /* Future trash logic */ 
+                        }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
                         }
@@ -313,9 +334,11 @@ export component AppWindow inherits Window {
                     root.show_sidebar = false;
                 }
                 open-requested => {
+                    root.active_idx = -1;
                     root.request-menu-open();
                 }
                 navigate-to(idx) => {
+                    root.active_idx = -1;
                     root.current_screen = idx;
                     root.show_sidebar = false;
                 }

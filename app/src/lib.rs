@@ -391,7 +391,10 @@ pub fn run() -> Result<(), slint::PlatformError> {
     ui.on_request_share_picker_open(move || {
         android_utils::trigger_haptic_feedback();
         
-        if let Some(_) = ui_weak_share_open.upgrade() {
+        if let Some(ui) = ui_weak_share_open.upgrade() {
+            // Close keypad when picker opens
+            ui.set_active_idx(-1);
+            
             for i in 0..60 {
                 let ui_weak = ui_weak_share_open.clone();
                 slint::Timer::single_shot(Duration::from_millis(i * 8), move || {
@@ -408,6 +411,8 @@ pub fn run() -> Result<(), slint::PlatformError> {
     ui.on_request_menu_open(move || {
          android_utils::trigger_haptic_feedback(); 
          if let Some(ui) = ui_weak_menu.upgrade() {
+             // Close keypad when going to menu
+             ui.set_active_idx(-1);
              // Close sidebar (visual drawer) if it was somehow open
              ui.set_show_sidebar(false);
              // Switch to Project List (View Mode 0)
