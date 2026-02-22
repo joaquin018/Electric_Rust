@@ -636,16 +636,28 @@ fn format_inventory(
                      } else if section.header == "Tablero" {
                           let len_idx = length_model.row_data(i).unwrap_or(0);
                           let len_str = match len_idx {
-                              0 => "14",
-                              1 => "16",
-                              2 => "18",
-                              3 => "22",
-                              4 => "24",
-                              _ => "14",
+                              0 => "14", 1 => "16", 2 => "18", 3 => "22", 4 => "24", _ => "14",
                           };
-                          section_lines.push(format!("- {} de {} {}", val_str, label, len_str));
+                          section_lines.push(format!("- {} Tablero {} {}-Módulo", val_str, label, len_str));
+                     } else if section.header == "Caja Derivación" {
+                          let count = val_str.parse::<i32>().unwrap_or(0);
+                          if count > 1 {
+                              let label_plural = if *label == "Embutida" { "Embutidas" } else { "Chukis" };
+                              section_lines.push(format!("- {} Cajas {}", val_str, label_plural));
+                          } else {
+                              section_lines.push(format!("- {} Caja {}", val_str, label));
+                          }
+                     } else if section.header == "Tigreflex Rollo" {
+                          let count = val_str.parse::<i32>().unwrap_or(0);
+                          let unit = if count > 1 { "Rollos" } else { "Rollo" };
+                          section_lines.push(format!("- {} {} Tigreflex {}", val_str, unit, label));
                      } else {
-                          section_lines.push(format!("- {} de {}", val_str, label));
+                          let count = val_str.parse::<i32>().unwrap_or(0);
+                          if count > 1 {
+                              section_lines.push(format!("- {} de {}", val_str, label));
+                          } else {
+                              section_lines.push(format!("- {} de {}", val_str, label));
+                          }
                      }
                 }
             }

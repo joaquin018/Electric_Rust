@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "app",
+    "desktop",
 ]
 resolver = "2"
 

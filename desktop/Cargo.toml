@@ -1,0 +1,8 @@
+[package]
+name = "electric-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+electric = { path = "../app" }
+slint = "1.15.1"
