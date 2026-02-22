@@ -17,7 +17,7 @@ static BACK_PRESSED: AtomicBool = AtomicBool::new(false);
 /// This is a JNI native method.
 #[cfg(target_os = "android")]
 #[no_mangle]
-pub extern "C" fn Java_com_antigravity_construct_BackHandler_nativeOnBackPressed(
+pub extern "C" fn Java_com_antigravity_electric_BackHandler_nativeOnBackPressed(
     _env: jni::JNIEnv,
     _class: jni::objects::JClass,
 ) {
@@ -53,7 +53,7 @@ pub fn register_back_handler() {
             Err(_) => { let _ = env.exception_clear(); return; },
         };
 
-        let class_name = match env.new_string("com.antigravity.construct.BackHandler") {
+        let class_name = match env.new_string("com.antigravity.electric.BackHandler") {
             Ok(s) => s,
             Err(_) => { let _ = env.exception_clear(); return; },
         };
@@ -76,7 +76,7 @@ pub fn register_back_handler() {
         let native_methods = [jni::NativeMethod {
             name: "nativeOnBackPressed".into(),
             sig: "()V".into(),
-            fn_ptr: Java_com_antigravity_construct_BackHandler_nativeOnBackPressed as *mut std::ffi::c_void,
+            fn_ptr: Java_com_antigravity_electric_BackHandler_nativeOnBackPressed as *mut std::ffi::c_void,
         }];
 
         if env.register_native_methods(&back_handler_class, &native_methods).is_err() {
