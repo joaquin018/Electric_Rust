@@ -202,8 +202,8 @@ pub fn run() -> Result<(), slint::PlatformError> {
         let new_project = Project {
             id: uuid::Uuid::new_v4().to_string(),
             name: name.to_string(),
-            inv_vals: vec!["".to_string(); 45],
-            inv_lengths: vec![0; 45],
+            inv_vals: vec!["".to_string(); 60],
+            inv_lengths: vec![0; 60],
             last_modified: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs(),
         };
 
@@ -255,10 +255,10 @@ pub fn run() -> Result<(), slint::PlatformError> {
              save_state(&state);
              
              // 3. Prepare UI Data
-             if iv.len() < 45 { iv.resize(45, "".to_string()); }
+             if iv.len() < 60 { iv.resize(60, "".to_string()); }
              let inv_data: Vec<slint::SharedString> = iv.iter().map(|s| s.into()).collect();
              
-             if il.len() < 45 { il.resize(45, 0); }
+             if il.len() < 60 { il.resize(60, 0); }
              let il_data: Vec<i32> = il;
 
              if let Some(ui) = ui_weak_open.upgrade() {
@@ -594,9 +594,33 @@ fn format_inventory(
             category: 4,
         },
         Section {
-            header: "Cables (Temp)",
-            range: 35..39,
-            labels: &["2.5m", "3.6m", "4m", "6m"], // Moved Zinc labels here temporarily
+            header: "Cable EVA 1,5mm",
+            range: 35..37,
+            labels: &["1,5mm Rojo", "1,5mm Blanco"],
+            category: 2,
+        },
+        Section {
+            header: "Cable EVA 2,5mm",
+            range: 37..40,
+            labels: &["2,5mm Rojo", "2,5mm Verde", "2,5mm Blanco"],
+            category: 2,
+        },
+        Section {
+            header: "Interruptor",
+            range: 40..44,
+            labels: &["9/12", "9/15", "9/24", "9/32"],
+            category: 2,
+        },
+        Section {
+            header: "Enchufe Embutido Doble",
+            range: 44..46,
+            labels: &["10A", "16A"],
+            category: 2,
+        },
+        Section {
+            header: "Tapas Ciegas",
+            range: 46..47,
+            labels: &["Cantidad"],
             category: 2,
         },
     ];

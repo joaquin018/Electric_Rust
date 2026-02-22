@@ -1,4 +1,4 @@
-import { Button, VerticalBox, ScrollView } from "std-widgets.slint";
+import { VerticalBox, ScrollView } from "std-widgets.slint";
 import { InventoryItem } from "../components/inventory_item.slint";
 import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
@@ -8,7 +8,7 @@ export component RoofScreen inherits Rectangle {
     in-out property <[int]> inv_lengths;
     in-out property <int> active_idx;
     in property <string> project-name: "ELECTRIC";
-    in-out property <length> viewport-y; // Exposed for scroll tracking
+    in-out property <length> viewport-y;
     callback selective-share-pressed();
     callback trash-pressed();
     callback request-activate-item(int);
@@ -35,11 +35,11 @@ export component RoofScreen inherits Rectangle {
                 spacing: 12px;
                 alignment: start;
                 SectionHeader {
-                    title: "ZINC ACANALADO";
+                    title: "CABLE EVA 1,5mm";
                 }
 
                 InventoryItem {
-                    label: "2.5m";
+                    label: "1,5mm Rojo";
                     value: root.inv_vals[35];
                     has-focus: root.active_idx == 35;
                     request-focus => {
@@ -48,7 +48,7 @@ export component RoofScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "3.6m";
+                    label: "1,5mm Blanco";
                     value: root.inv_vals[36];
                     has-focus: root.active_idx == 36;
                     request-focus => {
@@ -56,8 +56,12 @@ export component RoofScreen inherits Rectangle {
                     }
                 }
 
+                SectionHeader {
+                    title: "CABLE EVA 2,5mm";
+                }
+
                 InventoryItem {
-                    label: "4m";
+                    label: "2,5mm Rojo";
                     value: root.inv_vals[37];
                     has-focus: root.active_idx == 37;
                     request-focus => {
@@ -66,7 +70,7 @@ export component RoofScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "6m";
+                    label: "2,5mm Verde";
                     value: root.inv_vals[38];
                     has-focus: root.active_idx == 38;
                     request-focus => {
@@ -74,12 +78,8 @@ export component RoofScreen inherits Rectangle {
                     }
                 }
 
-                SectionHeader {
-                    title: "ZINC EN V";
-                }
-
                 InventoryItem {
-                    label: "2.5m";
+                    label: "2,5mm Blanco";
                     value: root.inv_vals[39];
                     has-focus: root.active_idx == 39;
                     request-focus => {
@@ -87,8 +87,12 @@ export component RoofScreen inherits Rectangle {
                     }
                 }
 
+                SectionHeader {
+                    title: "INTERRUPTOR";
+                }
+
                 InventoryItem {
-                    label: "3.66m";
+                    label: "9/12";
                     value: root.inv_vals[40];
                     has-focus: root.active_idx == 40;
                     request-focus => {
@@ -97,7 +101,7 @@ export component RoofScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "4m";
+                    label: "9/15";
                     value: root.inv_vals[41];
                     has-focus: root.active_idx == 41;
                     request-focus => {
@@ -105,16 +109,56 @@ export component RoofScreen inherits Rectangle {
                     }
                 }
 
-                SectionHeader {
-                    title: "FULL TECH";
-                }
-
                 InventoryItem {
-                    label: "3.80m";
+                    label: "9/24";
                     value: root.inv_vals[42];
                     has-focus: root.active_idx == 42;
                     request-focus => {
                         root.request-activate-item(42);
+                    }
+                }
+
+                InventoryItem {
+                    label: "9/32";
+                    value: root.inv_vals[43];
+                    has-focus: root.active_idx == 43;
+                    request-focus => {
+                        root.request-activate-item(43);
+                    }
+                }
+
+                SectionHeader {
+                    title: "ENCHUFE EMBUTIDO DOBLE";
+                }
+
+                InventoryItem {
+                    label: "10A";
+                    value: root.inv_vals[44];
+                    has-focus: root.active_idx == 44;
+                    request-focus => {
+                        root.request-activate-item(44);
+                    }
+                }
+
+                InventoryItem {
+                    label: "16A";
+                    value: root.inv_vals[45];
+                    has-focus: root.active_idx == 45;
+                    request-focus => {
+                        root.request-activate-item(45);
+                    }
+                }
+
+                SectionHeader {
+                    title: "TAPAS CIEGAS";
+                }
+
+                InventoryItem {
+                    label: "Cantidad";
+                    value: root.inv_vals[46];
+                    has-focus: root.active_idx == 46;
+                    request-focus => {
+                        root.request-activate-item(46);
                     }
                 }
             }
