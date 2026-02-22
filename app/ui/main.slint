@@ -182,7 +182,7 @@ export component AppWindow inherits Window {
                     if (root.current_screen == 0): BaseScreen {
                         width: 100%;
                         height: 100%;
-                        project-name: root.active_project_name;
+                        project-name: "EMPALME"; // Logic from Base
                         inv_vals <=> root.inv_vals;
                         inv_lengths <=> root.inv_lengths;
                         active_idx <=> root.active_idx;
@@ -209,10 +209,10 @@ export component AppWindow inherits Window {
                             root.request-backspace();
                         }
                     }
-                    if (root.current_screen == 1): DoorScreen {
+                    if (root.current_screen == 1): InteriorScreen {
                         width: 100%;
                         height: 100%;
-                        project-name: root.active_project_name;
+                        project-name: "INTERIOR";
                         inv_vals <=> root.inv_vals;
                         inv_lengths <=> root.inv_lengths;
                         active_idx <=> root.active_idx;
@@ -239,61 +239,7 @@ export component AppWindow inherits Window {
                     if (root.current_screen == 2): RoofScreen {
                         width: 100%;
                         height: 100%;
-                        project-name: root.active_project_name;
-                        inv_vals <=> root.inv_vals;
-                        inv_lengths <=> root.inv_lengths;
-                        active_idx <=> root.active_idx;
-                        viewport-y <=> root.viewport-y-tracker;
-                        selective-share-pressed => {
-                            root.active_idx = -1;
-                            root.show_share_picker = true;
-                            root.request-share-picker-open();
-                        }
-                        trash-pressed => {
-                            root.active_idx = -1;
-                             /* Future trash logic */ 
-                        }
-                        request-activate-item(idx) => {
-                            root.request-activate-item(idx);
-                        }
-                        request-append-digit(k) => {
-                            root.request-append-digit(k);
-                        }
-                        request-backspace => {
-                            root.request-backspace();
-                        }
-                    }
-                    if (root.current_screen == 3): InsulationScreen {
-                        width: 100%;
-                        height: 100%;
-                        project-name: root.active_project_name;
-                        inv_vals <=> root.inv_vals;
-                        inv_lengths <=> root.inv_lengths;
-                        active_idx <=> root.active_idx;
-                        viewport-y <=> root.viewport-y-tracker;
-                        selective-share-pressed => {
-                            root.active_idx = -1;
-                            root.show_share_picker = true;
-                            root.request-share-picker-open();
-                        }
-                        trash-pressed => {
-                            root.active_idx = -1;
-                             /* Future trash logic */ 
-                        }
-                        request-activate-item(idx) => {
-                            root.request-activate-item(idx);
-                        }
-                        request-append-digit(k) => {
-                            root.request-append-digit(k);
-                        }
-                        request-backspace => {
-                            root.request-backspace();
-                        }
-                    }
-                    if (root.current_screen == 4): InteriorScreen {
-                        width: 100%;
-                        height: 100%;
-                        project-name: root.active_project_name;
+                        project-name: "CABLES";
                         inv_vals <=> root.inv_vals;
                         inv_lengths <=> root.inv_lengths;
                         active_idx <=> root.active_idx;

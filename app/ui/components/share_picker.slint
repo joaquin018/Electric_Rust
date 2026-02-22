@@ -3,12 +3,12 @@ import { SelectionItem } from "selection_item.slint";
 
 export component SharePicker inherits Rectangle {
     in-out property <bool> open: false;
-    in-out property <bool> share-base: false;
-    in-out property <bool> share-door: false;
-    in-out property <bool> share-roof: false;
-    in-out property <bool> share-insulation: false;
+    in-out property <bool> share-empalme: false;
     in-out property <bool> share-interior: false;
+    in-out property <bool> share-cables: false;
     callback back-pressed();
+    // Maintain 5 bools for compatibility with the Rust backend callback for now, 
+    // mapping the 3 new ones and leaving 2 as false.
     callback share-confirmed(bool, bool, bool, bool, bool);
 
     // Backdrop
@@ -27,7 +27,7 @@ export component SharePicker inherits Rectangle {
     // Modal Content
     Rectangle {
         width: 320px;
-        height: 520px;
+        height: 400px; // Reduced height
         background: #1E1E1E;
         border-radius: 24px;
         border-width: 1px;
@@ -40,8 +40,6 @@ export component SharePicker inherits Rectangle {
             duration: 400ms;
             easing: cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        // Bloquear toques dentro del modal para que no cierren la ventana al tocar el fondo
         TouchArea { }
 
         VerticalLayout {
@@ -63,34 +61,10 @@ export component SharePicker inherits Rectangle {
                 VerticalLayout {
                     spacing: 12px;
                     SelectionItem {
-                        text: "BASE";
-                        selected: root.share-base;
+                        text: "EMPALME";
+                        selected: root.share-empalme;
                         clicked => {
-                            root.share-base = !root.share-base;
-                        }
-                    }
-
-                    SelectionItem {
-                        text: "PUERTA";
-                        selected: root.share-door;
-                        clicked => {
-                            root.share-door = !root.share-door;
-                        }
-                    }
-
-                    SelectionItem {
-                        text: "TINGLE Y TECHO";
-                        selected: root.share-roof;
-                        clicked => {
-                            root.share-roof = !root.share-roof;
-                        }
-                    }
-
-                    SelectionItem {
-                        text: "AISLACIÓN";
-                        selected: root.share-insulation;
-                        clicked => {
-                            root.share-insulation = !root.share-insulation;
+                            root.share-empalme = !root.share-empalme;
                         }
                     }
 
@@ -99,6 +73,14 @@ export component SharePicker inherits Rectangle {
                         selected: root.share-interior;
                         clicked => {
                             root.share-interior = !root.share-interior;
+                        }
+                    }
+
+                    SelectionItem {
+                        text: "CABLES";
+                        selected: root.share-cables;
+                        clicked => {
+                            root.share-cables = !root.share-cables;
                         }
                     }
                 }
@@ -113,10 +95,10 @@ export component SharePicker inherits Rectangle {
                 share-touch := TouchArea {
                     clicked => {
                         root.share-confirmed(
-                            root.share-base, 
-                            root.share-door, 
-                            root.share-roof, 
-                            root.share-insulation, 
+                            root.share-empalme, 
+                            false, // door
+                            root.share-cables, // roof
+                            false, // insulation
                             root.share-interior);
                         root.open = false;
                     }
