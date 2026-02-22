@@ -4,9 +4,9 @@ export component SelectionItem inherits Rectangle {
     callback clicked();
     height: 60px;
     border-radius: 16px;
-    background: root.selected ? #FFAB4025 : #252525;
+    background: root.selected ? #81D4FA25 : #252525;
     border-width: 2px;
-    border-color: root.selected ? #FFAB40 : #FFFFFF08;
+    border-color: root.selected ? #81D4FA : #FFFFFF08;
     animate background { duration: 150ms; }
     animate border-color { duration: 150ms; }
     TouchArea {
@@ -19,7 +19,7 @@ export component SelectionItem inherits Rectangle {
         text: root.text;
         vertical-alignment: center;
         horizontal-alignment: center;
-        color: root.selected ? #FFAB40 : #FFFFFFCC;
+        color: root.selected ? #81D4FA : #FFFFFFCC;
         font-weight: root.selected ? 800 : 500;
         font-size: 14px;
         letter-spacing: 1.5px;

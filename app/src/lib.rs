@@ -30,7 +30,7 @@ struct OldAppState {
 
 fn save_state(state: &AppState) {
     let dir = android_utils::get_app_files_dir();
-    let path = format!("{}/construct_data_v2.json", dir);
+    let path = format!("{}/electric_data_v2.json", dir);
     
     if let Ok(json) = serde_json::to_string(state) {
         let _ = std::fs::write(path, json);
@@ -39,11 +39,20 @@ fn save_state(state: &AppState) {
 
 fn load_state() -> AppState {
     let dir = android_utils::get_app_files_dir();
-    let path_v2 = format!("{}/construct_data_v2.json", dir);
+    let path_v2 = format!("{}/electric_data_v2.json", dir);
     
-    // Try loading v2
+    // Try loading v2 (Electric)
     if let Ok(content) = std::fs::read_to_string(&path_v2) {
         if let Ok(state) = serde_json::from_str::<AppState>(&content) {
+            return state;
+        }
+    }
+
+    // Migration: Check for v2 (Construct - Old Name)
+    let path_v2_old = format!("{}/construct_data_v2.json", dir);
+    if let Ok(content) = std::fs::read_to_string(&path_v2_old) {
+        if let Ok(state) = serde_json::from_str::<AppState>(&content) {
+            save_state(&state); // Save with new name
             return state;
         }
     }

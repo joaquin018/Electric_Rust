@@ -4,8 +4,8 @@ cd /d %~dp0
 
 echo [1/1] Ejecutando en Desktop (Simulador Movil)...
 :: Forzamos el backend de software o GL segun preferencia, pero por defecto cargo run
-:: Usamos --package construct para asegurar que corra el binario de la carpeta app
-cargo run --package construct
+:: Usamos --package electric para asegurar que corra el binario de la carpeta app
+cargo run --package electric
 
 if %errorlevel% neq 0 (
     echo.

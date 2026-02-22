@@ -11,7 +11,7 @@
 
     <!-- Aplicamos el tema a toda la aplicación -->
     <application
-        android:label="Construct"
+        android:label="Electric"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
         android:hasCode="true"
@@ -22,13 +22,13 @@
         <!-- Configuramos la NativeActivity que usa Slint/Rust -->
         <activity
             android:name="com.antigravity.construct.BackHandler"
-            android:label="Construct"
+            android:label="Electric"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:theme="@style/ConstructTheme">
             
             <!-- Metadata necesaria para cargar la librería dinámica -->
-            <meta-data android:name="android.app.lib_name" android:value="construct" />
+            <meta-data android:name="android.app.lib_name" android:value="electric" />
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

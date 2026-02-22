@@ -7,7 +7,7 @@ export component EditableValueDisplay inherits Rectangle {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     border-width: 1px;
-    border-color: root.has-focus ? #FFAB40 : rgba(255, 255, 255, 0.05);
+    border-color: root.has-focus ? #81D4FA : rgba(255, 255, 255, 0.05);
     TouchArea {
         clicked => {
             root.clicked();
@@ -20,7 +20,7 @@ export component EditableValueDisplay inherits Rectangle {
         spacing: 2px;
         Text {
             text: root.value == "" ? "0" : root.value;
-            color: root.value == "" ? rgba(255, 255, 255, 0.1) : #FFAB40;
+            color: root.value == "" ? rgba(255, 255, 255, 0.1) : #81D4FA;
             font-size: root.value == "" ? 14px : 18px;
             font-weight: root.value == "" ? 400 : 700;
             vertical-alignment: center;
@@ -31,7 +31,7 @@ export component EditableValueDisplay inherits Rectangle {
         Rectangle {
             width: 2px;
             height: 20px;
-            background: #FFAB40;
+            background: #81D4FA;
             border-radius: 1px;
             y: (parent.height - self.height) / 2;
             opacity: !root.has-focus ? 0 : (Math.sin(animation-tick() / 1s * 360deg) > 0 ? 1 : 0);
