@@ -4,7 +4,7 @@ version = "2.3.6"
 edition = "2021"
 
 [package.metadata.android]
-package = "com.antigravity.construct"
+package = "com.antigravity.electric"
 label = "Electric"
 build_targets = ["aarch64-linux-android"]
 apk_name = "Electric"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.antigravity.construct"
+    package="com.antigravity.electric"
     android:versionCode="23060000"
     android:versionName="2.3.6">
 
@@ -21,7 +21,7 @@
 
         <!-- Configuramos la NativeActivity que usa Slint/Rust -->
         <activity
-            android:name="com.antigravity.construct.BackHandler"
+            android:name="com.antigravity.electric.BackHandler"
             android:label="Electric"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"

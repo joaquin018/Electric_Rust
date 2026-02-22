@@ -14,8 +14,8 @@ call cargo apk build --package electric --release >nul
 echo [2/5] Compilando Java (BackHandler)...
 if exist java_build rmdir /s /q java_build
 mkdir java_build
-javac --release 8 -cp "%PLATFORM_JAR%" -d java_build app\java\com\antigravity\construct\BackHandler.java
-call "%BUILD_TOOLS%\d8.bat" --lib "%PLATFORM_JAR%" --output java_build java_build\com\antigravity\construct\BackHandler.class
+javac --release 8 -cp "%PLATFORM_JAR%" -d java_build app\java\com\antigravity\electric\BackHandler.java
+call "%BUILD_TOOLS%\d8.bat" --lib "%PLATFORM_JAR%" --output java_build java_build\com\antigravity\electric\BackHandler.class
 
 echo [3/5] Generando Base de Recursos (Metodo Google)...
 :: AAPT genera el AndroidManifest binario y la tabla de recursos correcta
@@ -47,7 +47,7 @@ if exist Electric_Final.apk del Electric_Final.apk
 call "%BUILD_TOOLS%\apksigner.bat" sign --ks "%KEYSTORE%" --ks-pass pass:android --key-pass pass:android --out Electric_Final.apk Electric_Aligned.apk
 
 adb install -r Electric_Final.apk
-adb shell am start -n com.antigravity.construct/com.antigravity.construct.BackHandler
+adb shell am start -n com.antigravity.electric/com.antigravity.electric.BackHandler
 
 :: Limpieza
 del resources_base.apk Electric_Unsigned.apk Electric_Aligned.apk Electric_Final.apk Electric_Final.apk.idsig
