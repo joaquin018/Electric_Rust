@@ -2,7 +2,9 @@ import { VerticalBox, ScrollView } from "std-widgets.slint";
 import { InventoryItem } from "../components/inventory_item.slint";
 import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
-
+import {
+    ElectricSelectionItem,
+} from "../components/electric_selection_item.slint";
 
 export component InteriorScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
@@ -14,6 +16,7 @@ export component InteriorScreen inherits Rectangle {
     callback trash-pressed();
     callback request-activate-item(int);
     callback request-append-digit(string);
+    callback request-set-length(int, int);
     callback request-backspace();
     VerticalLayout {
         TopBar {
@@ -36,11 +39,166 @@ export component InteriorScreen inherits Rectangle {
                 spacing: 12px;
                 alignment: start;
                 SectionHeader {
-                    title: "ESTRUCTURAL";
+                    title: "TABLERO";
+                }
+
+                ElectricSelectionItem {
+                    label: "Embutido";
+                    value: root.inv_vals[20];
+                    has-focus: root.active_idx == 20;
+                    selected-index: root.inv_lengths[20];
+                    options: ["14", "16", "18", "22", "24"];
+                    request-focus => {
+                        root.request-activate-item(20);
+                    }
+                    set-index(i) => {
+                        root.request-set-length(20, i);
+                    }
+                }
+
+                ElectricSelectionItem {
+                    label: "Sobrepuesto";
+                    value: root.inv_vals[21];
+                    has-focus: root.active_idx == 21;
+                    selected-index: root.inv_lengths[21];
+                    options: ["14", "16", "18", "22", "24"];
+                    request-focus => {
+                        root.request-activate-item(21);
+                    }
+                    set-index(i) => {
+                        root.request-set-length(21, i);
+                    }
+                }
+
+                SectionHeader {
+                    title: "AUTOMÁTICO BIPOLAR";
                 }
 
                 InventoryItem {
-                    label: "9m";
+                    label: "25A";
+                    value: root.inv_vals[22];
+                    has-focus: root.active_idx == 22;
+                    request-focus => {
+                        root.request-activate-item(22);
+                    }
+                }
+
+                InventoryItem {
+                    label: "30A";
+                    value: root.inv_vals[23];
+                    has-focus: root.active_idx == 23;
+                    request-focus => {
+                        root.request-activate-item(23);
+                    }
+                }
+
+                SectionHeader {
+                    title: "AUTOMÁTICO MONOPOLAR";
+                }
+
+                InventoryItem {
+                    label: "10A";
+                    value: root.inv_vals[24];
+                    has-focus: root.active_idx == 24;
+                    request-focus => {
+                        root.request-activate-item(24);
+                    }
+                }
+
+                InventoryItem {
+                    label: "16A";
+                    value: root.inv_vals[25];
+                    has-focus: root.active_idx == 25;
+                    request-focus => {
+                        root.request-activate-item(25);
+                    }
+                }
+
+                InventoryItem {
+                    label: "25A";
+                    value: root.inv_vals[26];
+                    has-focus: root.active_idx == 26;
+                    request-focus => {
+                        root.request-activate-item(26);
+                    }
+                }
+
+                SectionHeader {
+                    title: "DIFERENCIAL";
+                }
+
+                InventoryItem {
+                    label: "25A";
+                    value: root.inv_vals[27];
+                    has-focus: root.active_idx == 27;
+                    request-focus => {
+                        root.request-activate-item(27);
+                    }
+                }
+
+                SectionHeader {
+                    title: "LUZ PILOTO";
+                }
+
+                InventoryItem {
+                    label: "Cantidad";
+                    value: root.inv_vals[28];
+                    has-focus: root.active_idx == 28;
+                    request-focus => {
+                        root.request-activate-item(28);
+                    }
+                }
+
+                SectionHeader {
+                    title: "DISTRIBUIDOR";
+                }
+
+                InventoryItem {
+                    label: "Tetrapolar";
+                    value: root.inv_vals[29];
+                    has-focus: root.active_idx == 29;
+                    request-focus => {
+                        root.request-activate-item(29);
+                    }
+                }
+
+                InventoryItem {
+                    label: "Bipolar";
+                    value: root.inv_vals[30];
+                    has-focus: root.active_idx == 30;
+                    request-focus => {
+                        root.request-activate-item(30);
+                    }
+                }
+
+                SectionHeader {
+                    title: "CAJA DERIVACIÓN";
+                }
+
+                InventoryItem {
+                    label: "Embutida";
+                    value: root.inv_vals[31];
+                    has-focus: root.active_idx == 31;
+                    request-focus => {
+                        root.request-activate-item(31);
+                    }
+                }
+
+                InventoryItem {
+                    label: "Chuki";
+                    value: root.inv_vals[32];
+                    has-focus: root.active_idx == 32;
+                    request-focus => {
+                        root.request-activate-item(32);
+                    }
+                }
+
+                SectionHeader {
+                    title: "TIGREFLEX ROLLO";
+                }
+
+                InventoryItem {
+                    label: "20mm";
                     value: root.inv_vals[33];
                     has-focus: root.active_idx == 33;
                     request-focus => {
@@ -49,73 +207,11 @@ export component InteriorScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "15m";
+                    label: "16mm";
                     value: root.inv_vals[34];
                     has-focus: root.active_idx == 34;
                     request-focus => {
                         root.request-activate-item(34);
-                    }
-                }
-
-                InventoryItem {
-                    label: "18m";
-                    value: root.inv_vals[35];
-                    has-focus: root.active_idx == 35;
-                    request-focus => {
-                        root.request-activate-item(35);
-                    }
-                }
-
-                SectionHeader {
-                    title: "COLONIAL";
-                }
-
-                InventoryItem {
-                    label: "9m";
-                    value: root.inv_vals[36];
-                    has-focus: root.active_idx == 36;
-                    request-focus => {
-                        root.request-activate-item(36);
-                    }
-                }
-
-                InventoryItem {
-                    label: "12m";
-                    value: root.inv_vals[37];
-                    has-focus: root.active_idx == 37;
-                    request-focus => {
-                        root.request-activate-item(37);
-                    }
-                }
-
-                SectionHeader {
-                    title: "CLÁSICO";
-                }
-
-                InventoryItem {
-                    label: "9m";
-                    value: root.inv_vals[38];
-                    has-focus: root.active_idx == 38;
-                    request-focus => {
-                        root.request-activate-item(38);
-                    }
-                }
-
-                InventoryItem {
-                    label: "11m";
-                    value: root.inv_vals[39];
-                    has-focus: root.active_idx == 39;
-                    request-focus => {
-                        root.request-activate-item(39);
-                    }
-                }
-
-                InventoryItem {
-                    label: "12m";
-                    value: root.inv_vals[40];
-                    has-focus: root.active_idx == 40;
-                    request-focus => {
-                        root.request-activate-item(40);
                     }
                 }
             }

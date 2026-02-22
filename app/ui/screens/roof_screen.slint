@@ -3,7 +3,6 @@ import { InventoryItem } from "../components/inventory_item.slint";
 import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
 
-
 export component RoofScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
     in-out property <[int]> inv_lengths;
@@ -41,37 +40,37 @@ export component RoofScreen inherits Rectangle {
 
                 InventoryItem {
                     label: "2.5m";
-                    value: root.inv_vals[23];
-                    has-focus: root.active_idx == 23;
+                    value: root.inv_vals[35];
+                    has-focus: root.active_idx == 35;
                     request-focus => {
-                        root.request-activate-item(23);
+                        root.request-activate-item(35);
                     }
                 }
 
                 InventoryItem {
                     label: "3.6m";
-                    value: root.inv_vals[24];
-                    has-focus: root.active_idx == 24;
+                    value: root.inv_vals[36];
+                    has-focus: root.active_idx == 36;
                     request-focus => {
-                        root.request-activate-item(24);
+                        root.request-activate-item(36);
                     }
                 }
 
                 InventoryItem {
                     label: "4m";
-                    value: root.inv_vals[25];
-                    has-focus: root.active_idx == 25;
+                    value: root.inv_vals[37];
+                    has-focus: root.active_idx == 37;
                     request-focus => {
-                        root.request-activate-item(25);
+                        root.request-activate-item(37);
                     }
                 }
 
                 InventoryItem {
                     label: "6m";
-                    value: root.inv_vals[26];
-                    has-focus: root.active_idx == 26;
+                    value: root.inv_vals[38];
+                    has-focus: root.active_idx == 38;
                     request-focus => {
-                        root.request-activate-item(26);
+                        root.request-activate-item(38);
                     }
                 }
 
@@ -81,28 +80,28 @@ export component RoofScreen inherits Rectangle {
 
                 InventoryItem {
                     label: "2.5m";
-                    value: root.inv_vals[27];
-                    has-focus: root.active_idx == 27;
+                    value: root.inv_vals[39];
+                    has-focus: root.active_idx == 39;
                     request-focus => {
-                        root.request-activate-item(27);
+                        root.request-activate-item(39);
                     }
                 }
 
                 InventoryItem {
                     label: "3.66m";
-                    value: root.inv_vals[28];
-                    has-focus: root.active_idx == 28;
+                    value: root.inv_vals[40];
+                    has-focus: root.active_idx == 40;
                     request-focus => {
-                        root.request-activate-item(28);
+                        root.request-activate-item(40);
                     }
                 }
 
                 InventoryItem {
                     label: "4m";
-                    value: root.inv_vals[29];
-                    has-focus: root.active_idx == 29;
+                    value: root.inv_vals[41];
+                    has-focus: root.active_idx == 41;
                     request-focus => {
-                        root.request-activate-item(29);
+                        root.request-activate-item(41);
                     }
                 }
 
@@ -112,10 +111,10 @@ export component RoofScreen inherits Rectangle {
 
                 InventoryItem {
                     label: "3.80m";
-                    value: root.inv_vals[30];
-                    has-focus: root.active_idx == 30;
+                    value: root.inv_vals[42];
+                    has-focus: root.active_idx == 42;
                     request-focus => {
-                        root.request-activate-item(30);
+                        root.request-activate-item(42);
                     }
                 }
             }

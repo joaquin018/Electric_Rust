@@ -1,0 +1,58 @@
+import { Button } from "std-widgets.slint";
+import { LengthChip } from "length_chip.slint";
+import { EditableValueDisplay } from "editable_value_display.slint";
+
+export component ElectricSelectionItem inherits Rectangle {
+    in property <string> label;
+    in property <string> value;
+    in property <bool> has-focus: false;
+    in property <int> selected-index: 0;
+    in property <[string]> options: ["14", "16", "18", "22", "24"];
+    callback request-focus();
+    callback set-index(int);
+    height: 130px;
+    background: #1E1E1E;
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.05);
+    drop-shadow-color: rgba(0, 0, 0, 0.2);
+    drop-shadow-blur: 10px;
+    drop-shadow-offset-y: 4px;
+    VerticalLayout {
+        padding: 16px;
+        spacing: 12px;
+        HorizontalLayout {
+            alignment: space-between;
+            Text {
+                text: label;
+                color: #ffffff;
+                font-size: 16px;
+                font-weight: 500;
+                vertical-alignment: center;
+            }
+
+            VerticalLayout {
+                alignment: center;
+                EditableValueDisplay {
+                    value: root.value;
+                    has-focus: root.has-focus;
+                    clicked => {
+                        root.request-focus();
+                    }
+                }
+            }
+        }
+
+        HorizontalLayout {
+            alignment: space-around;
+            spacing: 8px;
+            for opt[i] in root.options: LengthChip {
+                text: opt;
+                selected: root.selected-index == i;
+                clicked => {
+                    root.set-index(i);
+                }
+            }
+        }
+    }
+}

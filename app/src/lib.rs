@@ -522,82 +522,82 @@ fn format_inventory(
 
     let sections = [
         Section {
-            header: "Apoyos",
+            header: "Empalme",
             range: 0..8,
             labels: &["30 cm", "40 cm", "50 cm", "60 cm", "70 cm", "80 cm", "90 cm", "1 mt"],
             category: 0,
         },
         Section {
-            header: "Vigas y Madera",
+            header: "Madera (Empalme)",
             range: 8..14,
             labels: &["2x3\"", "2x4\"", "2x5\"", "2x6\"", "2x8\"", "2x10\""],
             category: 0,
         },
         Section {
-            header: "Clavos",
+            header: "Clavos (Empalme)",
             range: 14..18,
             labels: &["3\"", "3 1/2\"", "4\"", "Techo 2 1/2\""],
             category: 0,
         },
         Section {
-            header: "Cemento",
+            header: "Cemento (Empalme)",
             range: 18..19,
             labels: &["Bolsas"],
             category: 0,
         },
         Section {
-            header: "Puerta",
-            range: 19..23,
-            labels: &["60m", "70m", "80m", "90m"],
-            category: 1,
-        },
-        Section {
-            header: "Zinc Acanalado",
-            range: 23..27,
-            labels: &["2.5m", "3.6m", "4m", "6m"],
-            category: 2,
-        },
-        Section {
-            header: "Zinc en V",
-            range: 27..30,
-            labels: &["2.5m", "3.66m", "4m"],
-            category: 2,
-        },
-        Section {
-            header: "Full Tech",
-            range: 30..31,
-            labels: &["3.80m"],
-            category: 2,
-        },
-        Section {
-            header: "Lana Vidrio",
-            range: 31..32,
-            labels: &["Lana vidrio"],
-            category: 3,
-        },
-        Section {
-            header: "Rollo Hidrofuga",
-            range: 32..33,
-            labels: &["Rollo hidrofuga"],
-            category: 3,
-        },
-        Section {
-            header: "Estructural",
-            range: 33..36,
-            labels: &["9m", "15m", "18m"],
+            header: "Tablero",
+            range: 20..22,
+            labels: &["Embutido", "Sobrepuesto"],
             category: 4,
         },
         Section {
-            header: "Colonial",
-            range: 36..38,
-            labels: &["9m", "12m"],
+            header: "Automático Bipolar",
+            range: 22..24,
+            labels: &["25A", "30A"],
             category: 4,
         },
         Section {
-            header: "Clásico",
-            range: 38..41,
-            labels: &["9m", "11m", "12m"],
+            header: "Automático Monopolar",
+            range: 24..27,
+            labels: &["10A", "16A", "25A"],
             category: 4,
+        },
+        Section {
+            header: "Diferencial",
+            range: 27..28,
+            labels: &["25A"],
+            category: 4,
+        },
+        Section {
+            header: "Luz Piloto",
+            range: 28..29,
+            labels: &["Cantidad"],
+            category: 4,
+        },
+        Section {
+            header: "Distribuidor",
+            range: 29..31,
+            labels: &["Tetrapolar", "Bipolar"],
+            category: 4,
+        },
+        Section {
+            header: "Caja Derivación",
+            range: 31..33,
+            labels: &["Embutida", "Chuki"],
+            category: 4,
+        },
+        Section {
+            header: "Tigreflex Rollo",
+            range: 33..35,
+            labels: &["20mm", "16mm"],
+            category: 4,
+        },
+        Section {
+            header: "Cables (Temp)",
+            range: 35..39,
+            labels: &["2.5m", "3.6m", "4m", "6m"], // Moved Zinc labels here temporarily
+            category: 2,
         },
     ];
 
@@ -621,9 +621,9 @@ fn format_inventory(
             if let Some(val) = model.row_data(i) {
                 let val_str = val.as_str();
                 if !val_str.is_empty() && val_str != "0" {
-                     if section.header == "Cemento" {
+                     if section.header == "Cemento (Empalme)" {
                           section_lines.push(format!("- {} bolsas", val_str));
-                     } else if section.header == "Vigas y Madera" {
+                     } else if section.header == "Madera (Empalme)" {
                           let len_idx = length_model.row_data(i).unwrap_or(0);
                           let len_str = match len_idx {
                               0 => "3.2m",
@@ -633,6 +633,17 @@ fn format_inventory(
                               _ => "3.2m",
                           };
                           section_lines.push(format!("- {} de {} de {}", val_str, label, len_str));
+                     } else if section.header == "Tablero" {
+                          let len_idx = length_model.row_data(i).unwrap_or(0);
+                          let len_str = match len_idx {
+                              0 => "14",
+                              1 => "16",
+                              2 => "18",
+                              3 => "22",
+                              4 => "24",
+                              _ => "14",
+                          };
+                          section_lines.push(format!("- {} de {} {}", val_str, label, len_str));
                      } else {
                           section_lines.push(format!("- {} de {}", val_str, label));
                      }
