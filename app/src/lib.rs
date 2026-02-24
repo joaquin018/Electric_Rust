@@ -517,32 +517,41 @@ fn format_inventory(
         header: &'a str,
         range: std::ops::Range<usize>,
         labels: &'a [&'a str],
-    category: i32, // 0: base, 1: door, 2: roof, 3: insul, 4: interior
+        category: i32, // 0: base, 1: door, 2: roof, 3: insul, 4: interior
     }
 
     let sections = [
         Section {
             header: "Empalme",
-            range: 0..8,
-            labels: &["30 cm", "40 cm", "50 cm", "60 cm", "70 cm", "80 cm", "90 cm", "1 mt"],
+            range: 0..6,
+            labels: &[
+                "Caja Empalme",
+                "Medidor Monofásico",
+                "Concentrico 2x6",
+                "Grampa Retención",
+                "Conector Dentado",
+                "Conector UDC",
+            ],
             category: 0,
         },
         Section {
-            header: "Madera (Empalme)",
-            range: 8..14,
-            labels: &["2x3\"", "2x4\"", "2x5\"", "2x6\"", "2x8\"", "2x10\""],
+            header: "Preensamblado",
+            range: 6..7,
+            labels: &["Preensamblado"],
             category: 0,
         },
         Section {
-            header: "Clavos (Empalme)",
-            range: 14..18,
-            labels: &["3\"", "3 1/2\"", "4\"", "Techo 2 1/2\""],
-            category: 0,
-        },
-        Section {
-            header: "Cemento (Empalme)",
-            range: 18..19,
-            labels: &["Bolsas"],
+            header: "Puesta a Tierra y Acometida",
+            range: 7..14,
+            labels: &[
+                "Automático 25A",
+                "Barra Copperweld",
+                "Prensa para Barra",
+                "Cámara Registro 160mm",
+                "Cañeria Zincada 5/8",
+                "Abrazadera Caddy",
+                "Cabeza de Servicio",
+            ],
             category: 0,
         },
         Section {
@@ -645,18 +654,14 @@ fn format_inventory(
             if let Some(val) = model.row_data(i) {
                 let val_str = val.as_str();
                 if !val_str.is_empty() && val_str != "0" {
-                     if section.header == "Cemento (Empalme)" {
-                          section_lines.push(format!("- {} bolsas", val_str));
-                     } else if section.header == "Madera (Empalme)" {
+                     if section.header == "Preensamblado" {
                           let len_idx = length_model.row_data(i).unwrap_or(0);
-                          let len_str = match len_idx {
-                              0 => "3.2m",
-                              1 => "4m",
-                              2 => "5m",
-                              3 => "6m",
-                              _ => "3.2m",
+                          let type_str = match len_idx {
+                              0 => "2x16",
+                              1 => "2x25",
+                              _ => "2x16",
                           };
-                          section_lines.push(format!("- {} de {} de {}", val_str, label, len_str));
+                          section_lines.push(format!("- {} de {} {}", val_str, label, type_str));
                      } else if section.header == "Tablero" {
                           let len_idx = length_model.row_data(i).unwrap_or(0);
                           let len_str = match len_idx {

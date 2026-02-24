@@ -3,7 +3,9 @@ import { InventoryItem } from "../components/inventory_item.slint";
 import { LumberItem } from "../components/lumber_item.slint";
 import { SectionHeader } from "../components/section_header.slint";
 import { TopBar } from "../components/top_bar.slint";
-
+import {
+    ElectricSelectionItem,
+} from "../components/electric_selection_item.slint";
 
 export component BaseScreen inherits Rectangle {
     in-out property <[string]> inv_vals;
@@ -39,11 +41,11 @@ export component BaseScreen inherits Rectangle {
                 spacing: 12px;
                 alignment: start;
                 SectionHeader {
-                    title: "APOYOS";
+                    title: "EMPALME";
                 }
 
                 InventoryItem {
-                    label: "30 cm";
+                    label: "Caja Empalme";
                     value: root.inv_vals[0];
                     has-focus: root.active_idx == 0;
                     request-focus => {
@@ -52,7 +54,7 @@ export component BaseScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "40 cm";
+                    label: "Medidor Monofásico";
                     value: root.inv_vals[1];
                     has-focus: root.active_idx == 1;
                     request-focus => {
@@ -61,7 +63,7 @@ export component BaseScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "50 cm";
+                    label: "Concentrico 2x6";
                     value: root.inv_vals[2];
                     has-focus: root.active_idx == 2;
                     request-focus => {
@@ -70,7 +72,7 @@ export component BaseScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "60 cm";
+                    label: "Grampa Retención";
                     value: root.inv_vals[3];
                     has-focus: root.active_idx == 3;
                     request-focus => {
@@ -79,7 +81,7 @@ export component BaseScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "70 cm";
+                    label: "Conector Dentado";
                     value: root.inv_vals[4];
                     has-focus: root.active_idx == 4;
                     request-focus => {
@@ -88,7 +90,7 @@ export component BaseScreen inherits Rectangle {
                 }
 
                 InventoryItem {
-                    label: "80 cm";
+                    label: "Conector UDC";
                     value: root.inv_vals[5];
                     has-focus: root.active_idx == 5;
                     request-focus => {
@@ -96,17 +98,26 @@ export component BaseScreen inherits Rectangle {
                     }
                 }
 
-                InventoryItem {
-                    label: "90 cm";
+                ElectricSelectionItem {
+                    label: "Preensamblado";
                     value: root.inv_vals[6];
                     has-focus: root.active_idx == 6;
+                    selected-index: root.inv_lengths[6];
+                    options: ["2x16", "2x25"];
                     request-focus => {
                         root.request-activate-item(6);
                     }
+                    set-index(i) => {
+                        root.request-set-length(6, i);
+                    }
+                }
+
+                SectionHeader {
+                    title: "PUESTA A TIERRA Y ACOMETIDA";
                 }
 
                 InventoryItem {
-                    label: "1 mt";
+                    label: "Automático 25A";
                     value: root.inv_vals[7];
                     has-focus: root.active_idx == 7;
                     request-focus => {
@@ -114,148 +125,57 @@ export component BaseScreen inherits Rectangle {
                     }
                 }
 
-                // Placeholder - Hidden
                 InventoryItem {
-                    label: "Hidden";
-                    value: root.inv_vals[18];
-                    has-focus: false;
-                    width: 0px;
-                    height: 0px;
-                    visible: false;
-                }
-
-                SectionHeader {
-                    title: "VIGAS Y MADERA";
-                }
-
-                LumberItem {
-                    label: "2x3\"";
+                    label: "Barra Copperweld";
                     value: root.inv_vals[8];
                     has-focus: root.active_idx == 8;
-                    selected-length: root.inv_lengths[8];
                     request-focus => {
                         root.request-activate-item(8);
                     }
-                    set-length(l) => {
-                        root.request-set-length(8, l);
-                    }
                 }
 
-                LumberItem {
-                    label: "2x4\"";
+                InventoryItem {
+                    label: "Prensa para Barra";
                     value: root.inv_vals[9];
                     has-focus: root.active_idx == 9;
-                    selected-length: root.inv_lengths[9];
                     request-focus => {
                         root.request-activate-item(9);
                     }
-                    set-length(l) => {
-                        root.request-set-length(9, l);
-                    }
                 }
 
-                LumberItem {
-                    label: "2x5\"";
+                InventoryItem {
+                    label: "Cámara Registro 160mm";
                     value: root.inv_vals[10];
                     has-focus: root.active_idx == 10;
-                    selected-length: root.inv_lengths[10];
                     request-focus => {
                         root.request-activate-item(10);
                     }
-                    set-length(l) => {
-                        root.request-set-length(10, l);
-                    }
                 }
 
-                LumberItem {
-                    label: "2x6\"";
+                InventoryItem {
+                    label: "Cañeria Zincada 5/8";
                     value: root.inv_vals[11];
                     has-focus: root.active_idx == 11;
-                    selected-length: root.inv_lengths[11];
                     request-focus => {
                         root.request-activate-item(11);
                     }
-                    set-length(l) => {
-                        root.request-set-length(11, l);
-                    }
                 }
 
-                LumberItem {
-                    label: "2x8\"";
+                InventoryItem {
+                    label: "Abrazadera Caddy";
                     value: root.inv_vals[12];
                     has-focus: root.active_idx == 12;
-                    selected-length: root.inv_lengths[12];
                     request-focus => {
                         root.request-activate-item(12);
                     }
-                    set-length(l) => {
-                        root.request-set-length(12, l);
-                    }
                 }
 
-                LumberItem {
-                    label: "2x10\"";
+                InventoryItem {
+                    label: "Cabeza de Servicio";
                     value: root.inv_vals[13];
                     has-focus: root.active_idx == 13;
-                    selected-length: root.inv_lengths[13];
                     request-focus => {
                         root.request-activate-item(13);
-                    }
-                    set-length(l) => {
-                        root.request-set-length(13, l);
-                    }
-                }
-
-                SectionHeader {
-                    title: "CLAVOS";
-                }
-
-                InventoryItem {
-                    label: "3\"";
-                    value: root.inv_vals[14];
-                    has-focus: root.active_idx == 14;
-                    request-focus => {
-                        root.request-activate-item(14);
-                    }
-                }
-
-                InventoryItem {
-                    label: "3 1/2\"";
-                    value: root.inv_vals[15];
-                    has-focus: root.active_idx == 15;
-                    request-focus => {
-                        root.request-activate-item(15);
-                    }
-                }
-
-                InventoryItem {
-                    label: "4\"";
-                    value: root.inv_vals[16];
-                    has-focus: root.active_idx == 16;
-                    request-focus => {
-                        root.request-activate-item(16);
-                    }
-                }
-
-                InventoryItem {
-                    label: "Techo 2 1/2\"";
-                    value: root.inv_vals[17];
-                    has-focus: root.active_idx == 17;
-                    request-focus => {
-                        root.request-activate-item(17);
-                    }
-                }
-
-                SectionHeader {
-                    title: "CEMENTO";
-                }
-
-                InventoryItem {
-                    label: "Bolsas";
-                    value: root.inv_vals[18];
-                    has-focus: root.active_idx == 18;
-                    request-focus => {
-                        root.request-activate-item(18);
                     }
                 }
             }
