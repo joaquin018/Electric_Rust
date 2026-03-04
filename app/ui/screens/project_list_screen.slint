@@ -30,6 +30,11 @@ export component ProjectListScreen inherits Rectangle {
 
     // Background
     background: #121212;
+    focus-stealer := FocusScope {
+        width: 0px;
+        height: 0px;
+    }
+
     VerticalLayout {
         padding-top: 60px;
         padding-left: 16px;
@@ -250,6 +255,7 @@ export component ProjectListScreen inherits Rectangle {
 
                         TouchArea {
                             clicked => {
+                                focus-stealer.focus();
                                 root.show-create-dialog = false;
                             }
                         }
@@ -271,6 +277,7 @@ export component ProjectListScreen inherits Rectangle {
 
                         TouchArea {
                             clicked => {
+                                focus-stealer.focus();
                                 // Use placeholder value as default if empty
                                 root.create-project(root.new-project-name == "" ? "Nuevo Proyecto" : root.new-project-name);
                                 root.show-create-dialog = false;
