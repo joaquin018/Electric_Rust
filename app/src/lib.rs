@@ -175,6 +175,8 @@ pub fn run() -> Result<(), slint::PlatformError> {
                         ui.set_show_create_dialog(false);
                     } else if ui.get_show_delete_dialog() {
                         ui.set_show_delete_dialog(false);
+                    } else if ui.get_show_clear_dialog() {
+                        ui.set_show_clear_dialog(false);
                     } else if ui.get_view_mode() == 1 {
                         ui.set_view_mode(0);
                         ui.set_active_idx(-1);
@@ -380,6 +382,60 @@ pub fn run() -> Result<(), slint::PlatformError> {
         }
     });
 
+    // Clear Section
+    let state_weak_clear = state_rc.clone();
+    let ui_weak_clear = ui_handle.clone();
+    ui.on_request_clear_section(move |section_idx| {
+        #[cfg(target_os = "android")]
+        android_utils::trigger_haptic_feedback();
+
+        if let Some(ui) = ui_weak_clear.upgrade() {
+            let model = ui.get_inv_vals();
+            let len_model = ui.get_inv_lengths();
+            let mut state = state_weak_clear.borrow_mut();
+            
+            let ranges: Vec<std::ops::Range<usize>> = match section_idx {
+                0 => vec![0..20],
+                1 => vec![20..35, 48..60],
+                2 => vec![35..48],
+                _ => vec![],
+            };
+
+            let mut changed = false;
+            let active_id = state.active_project_id.clone();
+            
+            for range in ranges {
+                for i in range.clone() {
+                    // Update UI models
+                    if i < 60 {
+                        model.set_row_data(i, "".into());
+                        len_model.set_row_data(i, 0);
+                    }
+                }
+                
+                // Update state
+                if let Some(ref id) = active_id {
+                    let mut proj_modified = false;
+                    if let Some(proj) = state.projects.iter_mut().find(|p| p.id == *id) {
+                        for i in range {
+                            if i < proj.inv_vals.len() {
+                                proj.inv_vals[i] = "".to_string();
+                                proj.inv_lengths[i] = 0;
+                                proj_modified = true;
+                            }
+                        }
+                    }
+                    if proj_modified { changed = true; }
+                }
+            }
+            
+            if changed {
+                save_state(&state);
+                ui.window().request_redraw();
+            }
+        }
+    });
+
     // Selective Share Handler
     let ui_weak_share_sel = ui_handle.clone();
     ui.on_request_selective_share(move |base, door, roof, insulation, interior| {
@@ -489,6 +545,11 @@ pub fn run() -> Result<(), slint::PlatformError> {
             // If delete dialog is open
             if ui.get_show_delete_dialog() {
                 ui.set_show_delete_dialog(false);
+                return slint::CloseRequestResponse::KeepWindowShown;
+            }
+            // If clear dialog is open
+            if ui.get_show_clear_dialog() {
+                ui.set_show_clear_dialog(false);
                 return slint::CloseRequestResponse::KeepWindowShown;
             }
             // If in editor view, go back to project list

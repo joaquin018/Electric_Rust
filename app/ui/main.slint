@@ -129,6 +129,7 @@ export component AppWindow inherits Window {
     in-out property <string> active_project_name: "ELECTRIC";
     in-out property <bool> show_create_dialog: false;
     in-out property <bool> show_delete_dialog: false;
+    in-out property <bool> show_clear_dialog: false;
     
     // System Insets
     in-out property <length> system-bottom-padding: 32px;
@@ -141,6 +142,7 @@ export component AppWindow inherits Window {
     callback request-set-length(int, int);
     callback request-backspace();
     callback request-share-picker-open();
+    callback request-clear-section(int);
     invoke-transition-to-editor => {
         root.view-mode = 1;
         root.active_idx = -1;
@@ -194,7 +196,7 @@ export component AppWindow inherits Window {
                         }
                         trash-pressed => {
                             root.active_idx = -1;
-                             /* Future trash logic */ 
+                            root.show_clear_dialog = true;
                         }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
@@ -224,7 +226,7 @@ export component AppWindow inherits Window {
                         }
                         trash-pressed => {
                             root.active_idx = -1;
-                             /* Future trash logic */ 
+                            root.show_clear_dialog = true;
                         }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
@@ -254,7 +256,7 @@ export component AppWindow inherits Window {
                         }
                         trash-pressed => {
                             root.active_idx = -1;
-                             /* Future trash logic */ 
+                            root.show_clear_dialog = true;
                         }
                         request-activate-item(idx) => {
                             root.request-activate-item(idx);
@@ -321,6 +323,119 @@ export component AppWindow inherits Window {
             }
             close-pressed() => {
                 root.active_idx = -1;
+            }
+        }
+
+        // Modal Dialog (Clear Confirmation)
+        if root.show_clear_dialog: Rectangle {
+            width: 100%;
+            height: 100%;
+            z: 300;
+            background: #000000AA;
+            TouchArea { } // Block clicks
+
+            Rectangle {
+                width: 320px;
+                height: clr-layout.preferred-height;
+                background: #1E1E1E;
+                border-radius: 24px;
+                border-width: 1px;
+                border-color: #FF404033;
+                drop-shadow-blur: 30px;
+                drop-shadow-color: #000000;
+                x: (parent.width - self.width) / 2;
+                y: (parent.height - self.height) / 2;
+                clr-layout := VerticalLayout {
+                    padding: 28px;
+                    spacing: 24px;
+                    
+                    // Warning Icon Container
+                    HorizontalLayout {
+                        alignment: center;
+                        Rectangle {
+                            width: 60px;
+                            height: 60px;
+                            background: #FF404015;
+                            border-radius: 30px;
+                            Path {
+                                width: 30px;
+                                height: 30px;
+                                x: (parent.width - self.width) / 2;
+                                y: (parent.height - self.height) / 2;
+                                viewbox-width: 24;
+                                viewbox-height: 24;
+                                commands: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z";
+                                fill: #FF4040;
+                            }
+                        }
+                    }
+
+                    VerticalLayout {
+                        spacing: 8px;
+                        Text {
+                            text: "¿Limpiar Sección?";
+                            font-size: 20px;
+                            font-weight: 800;
+                            color: #FFFFFF;
+                            horizontal-alignment: center;
+                        }
+
+                        Text {
+                            text: "Se eliminarán los números de esta categoría.";
+                            font-size: 15px;
+                            color: #AAAAAA;
+                            horizontal-alignment: center;
+                            wrap: word-wrap;
+                        }
+                    }
+
+                    HorizontalLayout {
+                        spacing: 12px;
+                        
+                        // Cancelar
+                        Rectangle {
+                            height: 50px;
+                            horizontal-stretch: 1;
+                            border-radius: 25px;
+                            background: #333333;
+                            Text {
+                                text: "Atrás";
+                                color: #FFFFFF;
+                                font-weight: 600;
+                                vertical-alignment: center;
+                                horizontal-alignment: center;
+                            }
+
+                            TouchArea {
+                                clicked => {
+                                    root.show_clear_dialog = false;
+                                }
+                            }
+                        }
+
+                        // Limpiar
+                        Rectangle {
+                            height: 50px;
+                            horizontal-stretch: 1;
+                            border-radius: 25px;
+                            background: #FF4040;
+                            Text {
+                                text: "Limpiar";
+                                color: #FFFFFF;
+                                font-weight: 800;
+                                vertical-alignment: center;
+                                horizontal-alignment: center;
+                            }
+
+                            TouchArea {
+                                clicked => {
+                                    root.request-clear-section(root.current_screen);
+                                    root.show_clear_dialog = false;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
