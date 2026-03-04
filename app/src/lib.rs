@@ -664,6 +664,24 @@ fn format_inventory(
             category: 4,
         },
         Section {
+            header: "Salida Caja",
+            range: 48..50,
+            labels: &["20mm", "16mm"],
+            category: 4,
+        },
+        Section {
+            header: "Terminal Ferrul",
+            range: 50..52,
+            labels: &["2,5mm", "1,5mm"],
+            category: 4,
+        },
+        Section {
+            header: "Abrazadera",
+            range: 52..54,
+            labels: &["20mm", "16mm"],
+            category: 4,
+        },
+        Section {
             header: "Cable EVA 1,5mm",
             range: 35..37,
             labels: &["1,5mm Rojo", "1,5mm Blanco"],
@@ -692,24 +710,6 @@ fn format_inventory(
             range: 46..47,
             labels: &["Cantidad"],
             category: 2,
-        },
-        Section {
-            header: "Salida Caja",
-            range: 48..50,
-            labels: &["20mm", "16mm"],
-            category: 4,
-        },
-        Section {
-            header: "Terminal Ferrul",
-            range: 50..52,
-            labels: &["2,5mm", "1,5mm"],
-            category: 4,
-        },
-        Section {
-            header: "Abrazadera",
-            range: 52..54,
-            labels: &["20mm", "16mm"],
-            category: 4,
         },
     ];
 
