@@ -214,6 +214,72 @@ export component InteriorScreen inherits Rectangle {
                         root.request-activate-item(34);
                     }
                 }
+
+                SectionHeader {
+                    title: "SALIDA CAJA";
+                }
+
+                InventoryItem {
+                    label: "20mm";
+                    value: root.inv_vals[48];
+                    has-focus: root.active_idx == 48;
+                    request-focus => {
+                        root.request-activate-item(48);
+                    }
+                }
+
+                InventoryItem {
+                    label: "16mm";
+                    value: root.inv_vals[49];
+                    has-focus: root.active_idx == 49;
+                    request-focus => {
+                        root.request-activate-item(49);
+                    }
+                }
+
+                SectionHeader {
+                    title: "TERMINAL FERRUL";
+                }
+
+                InventoryItem {
+                    label: "2,5mm";
+                    value: root.inv_vals[50];
+                    has-focus: root.active_idx == 50;
+                    request-focus => {
+                        root.request-activate-item(50);
+                    }
+                }
+
+                InventoryItem {
+                    label: "1,5mm";
+                    value: root.inv_vals[51];
+                    has-focus: root.active_idx == 51;
+                    request-focus => {
+                        root.request-activate-item(51);
+                    }
+                }
+
+                SectionHeader {
+                    title: "ABRAZADERA";
+                }
+
+                InventoryItem {
+                    label: "20mm";
+                    value: root.inv_vals[52];
+                    has-focus: root.active_idx == 52;
+                    request-focus => {
+                        root.request-activate-item(52);
+                    }
+                }
+
+                InventoryItem {
+                    label: "16mm";
+                    value: root.inv_vals[53];
+                    has-focus: root.active_idx == 53;
+                    request-focus => {
+                        root.request-activate-item(53);
+                    }
+                }
             }
         }
     }

@@ -632,6 +632,24 @@ fn format_inventory(
             labels: &["Cantidad"],
             category: 2,
         },
+        Section {
+            header: "Salida Caja",
+            range: 48..50,
+            labels: &["20mm", "16mm"],
+            category: 4,
+        },
+        Section {
+            header: "Terminal Ferrul",
+            range: 50..52,
+            labels: &["2,5mm", "1,5mm"],
+            category: 4,
+        },
+        Section {
+            header: "Abrazadera",
+            range: 52..54,
+            labels: &["20mm", "16mm"],
+            category: 4,
+        },
     ];
 
     let mut result = String::new();
